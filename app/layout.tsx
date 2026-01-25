@@ -1,11 +1,17 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { EB_Garamond } from "next/font/google";
 import "./globals.css";
 
 const gimletDisplay = localFont({
     src: "../public/fonts/GimletDisplayCompressed-Italic-Testing.woff2",
     variable: "--font-heading",
     style: "italic",
+});
+
+const ebGaramond = EB_Garamond({
+    subsets: ["latin"],
+    variable: "--font-body",
 });
 
 export const metadata: Metadata = {
@@ -19,7 +25,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className={gimletDisplay.variable}>
+        <html lang="en" className={`${gimletDisplay.variable} ${ebGaramond.variable}`}>
             <body>{children}</body>
         </html>
     );
