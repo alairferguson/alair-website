@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Ink on Paper Text</title>
+<style>
+  :root{
+    /* Paper + ink tuning knobs */
+    --paper: #f4f0e6;
+    --paper-warm: #efe6d3;
+    --paper-cool: #f7f3ea;
+    --ink: rgba(20, 18, 16, 0.92);
+    --ink2: rgba(35, 30, 24, 0.55); /* used for subtle bleed layers */
+  }
+
+  /* Paper fibers + grain overlay (pure CSS). Keep opacity low. */
+  .paper{
+    position:relative;
+    width:min(900px, 92vw);
+    padding: clamp(28px, 6vw, 72px);
+    border-radius: 18px;
+  }
+
+  .ink{
+    position:relative;
+    color: var(--ink);
+    font: 700 clamp(44px, 7vw, 92px)/1.02 ui-serif, Georgia, "Times New Roman", serif;
+    letter-spacing: -0.02em;
+    /* The “ink integrates into paper” part */
+    mix-blend-mode: multiply; /* blends ink with paper */ /* :contentReference[oaicite:6]{index=6} */
+    /* Slightly soften edges + add contact shadow */
+    filter: url(#ink); /* SVG filter defined below */
+  }
+</style>
+</head>
+<body>
+  <!-- SVG filter: turbulence generates noise; displacement warps glyph edges; blur/contrast mimics ink spread -->
+  <svg width="0" height="0" aria-hidden="true" focusable="false">
+    <filter id="ink" x="0%" y="0%" width="100%" height="100%">
+      <!-- Organic noise texture -->
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="8" result="noise"/>
+      <!-- Warp the text slightly using the noise field -->
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.2" xChannelSelector="R" yChannelSelector="G" result="wobble"/>
+      <!-- Tiny spread/bleed: blur + component transfer -->
+      <feGaussianBlur in="wobble" stdDeviation="0.25" result="soft"/>
+      <feComponentTransfer in="soft" result="inked">
+        <feFuncA type="gamma" amplitude="1.0" exponent="0.92" offset="0"/>
+      </feComponentTransfer>
+      <!-- Optional: contact shadow-like depth -->
+      <feDropShadow dx="0" dy="0.6" stdDeviation="0.55" flood-color="rgba(0,0,0,0.18)" />
+      <feBlend in="inked" mode="multiply"/>
+    </filter>
+  </svg>
+
+  <main class="paper">
+    <div class="ink" data-text="IN K">IN&nbsp;K</div>
+  </main>
+</body>
+</html>
