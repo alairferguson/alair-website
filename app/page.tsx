@@ -3,7 +3,7 @@ import Paper from "./components/Paper";
 
 export default function Home() {
     return (
-        <div className="flex min-h-screen items-center justify-center font-body py-32">
+        <div className="flex min-h-screen box-border items-center justify-center font-body p-4 sm:p-16">
             {/* SVG filter: turbulence generates noise; displacement warps glyph edges; blur/contrast mimics ink spread */}
             <svg width="0" height="0" aria-hidden="true" focusable="false" className="absolute">
                 <filter id="ink" x="0%" y="0%" width="100%" height="100%">
@@ -19,7 +19,7 @@ export default function Home() {
                 </filter>
             </svg>
 
-            <main className="flex min-h-screen w-full max-w-xl flex-col items-center justify-between gap-16">
+            <main className="flex min-h-full w-lg sm:w-2xl flex-col items-center justify-between gap-16">
                 <Paper>
                     <div className="h-full w-full grid grid-rows-3 place-items-center">
                         <Image src="/seal.png" alt="Ferguson Seal" width={120} height={120} />
@@ -28,7 +28,7 @@ export default function Home() {
                             <span className="block text-3xl tracking-wide not-italic">FERGUSON</span>
                             <span className="block text-3xl tracking-wide not-italic">HAUTZINGER</span>
                         </h1>
-                        <ol className="list-none list-inside text-center text-[rgba(0,0,0,0.85)] mix-blend-multiply">
+                        <ol className="list-none text-xl sm:text-base list-inside text-center text-[rgba(0,0,0,0.85)] mix-blend-multiply">
                             <li>I. Email</li>
                             <li>II. Resume</li>
                             <li>III. LinkedIn</li>
