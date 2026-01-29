@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Paper from "./components/Paper";
+import { Email } from "./components/Email";
 
 export default function Home() {
     return (
@@ -14,9 +15,9 @@ export default function Home() {
                             <span className="text-3xl tracking-wide">Hautzinger</span>
                         </h1>
                         <ol className="list-none text-xl sm:text-base list-inside text-center text-[rgba(0,0,0,0.85)] mix-blend-multiply">
-                            <li>I. Email</li>
-                            <li>II. Resume</li>
-                            <li>III. LinkedIn</li>
+                            <li><Email /></li>
+                            <li><a href="/resume.pdf" className="hover:text-primary">II. Resume</a></li>
+                            <li><a href="https://www.linkedin.com/in/alairferguson/" className="hover:text-primary">III. LinkedIn</a></li>
                         </ol>
                     </div>
                 </Paper>
