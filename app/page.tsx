@@ -22,11 +22,11 @@ export default function Home() {
             <main className="flex min-h-full w-lg sm:w-2xl flex-col items-center justify-between gap-16">
                 <Paper>
                     <div className="h-full w-full grid grid-rows-3 place-items-center">
-                        <Image src="/seal.png" alt="Ferguson Seal" width={120} height={120} />
-                        <h1 className="text-center font-heading mix-blend-multiply filter-[url(#ink)]">
-                            <span className="block text-7xl italic text-[#910A07]">ALAIR</span>
-                            <span className="block text-3xl tracking-wide not-italic">FERGUSON</span>
-                            <span className="block text-3xl tracking-wide not-italic">HAUTZINGER</span>
+                        <Image src="/seal.png" alt="Ferguson Seal" width={120} height={120} className="select-none pointer-events-none" />
+                        <h1 className="text-center font-heading mix-blend-multiply filter-[url(#ink)] uppercase">
+                            <span className="name-line text-7xl italic text-primary">Alair </span>
+                            <span className="name-line text-3xl tracking-wide not-italic">Ferguson </span>
+                            <span className="text-3xl tracking-wide not-italic">Hautzinger</span>
                         </h1>
                         <ol className="list-none text-xl sm:text-base list-inside text-center text-[rgba(0,0,0,0.85)] mix-blend-multiply">
                             <li>I. Email</li>
