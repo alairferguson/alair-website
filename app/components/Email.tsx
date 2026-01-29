@@ -55,7 +55,7 @@ export function Email() {
                 inline-block
                 text-xl sm:text-base
                 text-center
-                text-[rgba(0,0,0,0.85)]
+                ${hasCopied ? 'text-primary' : 'text-[rgba(0,0,0,0.85)]'}
                 mix-blend-multiply
                 ${!hasCopied &&
                     `
