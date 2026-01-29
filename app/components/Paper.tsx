@@ -6,9 +6,9 @@ interface PaperProps {
 
 export default function Paper({ children }: PaperProps) {
     return (
-        <div className="paper relative w-full sm:w-3/4 aspect-210/297 p-12 sm:p-24 bg-[#fdf6e6] overflow-hidden rounded-[2px] isolate shadow-[0_4px_12px_rgba(0,0,0,0.1),0_8px_24px_rgba(0,0,0,0.05)]">
+        <div className="paper relative w-full sm:w-3/4 aspect-210/297 p-12 sm:p-24 bg-[#fdf6e6] overflow-hidden rounded-[2px] isolate shadow-[0_4px_12px_rgba(0,0,0,0.1),0_8px_24px_rgba(0,0,0,0.05)] flex flex-col">
             {/* Content layer */}
-            <div className="relative z-0 h-full w-full">
+            <div className="relative z-0 flex-1 w-full">
                 {children}
             </div>
 
