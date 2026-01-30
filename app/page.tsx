@@ -4,7 +4,7 @@ import { Email } from "./components/Email";
 
 export default function Home() {
     return (
-        <div className="flex min-h-screen box-border items-center justify-center font-body p-4 sm:p-16">
+        <div className="flex min-h-dvh box-border items-center justify-center font-body p-4 sm:p-16">
             <main className="flex min-h-full w-lg sm:w-2xl flex-col items-center justify-between gap-16">
                 <Paper>
                     <div className="h-full w-full grid grid-rows-3 place-items-center">
