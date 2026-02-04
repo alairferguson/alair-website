@@ -17,6 +17,7 @@ export default function DappledLight() {
     const programRef = useRef<WebGLProgram | null>(null);
     const animationRef = useRef<number>(0);
     const uniformLocationsRef = useRef<UniformLocations>({} as UniformLocations);
+    const dprRef = useRef<number>(1);
 
     // Scroll state for parallax and animation
     const scrollStateRef = useRef<ScrollState>({
@@ -153,6 +154,7 @@ export default function DappledLight() {
         uniformLocationsRef.current = {
             resolution: gl.getUniformLocation(program, "u_resolution"),
             time: gl.getUniformLocation(program, "u_time"),
+            dpr: gl.getUniformLocation(program, "u_dpr"),
             scale1: gl.getUniformLocation(program, "u_scale1"),
             scale2: gl.getUniformLocation(program, "u_scale2"),
             layerWeight1: gl.getUniformLocation(program, "u_layerWeight1"),
@@ -186,6 +188,7 @@ export default function DappledLight() {
         // Handle resize
         const resize = () => {
             const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+            dprRef.current = dpr; // Store DPR for use in shader
             const rect = canvas.getBoundingClientRect();
 
             canvas.width = Math.floor(rect.width * dpr);
@@ -225,6 +228,7 @@ export default function DappledLight() {
             // Update uniforms
             gl.uniform2f(uniforms.resolution, canvas.width, canvas.height);
             gl.uniform1f(uniforms.time, time);
+            gl.uniform1f(uniforms.dpr, dprRef.current);
 
             // Pattern
             gl.uniform1f(uniforms.scale1, c.scale1);

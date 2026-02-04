@@ -14,6 +14,7 @@ export const fragmentShaderSource = `
   
   uniform vec2 u_resolution;
   uniform float u_time;
+  uniform float u_dpr;
   
   // Pattern controls
   uniform float u_scale1;
@@ -143,9 +144,10 @@ export const fragmentShaderSource = `
   }
   
   void main() {
-    vec2 uv = gl_FragCoord.xy / u_resolution.xy;
-    float aspect = u_resolution.x / u_resolution.y;
-    vec2 uvAspect = vec2(uv.x * aspect, uv.y);
+    // Use fixed reference size adjusted for DPR to make pattern size consistent across displays
+    // This makes the pattern size absolute rather than relative to viewport
+    float referenceSize = 1000.0 * u_dpr; // Fixed reference adjusted for device pixel ratio
+    vec2 uvAspect = gl_FragCoord.xy / referenceSize;
     
     float time = u_time;
     

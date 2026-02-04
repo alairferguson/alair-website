@@ -41,6 +41,7 @@ export interface ScrollState {
 export interface UniformLocations {
     resolution: WebGLUniformLocation | null;
     time: WebGLUniformLocation | null;
+    dpr: WebGLUniformLocation | null;
     scale1: WebGLUniformLocation | null;
     scale2: WebGLUniformLocation | null;
     layerWeight1: WebGLUniformLocation | null;
