@@ -40,6 +40,7 @@ const fragmentShaderSource = `
   
   // Color controls
   uniform vec3 u_warmTint;
+  uniform vec3 u_shadowColor;
   uniform float u_tintStrength;
   uniform float u_blendIntensity;
   
@@ -196,8 +197,9 @@ const fragmentShaderSource = `
     // Map to blend mode intensity
     float blend = light * u_blendIntensity;
     
-    // Apply warm tint
-    vec3 color = vec3(blend) * mix(vec3(1.0), u_warmTint, light * u_tintStrength);
+    // Apply warm tint to light areas, shadow color to dark areas
+    vec3 lightColor = mix(vec3(1.0), u_warmTint, light * u_tintStrength);
+    vec3 color = mix(u_shadowColor, lightColor, blend);
     
     // Add texture
     float texture = noise(uvAspect * u_textureScale) * u_textureAmount;
@@ -293,6 +295,7 @@ const DEFAULTS = {
 
     // Colors (RGB 0-255 format for Leva color picker)
     warmTint: { r: 255, g: 214, b: 68 }, // Hex #ffd644
+    shadowColor: { r: 17, g: 21, b: 34 }, // Hex #111522 (deep blue shadow)
     tintStrength: 1.00,
     blendIntensity: 1.00,
 
@@ -349,6 +352,7 @@ export default function DappledLight() {
         voronoiSizeVariation: DEFAULTS.voronoiSizeVariation,
         debugVoronoi: DEFAULTS.debugVoronoi,
         warmTint: DEFAULTS.warmTint,
+        shadowColor: DEFAULTS.shadowColor,
         tintStrength: DEFAULTS.tintStrength,
         blendIntensity: DEFAULTS.blendIntensity,
         spotPower: DEFAULTS.spotPower,
@@ -454,10 +458,14 @@ export default function DappledLight() {
         },
     }));
 
-    const [{ warmTint, tintStrength, blendIntensity }, setColors] = useControls("Colors", () => ({
+    const [{ warmTint, shadowColor, tintStrength, blendIntensity }, setColors] = useControls("Colors", () => ({
         warmTint: {
             value: DEFAULTS.warmTint,
-            label: "Warm Tint",
+            label: "Light Tint",
+        },
+        shadowColor: {
+            value: DEFAULTS.shadowColor,
+            label: "Shadow Color",
         },
         tintStrength: {
             value: DEFAULTS.tintStrength,
@@ -538,6 +546,7 @@ export default function DappledLight() {
             });
             setColors({
                 warmTint: DEFAULTS.warmTint,
+                shadowColor: DEFAULTS.shadowColor,
                 tintStrength: DEFAULTS.tintStrength,
                 blendIntensity: DEFAULTS.blendIntensity,
             });
@@ -566,6 +575,7 @@ export default function DappledLight() {
             voronoiSizeVariation,
             debugVoronoi,
             warmTint,
+            shadowColor,
             tintStrength,
             blendIntensity,
             spotPower,
@@ -586,6 +596,7 @@ export default function DappledLight() {
         voronoiSizeVariation,
         debugVoronoi,
         warmTint,
+        shadowColor,
         tintStrength,
         blendIntensity,
         spotPower,
@@ -675,6 +686,7 @@ export default function DappledLight() {
             voronoiSizeVariation: gl.getUniformLocation(program, "u_voronoiSizeVariation"),
             debugVoronoi: gl.getUniformLocation(program, "u_debugVoronoi"),
             warmTint: gl.getUniformLocation(program, "u_warmTint"),
+            shadowColor: gl.getUniformLocation(program, "u_shadowColor"),
             tintStrength: gl.getUniformLocation(program, "u_tintStrength"),
             blendIntensity: gl.getUniformLocation(program, "u_blendIntensity"),
             spotPower: gl.getUniformLocation(program, "u_spotPower"),
@@ -731,6 +743,7 @@ export default function DappledLight() {
             gl.uniform1f(uniforms.debugVoronoi, c.debugVoronoi ? 1.0 : 0.0);
             // Normalize RGB values from Leva (0-255) to shader range (0-1)
             gl.uniform3f(uniforms.warmTint, c.warmTint.r / 255, c.warmTint.g / 255, c.warmTint.b / 255);
+            gl.uniform3f(uniforms.shadowColor, c.shadowColor.r / 255, c.shadowColor.g / 255, c.shadowColor.b / 255);
             gl.uniform1f(uniforms.tintStrength, c.tintStrength);
             gl.uniform1f(uniforms.blendIntensity, c.blendIntensity);
             gl.uniform1f(uniforms.spotPower, c.spotPower);
@@ -774,6 +787,7 @@ export default function DappledLight() {
                 width: "100vw",
                 zIndex: 50,
 
+                mixBlendMode: blendMode as React.CSSProperties["mixBlendMode"],
                 // Fade out at the top and bottom so Safari's cutoff looks intentional
                 maskImage: "linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%)",
                 WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%)",
@@ -787,7 +801,6 @@ export default function DappledLight() {
                         width: "100vw",
                         height: "98svh",
                         // border: "16px solid blue",
-                        mixBlendMode: blendMode as React.CSSProperties["mixBlendMode"],
                         opacity,
                     }}
                 />
