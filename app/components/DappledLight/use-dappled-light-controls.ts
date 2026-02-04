@@ -213,6 +213,23 @@ export function useDappledLightControls() {
         },
     }));
 
+    const [{ mouseRadius, mouseStrength }] = useControls("Mouse Cursor", () => ({
+        mouseRadius: {
+            value: DEFAULTS.mouseRadius,
+            min: 0,
+            max: 5,
+            step: 0.1,
+            label: "Radius",
+        },
+        mouseStrength: {
+            value: DEFAULTS.mouseStrength,
+            min: 0,
+            max: 2,
+            step: 0.05,
+            label: "Strength",
+        },
+    }));
+
     const [{ backgroundColor }] = useControls("Document", () => ({
         backgroundColor: {
             value: DEFAULTS.backgroundColor,
@@ -287,6 +304,10 @@ export function useDappledLightControls() {
         scrollDriftSmoothing,
         scrollDriftLayer1,
         scrollDriftLayer2,
+
+        // Mouse Cursor
+        mouseRadius,
+        mouseStrength,
 
         // Document
         backgroundColor,

@@ -19,6 +19,9 @@ export default function DappledLight() {
     const uniformLocationsRef = useRef<UniformLocations>({} as UniformLocations);
     const dprRef = useRef<number>(1);
 
+    // Mouse position for cursor effect (in canvas pixel coordinates)
+    const mousePosRef = useRef<{ x: number; y: number }>({ x: -1000, y: -1000 });
+
     // Scroll state for parallax and animation
     const scrollStateRef = useRef<ScrollState>({
         accumulators: {
@@ -49,6 +52,8 @@ export default function DappledLight() {
         variationAmount: DEFAULTS.variationAmount,
         textureAmount: DEFAULTS.textureAmount,
         textureScale: DEFAULTS.textureScale,
+        mouseRadius: DEFAULTS.mouseRadius,
+        mouseStrength: DEFAULTS.mouseStrength,
     });
 
     // Detect dark mode
@@ -79,6 +84,8 @@ export default function DappledLight() {
             variationAmount: controls.variationAmount,
             textureAmount: controls.textureAmount,
             textureScale: controls.textureScale,
+            mouseRadius: controls.mouseRadius,
+            mouseStrength: controls.mouseStrength,
         };
     }, [controls]);
 
@@ -178,6 +185,9 @@ export default function DappledLight() {
             scrollDriftLayer1: gl.getUniformLocation(program, "u_scrollDriftLayer1"),
             scrollDriftLayer2: gl.getUniformLocation(program, "u_scrollDriftLayer2"),
             swayOffset: gl.getUniformLocation(program, "u_swayOffset"),
+            mousePos: gl.getUniformLocation(program, "u_mousePos"),
+            mouseRadius: gl.getUniformLocation(program, "u_mouseRadius"),
+            mouseStrength: gl.getUniformLocation(program, "u_mouseStrength"),
         };
 
         // Set up program and attributes
@@ -199,6 +209,25 @@ export default function DappledLight() {
 
         resize();
         window.addEventListener("resize", resize);
+
+        // Mouse tracking
+        const handleMouseMove = (e: MouseEvent) => {
+            const rect = canvas.getBoundingClientRect();
+            const dpr = dprRef.current;
+            // Convert to canvas pixel coordinates
+            mousePosRef.current = {
+                x: (e.clientX - rect.left) * dpr,
+                y: (rect.height - (e.clientY - rect.top)) * dpr, // Flip Y for WebGL
+            };
+        };
+
+        const handleMouseLeave = () => {
+            // Move mouse position far off-screen when not hovering
+            mousePosRef.current = { x: -1000, y: -1000 };
+        };
+
+        window.addEventListener("mousemove", handleMouseMove);
+        canvas.addEventListener("mouseleave", handleMouseLeave);
 
         // Animation loop
         const startTime = performance.now();
@@ -267,6 +296,11 @@ export default function DappledLight() {
             gl.uniform1f(uniforms.scrollDriftLayer2, controls.scrollDriftLayer2);
             gl.uniform2f(uniforms.swayOffset, 0, 0); // No scroll-based sway
 
+            // Mouse cursor effect
+            gl.uniform2f(uniforms.mousePos, mousePosRef.current.x, mousePosRef.current.y);
+            gl.uniform1f(uniforms.mouseRadius, c.mouseRadius);
+            gl.uniform1f(uniforms.mouseStrength, c.mouseStrength);
+
             gl.drawArrays(gl.TRIANGLES, 0, 6);
             animationRef.current = requestAnimationFrame(render);
         };
@@ -278,6 +312,8 @@ export default function DappledLight() {
             isRunning = false;
             cancelAnimationFrame(animationRef.current);
             window.removeEventListener("resize", resize);
+            window.removeEventListener("mousemove", handleMouseMove);
+            canvas.removeEventListener("mouseleave", handleMouseLeave);
 
             if (gl && program) {
                 gl.deleteProgram(program);

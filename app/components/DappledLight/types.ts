@@ -28,6 +28,8 @@ export interface DappledLightControls {
     variationAmount: number;
     textureAmount: number;
     textureScale: number;
+    mouseRadius: number;
+    mouseStrength: number;
 }
 
 export interface ScrollState {
@@ -65,4 +67,7 @@ export interface UniformLocations {
     scrollDriftLayer1: WebGLUniformLocation | null;
     scrollDriftLayer2: WebGLUniformLocation | null;
     swayOffset: WebGLUniformLocation | null;
+    mousePos: WebGLUniformLocation | null;
+    mouseRadius: WebGLUniformLocation | null;
+    mouseStrength: WebGLUniformLocation | null;
 }

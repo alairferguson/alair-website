@@ -64,6 +64,10 @@ export const DEFAULTS = {
     scrollDriftLayer1: 0.6,     // Layer 1 parallax (high branches)
     scrollDriftLayer2: 1.0,     // Layer 2 parallax (low branches)
 
+    // Mouse Cursor Effect
+    mouseRadius: 1.5,      // Radius of mouse influence in UV space
+    mouseStrength: 0.3,    // Strength of the distortion
+
     // Document
     backgroundColor: "#eeeeee",
     backgroundColorDark: "#0a0a0a",

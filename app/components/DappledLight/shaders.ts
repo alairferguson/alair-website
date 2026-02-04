@@ -55,6 +55,11 @@ export const fragmentShaderSource = `
   // Persistent sway offset - accumulates from scroll, doesn't revert
   uniform vec2 u_swayOffset;
   
+  // Mouse interaction
+  uniform vec2 u_mousePos;      // Mouse position in UV space
+  uniform float u_mouseRadius;  // Radius of mouse influence
+  uniform float u_mouseStrength; // Strength of mouse distortion
+  
   // Hash functions
   vec2 hash2(vec2 p) {
     p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
@@ -65,10 +70,30 @@ export const fragmentShaderSource = `
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
   }
   
+  // Mouse distortion - pushes/pulls UV coordinates based on mouse position
+  vec2 applyMouseDistortion(vec2 uv, vec2 mouseUV) {
+    vec2 diff = uv - mouseUV;
+    float dist = length(diff);
+    
+    // Smooth falloff from mouse position
+    float influence = 1.0 - smoothstep(0.0, u_mouseRadius, dist);
+    influence = pow(influence, 2.0); // Sharper falloff
+    
+    // Pull UV coordinates toward mouse to push visual pattern away
+    vec2 direction = normalize(diff + 0.0001); // Add tiny offset to avoid div by zero
+    vec2 displacement = direction * influence * u_mouseStrength;
+    
+    // Subtract displacement to pull UV toward mouse, pushing pattern away
+    return uv - displacement;
+  }
+  
   // Voronoi - creates cellular pattern like light through leaves
-  float voronoi(vec2 uv, float time, out float secondMinDist) {
-    vec2 i = floor(uv);
-    vec2 f = fract(uv);
+  float voronoi(vec2 uv, float time, vec2 mouseUV, out float secondMinDist) {
+    // Apply mouse distortion to the UV coordinates
+    vec2 distortedUV = applyMouseDistortion(uv, mouseUV);
+    
+    vec2 i = floor(distortedUV);
+    vec2 f = fract(distortedUV);
     
     float minDist = 1.0;
     secondMinDist = 1.0;
@@ -160,18 +185,25 @@ export const fragmentShaderSource = `
     vec2 swayOffset1 = u_swayOffset * 0.6;
     vec2 swayOffset2 = u_swayOffset * 1.0;
     
+    // Convert mouse position to same UV space as pattern
+    vec2 mouseUV = u_mousePos / referenceSize;
+    
     // Layer 1 - large spots (slow sway, like high branches - less parallax)
     vec2 sway1 = windSway(time, u_windSpeed * 0.6, u_swayAmount * 1.2, 0.0, swayOffset1);
+    vec2 layer1UV = uvAspect * u_scale1 + sway1 + drift1;
+    vec2 mouseUV1 = mouseUV * u_scale1 + sway1 + drift1;
     float v1_second;
-    float v1 = voronoi(uvAspect * u_scale1 + sway1 + drift1, time, v1_second);
+    float v1 = voronoi(layer1UV, time, mouseUV1, v1_second);
     float spots1 = smoothstep(0.0, 0.5 * u_spotSize, v1);
     spots1 = 1.0 - spots1;
     spots1 = pow(spots1, u_spotPower);
     
     // Layer 2 - medium spots (medium sway, middle canopy - more parallax)
     vec2 sway2 = windSway(time, u_windSpeed * 0.85, u_swayAmount * 0.9, 1.5, swayOffset2);
+    vec2 layer2UV = uvAspect * u_scale2 + sway2 + drift2 + 10.0;
+    vec2 mouseUV2 = mouseUV * u_scale2 + sway2 + drift2 + 10.0;
     float v2_second;
-    float v2 = voronoi(uvAspect * u_scale2 + sway2 + drift2 + 10.0, time, v2_second);
+    float v2 = voronoi(layer2UV, time, mouseUV2, v2_second);
     float spots2 = smoothstep(0.0, 0.45 * u_spotSize, v2);
     spots2 = 1.0 - spots2;
     spots2 = pow(spots2, u_spotPower * 1.15);
