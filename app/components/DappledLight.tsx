@@ -306,7 +306,8 @@ const DEFAULTS = {
     textureScale: 40.0,
 
     // Document
-    backgroundColor: "#eee",
+    backgroundColor: "#eeeeee",
+    backgroundColorDark: "#0a0a0a",
 };
 
 const isDev = process.env.NODE_ENV === "development";
@@ -600,10 +601,16 @@ export default function DappledLight() {
         return () => mediaQuery.removeEventListener('change', handler);
     }, []);
 
-    // Update CSS variable when background color changes
+    // Update CSS variable only if customized, otherwise let CSS handle dark mode
+    const isCustomBg = backgroundColor !== DEFAULTS.backgroundColor && backgroundColor !== DEFAULTS.backgroundColorDark;
+
     useEffect(() => {
-        document.documentElement.style.setProperty('--background', backgroundColor);
-    }, [backgroundColor]);
+        if (isCustomBg) {
+            document.documentElement.style.setProperty('--background', backgroundColor);
+        } else {
+            document.documentElement.style.removeProperty('--background');
+        }
+    }, [backgroundColor, isCustomBg]);
 
     useEffect(() => {
         const canvas = canvasRef.current;
