@@ -331,7 +331,7 @@ const DEFAULTS = {
 
     // Scroll Response (parallax drift only)
     scrollResponseEnabled: true,
-    scrollDriftAmount: 0.0003,  // UV offset per scroll pixel
+    scrollDriftAmount: 0.001,  // UV offset per scroll pixel
     scrollDriftSmoothing: 0.08, // Lag factor (lower = more lag)
     scrollDriftLayer1: 0.6,     // Layer 1 parallax (high branches)
     scrollDriftLayer2: 1.0,     // Layer 2 parallax (low branches)
@@ -586,8 +586,8 @@ export default function DappledLight() {
         scrollDriftAmount: {
             value: DEFAULTS.scrollDriftAmount,
             min: 0,
-            max: 0.001,
-            step: 0.00005,
+            max: 0.01,
+            step: 0.005,
             label: "Drift Amount",
         },
         scrollDriftSmoothing: {
@@ -817,7 +817,7 @@ export default function DappledLight() {
             const time = (performance.now() - startTime) / 1000;
             const deltaTime = time - scrollStateRef.current.lastRenderTime;
             scrollStateRef.current.lastRenderTime = time;
-            
+
             const uniforms = uniformLocationsRef.current;
             const c = controlsRef.current;
             const state = scrollStateRef.current;
@@ -826,16 +826,16 @@ export default function DappledLight() {
             // ==============================================================
             // SCROLL RESPONSE: PARALLAX DRIFT ONLY
             // ==============================================================
-            
+
             // Voronoi time always accumulates at base rate
             acc.voronoiTime += deltaTime * c.voronoiTimeSpeed;
-            
+
             // Parallax drift: smoothed toward scroll position
             if (scrollResponseEnabled) {
                 const targetDrift = window.scrollY * scrollDriftAmount;
                 acc.driftY += (targetDrift - acc.driftY) * scrollDriftSmoothing;
             }
-            
+
             // Use base values (no scroll modulation)
             const windSpeed = c.windSpeed;
             const spotSize = c.spotSize;
@@ -845,33 +845,33 @@ export default function DappledLight() {
             // ==============================================================
             gl.uniform2f(uniforms.resolution, canvas.width, canvas.height);
             gl.uniform1f(uniforms.time, time);
-            
+
             // Pattern
             gl.uniform1f(uniforms.scale1, c.scale1);
             gl.uniform1f(uniforms.scale2, c.scale2);
             gl.uniform1f(uniforms.layerWeight1, c.layerWeight1);
             gl.uniform1f(uniforms.layerWeight2, c.layerWeight2);
-            
+
             // Animation
             gl.uniform1f(uniforms.windSpeed, windSpeed);
             gl.uniform1f(uniforms.swayAmount, c.swayAmount);
-            
+
             // Voronoi
             gl.uniform1f(uniforms.voronoiTime, acc.voronoiTime);
             gl.uniform1f(uniforms.voronoiSizeVariation, c.voronoiSizeVariation);
             gl.uniform1f(uniforms.debugVoronoi, c.debugVoronoi ? 1.0 : 0.0);
-            
+
             // Colors
             gl.uniform3f(uniforms.warmTint, c.warmTint.r / 255, c.warmTint.g / 255, c.warmTint.b / 255);
             gl.uniform3f(uniforms.shadowColor, c.shadowColor.r / 255, c.shadowColor.g / 255, c.shadowColor.b / 255);
             gl.uniform1f(uniforms.tintStrength, c.tintStrength);
             gl.uniform1f(uniforms.blendIntensity, c.blendIntensity);
-            
+
             // Intensity
             gl.uniform1f(uniforms.spotPower, c.spotPower);
             gl.uniform1f(uniforms.spotSize, spotSize);
             gl.uniform1f(uniforms.intensityPower, c.intensityPower);
-            
+
             // Texture
             gl.uniform1f(uniforms.variationAmount, c.variationAmount);
             gl.uniform1f(uniforms.textureAmount, c.textureAmount);
