@@ -34,7 +34,7 @@ const fragmentShaderSource = `
   uniform float u_swayAmount;
   
   // Voronoi controls
-  uniform float u_voronoiTimeSpeed;
+  uniform float u_voronoiTime;  // Accumulated time for shimmer (variable rate, no reversal)
   uniform float u_voronoiSizeVariation;
   uniform float u_debugVoronoi;
   
@@ -86,7 +86,8 @@ const fragmentShaderSource = `
         vec2 point = hash2(i + neighbor);
         
         // Very subtle time variation - minimal shimmer
-        point = 0.5 + 0.35 * sin(time * u_voronoiTimeSpeed + 6.2831 * point);
+        // Uses accumulated voronoi time (variable rate during scroll, no reversal)
+        point = 0.5 + 0.35 * sin(u_voronoiTime + 6.2831 * point);
         
         vec2 diff = neighbor + point - f;
         float dist = length(diff);
@@ -328,25 +329,12 @@ const DEFAULTS = {
     textureAmount: 0.015,
     textureScale: 40.0,
 
-    // Scroll Response
+    // Scroll Response (parallax drift only)
     scrollResponseEnabled: true,
-    scrollMaxVelocity: 3000, // px/sec - velocity that maps to activity = 1.0
-    scrollRiseRate: 0.15, // How fast activity rises (0-1, higher = faster)
-    scrollDecayRate: 0.03, // How fast activity decays (0-1, higher = faster)
-    // NOTE: sway amplitude is NOT velocity-modulated (causes "undo" effect)
-    // Scroll response for sway comes from persistent offset accumulation instead
-    scrollWindMin: 0.3, // Wind speed at rest
-    scrollWindMax: 1.2, // Wind speed when scrolling fast
-    scrollSpotSizeMin: 1.0, // Spot size at rest
-    scrollSpotSizeMax: 1.15, // Spot size when scrolling fast (bloom effect)
-    scrollVoronoiSpeedMin: 0.05, // Voronoi time speed at rest
-    scrollVoronoiSpeedMax: 0.15, // Voronoi time speed when scrolling fast
-
-    // Scroll Drift (Y-axis parallax)
-    scrollDriftAmount: 0.0003, // How much scroll position affects UV offset
-    scrollDriftSmoothing: 0.08, // How fast drift catches up (0-1, lower = more lag)
-    scrollDriftLayer1: 0.6, // Layer 1 parallax multiplier (high branches, less movement)
-    scrollDriftLayer2: 1.0, // Layer 2 parallax multiplier (low branches, more movement)
+    scrollDriftAmount: 0.0003,  // UV offset per scroll pixel
+    scrollDriftSmoothing: 0.08, // Lag factor (lower = more lag)
+    scrollDriftLayer1: 0.6,     // Layer 1 parallax (high branches)
+    scrollDriftLayer2: 1.0,     // Layer 2 parallax (low branches)
 
     // Document
     backgroundColor: "#eeeeee",
@@ -378,19 +366,17 @@ export default function DappledLight() {
     const animationRef = useRef<number>(0);
     const uniformLocationsRef = useRef<Record<string, WebGLUniformLocation | null>>({});
 
-    // Scroll velocity tracking
+    // ========================================================================
+    // SCROLL STATE
+    // ========================================================================
     const scrollStateRef = useRef({
-        lastScrollY: 0,
-        lastTime: 0,
-        velocity: 0,
-        activity: 0, // 0 = still, 1 = fast scroll
-        smoothedScrollY: 0, // Lagged scroll position for drift effect
-        swayOffsetX: 0, // Persistent sway offset (accumulates, doesn't revert)
-        swayOffsetY: 0,
+        accumulators: {
+            voronoiTime: 0,    // Voronoi shimmer phase
+            driftY: 0,         // Parallax drift (smoothed toward scroll position)
+        },
+        lastRenderTime: 0,
     });
 
-    // Debug state for displaying activity
-    const [debugActivity, setDebugActivity] = useState(0);
 
     // Store current control values in refs so render loop can access them
     // Initialized with DEFAULTS, then kept in sync with Leva controls via useEffect
@@ -587,15 +573,6 @@ export default function DappledLight() {
     const [
         {
             scrollResponseEnabled,
-            scrollMaxVelocity,
-            scrollRiseRate,
-            scrollDecayRate,
-            scrollWindMin,
-            scrollWindMax,
-            scrollSpotSizeMin,
-            scrollSpotSizeMax,
-            scrollVoronoiSpeedMin,
-            scrollVoronoiSpeedMax,
             scrollDriftAmount,
             scrollDriftSmoothing,
             scrollDriftLayer1,
@@ -605,69 +582,6 @@ export default function DappledLight() {
         scrollResponseEnabled: {
             value: DEFAULTS.scrollResponseEnabled,
             label: "Enabled",
-        },
-        scrollMaxVelocity: {
-            value: DEFAULTS.scrollMaxVelocity,
-            min: 500,
-            max: 5000,
-            step: 100,
-            label: "Max Velocity (px/s)",
-        },
-        scrollRiseRate: {
-            value: DEFAULTS.scrollRiseRate,
-            min: 0.05,
-            max: 0.5,
-            step: 0.01,
-            label: "Rise Rate",
-        },
-        scrollDecayRate: {
-            value: DEFAULTS.scrollDecayRate,
-            min: 0.01,
-            max: 0.1,
-            step: 0.005,
-            label: "Decay Rate",
-        },
-        scrollWindMin: {
-            value: DEFAULTS.scrollWindMin,
-            min: 0,
-            max: 2,
-            step: 0.1,
-            label: "Wind Min (Rest)",
-        },
-        scrollWindMax: {
-            value: DEFAULTS.scrollWindMax,
-            min: 0,
-            max: 4,
-            step: 0.1,
-            label: "Wind Max (Motion)",
-        },
-        scrollSpotSizeMin: {
-            value: DEFAULTS.scrollSpotSizeMin,
-            min: 0.5,
-            max: 1.5,
-            step: 0.05,
-            label: "Spot Size Min (Rest)",
-        },
-        scrollSpotSizeMax: {
-            value: DEFAULTS.scrollSpotSizeMax,
-            min: 0.5,
-            max: 2,
-            step: 0.05,
-            label: "Spot Size Max (Motion)",
-        },
-        scrollVoronoiSpeedMin: {
-            value: DEFAULTS.scrollVoronoiSpeedMin,
-            min: 0,
-            max: 0.5,
-            step: 0.01,
-            label: "Voronoi Speed Min (Rest)",
-        },
-        scrollVoronoiSpeedMax: {
-            value: DEFAULTS.scrollVoronoiSpeedMax,
-            min: 0,
-            max: 1,
-            step: 0.01,
-            label: "Voronoi Speed Max (Motion)",
         },
         scrollDriftAmount: {
             value: DEFAULTS.scrollDriftAmount,
@@ -785,60 +699,7 @@ export default function DappledLight() {
         return () => mediaQuery.removeEventListener('change', handler);
     }, []);
 
-    // Scroll velocity tracking
-    useEffect(() => {
-        if (!scrollResponseEnabled) {
-            scrollStateRef.current.activity = 0;
-            return;
-        }
-
-        const state = scrollStateRef.current;
-        state.lastScrollY = window.scrollY;
-        state.lastTime = performance.now();
-
-        const handleScroll = () => {
-            const now = performance.now();
-            const dt = (now - state.lastTime) / 1000; // seconds
-            const dy = Math.abs(window.scrollY - state.lastScrollY);
-
-            if (dt > 0 && dt < 0.1) {
-                // Calculate raw velocity (px/sec), clamped
-                const rawVelocity = Math.min(dy / dt, scrollMaxVelocity);
-
-                // Normalize to activity level (0-1)
-                const targetActivity = rawVelocity / scrollMaxVelocity;
-
-                // Smooth with asymmetric rates: fast rise, slow decay
-                const smoothing = targetActivity > state.activity ? scrollRiseRate : scrollDecayRate;
-                state.activity += (targetActivity - state.activity) * smoothing;
-
-                state.velocity = rawVelocity;
-
-                // Accumulate persistent sway offset based on scroll
-                // Creates lateral drift that doesn't revert when stopping
-                const scrollDelta = window.scrollY - state.lastScrollY;
-                const swayPush = scrollDelta * 0.0001; // Small factor for UV space
-
-                // Add some X variation based on scroll (organic lateral movement)
-                // Use time to create slight randomness in direction
-                const timeNoise = Math.sin(performance.now() * 0.001) * 0.5;
-                state.swayOffsetX += swayPush * (0.3 + timeNoise * 0.2);
-                state.swayOffsetY += swayPush * 0.1; // Slight Y component too
-            }
-
-            state.lastScrollY = window.scrollY;
-            state.lastTime = now;
-        };
-
-        // Also decay activity when not scrolling (in animation loop)
-        // This happens naturally as activity decays toward 0
-
-        window.addEventListener('scroll', handleScroll, { passive: true });
-
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, [scrollResponseEnabled, scrollMaxVelocity, scrollRiseRate, scrollDecayRate]);
+    // Scroll handler removed - drift uses window.scrollY directly in render loop
 
     // Update CSS variable only if customized, otherwise let CSS handle dark mode
     const isCustomBg = backgroundColor !== DEFAULTS.backgroundColor && backgroundColor !== DEFAULTS.backgroundColorDark;
@@ -905,7 +766,7 @@ export default function DappledLight() {
             layerWeight2: gl.getUniformLocation(program, "u_layerWeight2"),
             windSpeed: gl.getUniformLocation(program, "u_windSpeed"),
             swayAmount: gl.getUniformLocation(program, "u_swayAmount"),
-            voronoiTimeSpeed: gl.getUniformLocation(program, "u_voronoiTimeSpeed"),
+            voronoiTime: gl.getUniformLocation(program, "u_voronoiTime"),
             voronoiSizeVariation: gl.getUniformLocation(program, "u_voronoiSizeVariation"),
             debugVoronoi: gl.getUniformLocation(program, "u_debugVoronoi"),
             warmTint: gl.getUniformLocation(program, "u_warmTint"),
@@ -948,78 +809,81 @@ export default function DappledLight() {
         // Animation loop
         const startTime = performance.now();
         let isRunning = true;
-
-        // Lerp helper
         const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
         const render = () => {
             if (!isRunning) return;
 
             const time = (performance.now() - startTime) / 1000;
+            const deltaTime = time - scrollStateRef.current.lastRenderTime;
+            scrollStateRef.current.lastRenderTime = time;
+            
             const uniforms = uniformLocationsRef.current;
             const c = controlsRef.current;
-            const scrollState = scrollStateRef.current;
+            const state = scrollStateRef.current;
+            const acc = state.accumulators;
 
-            // Decay activity when not scrolling (gentle exponential decay)
+            // ==============================================================
+            // SCROLL RESPONSE: PARALLAX DRIFT ONLY
+            // ==============================================================
+            
+            // Voronoi time always accumulates at base rate
+            acc.voronoiTime += deltaTime * c.voronoiTimeSpeed;
+            
+            // Parallax drift: smoothed toward scroll position
             if (scrollResponseEnabled) {
-                scrollState.activity *= 0.97;
-
-                // Smooth scroll position toward actual scroll (creates lag/drift)
-                const targetScrollY = window.scrollY;
-                scrollState.smoothedScrollY += (targetScrollY - scrollState.smoothedScrollY) * scrollDriftSmoothing;
+                const targetDrift = window.scrollY * scrollDriftAmount;
+                acc.driftY += (targetDrift - acc.driftY) * scrollDriftSmoothing;
             }
+            
+            // Use base values (no scroll modulation)
+            const windSpeed = c.windSpeed;
+            const spotSize = c.spotSize;
 
-            // Calculate dynamic values based on scroll activity
-            const activity = scrollResponseEnabled ? scrollState.activity : 0;
-            // NOTE: swayAmount is NOT velocity-modulated - changing amplitude causes "undo" effect
-            // Instead, scroll response comes from persistent offset accumulation
-            const dynamicWindSpeed = lerp(scrollWindMin, scrollWindMax, activity);
-            const dynamicSpotSize = lerp(scrollSpotSizeMin, scrollSpotSizeMax, activity);
-            const dynamicVoronoiSpeed = lerp(scrollVoronoiSpeedMin, scrollVoronoiSpeedMax, activity);
-
-            // Calculate scroll drift (UV offset from smoothed scroll position)
-            const scrollDrift = scrollResponseEnabled ? scrollState.smoothedScrollY * scrollDriftAmount : 0;
-
-            // Update debug display (throttled to ~30fps for performance)
-            if (isDev && Math.floor(time * 30) !== Math.floor((time - 1/60) * 30)) {
-                setDebugActivity(activity);
-            }
-
-            // Update uniforms
+            // ==============================================================
+            // UPDATE UNIFORMS
+            // ==============================================================
             gl.uniform2f(uniforms.resolution, canvas.width, canvas.height);
             gl.uniform1f(uniforms.time, time);
+            
+            // Pattern
             gl.uniform1f(uniforms.scale1, c.scale1);
             gl.uniform1f(uniforms.scale2, c.scale2);
             gl.uniform1f(uniforms.layerWeight1, c.layerWeight1);
             gl.uniform1f(uniforms.layerWeight2, c.layerWeight2);
-            gl.uniform1f(uniforms.windSpeed, scrollResponseEnabled ? dynamicWindSpeed : c.windSpeed);
-            // Sway amount stays constant - no velocity modulation (causes "undo" effect)
+            
+            // Animation
+            gl.uniform1f(uniforms.windSpeed, windSpeed);
             gl.uniform1f(uniforms.swayAmount, c.swayAmount);
-            gl.uniform1f(uniforms.voronoiTimeSpeed, scrollResponseEnabled ? dynamicVoronoiSpeed : c.voronoiTimeSpeed);
+            
+            // Voronoi
+            gl.uniform1f(uniforms.voronoiTime, acc.voronoiTime);
             gl.uniform1f(uniforms.voronoiSizeVariation, c.voronoiSizeVariation);
             gl.uniform1f(uniforms.debugVoronoi, c.debugVoronoi ? 1.0 : 0.0);
-            // Normalize RGB values from Leva (0-255) to shader range (0-1)
+            
+            // Colors
             gl.uniform3f(uniforms.warmTint, c.warmTint.r / 255, c.warmTint.g / 255, c.warmTint.b / 255);
             gl.uniform3f(uniforms.shadowColor, c.shadowColor.r / 255, c.shadowColor.g / 255, c.shadowColor.b / 255);
             gl.uniform1f(uniforms.tintStrength, c.tintStrength);
             gl.uniform1f(uniforms.blendIntensity, c.blendIntensity);
+            
+            // Intensity
             gl.uniform1f(uniforms.spotPower, c.spotPower);
-            gl.uniform1f(uniforms.spotSize, scrollResponseEnabled ? dynamicSpotSize : c.spotSize);
+            gl.uniform1f(uniforms.spotSize, spotSize);
             gl.uniform1f(uniforms.intensityPower, c.intensityPower);
+            
+            // Texture
             gl.uniform1f(uniforms.variationAmount, c.variationAmount);
             gl.uniform1f(uniforms.textureAmount, c.textureAmount);
             gl.uniform1f(uniforms.textureScale, c.textureScale);
 
-            // Scroll drift uniforms
-            gl.uniform1f(uniforms.scrollDrift, scrollDrift);
+            // Scroll drift (parallax only)
+            gl.uniform1f(uniforms.scrollDrift, acc.driftY);
             gl.uniform1f(uniforms.scrollDriftLayer1, scrollDriftLayer1);
             gl.uniform1f(uniforms.scrollDriftLayer2, scrollDriftLayer2);
-
-            // Persistent sway offset (accumulated from scroll, doesn't revert)
-            gl.uniform2f(uniforms.swayOffset, scrollState.swayOffsetX, scrollState.swayOffsetY);
+            gl.uniform2f(uniforms.swayOffset, 0, 0); // No scroll-based sway
 
             gl.drawArrays(gl.TRIANGLES, 0, 6);
-
             animationRef.current = requestAnimationFrame(render);
         };
 
@@ -1046,12 +910,6 @@ export default function DappledLight() {
         isDarkMode,
         disabled,
         scrollResponseEnabled,
-        scrollWindMin,
-        scrollWindMax,
-        scrollSpotSizeMin,
-        scrollSpotSizeMax,
-        scrollVoronoiSpeedMin,
-        scrollVoronoiSpeedMax,
         scrollDriftAmount,
         scrollDriftSmoothing,
         scrollDriftLayer1,
@@ -1061,44 +919,6 @@ export default function DappledLight() {
     return (
         <>
             <Leva hidden={!isDev} collapsed={true} theme={levaTheme} />
-            
-            {/* Debug: Scroll Activity Indicator */}
-            {isDev && scrollResponseEnabled && (
-                <div
-                    style={{
-                        position: "fixed",
-                        bottom: "20px",
-                        right: "20px",
-                        zIndex: 100,
-                        background: "rgba(0, 0, 0, 0.8)",
-                        color: "white",
-                        padding: "12px 16px",
-                        borderRadius: "8px",
-                        fontFamily: "monospace",
-                        fontSize: "12px",
-                        pointerEvents: "none",
-                        minWidth: "200px",
-                    }}
-                >
-                    <div style={{ marginBottom: "8px" }}>
-                        Activity: {debugActivity.toFixed(3)}
-                    </div>
-                    <div style={{ 
-                        width: "100%", 
-                        height: "8px", 
-                        background: "rgba(255,255,255,0.2)",
-                        borderRadius: "4px",
-                        overflow: "hidden",
-                    }}>
-                        <div style={{
-                            width: `${debugActivity * 100}%`,
-                            height: "100%",
-                            background: `hsl(${120 * debugActivity}, 100%, 50%)`,
-                            transition: "width 0.05s linear",
-                        }} />
-                    </div>
-                </div>
-            )}
 
             <div
                 style={{
