@@ -780,32 +780,34 @@ export default function DappledLight() {
     }, [isDarkMode, disabled]);
 
     return (
-        <div
-            style={{
-                position: "fixed",
-                top: "1svh",
-                width: "100vw",
-                zIndex: 50,
-                pointerEvents: "none",
-
-                mixBlendMode: blendMode as React.CSSProperties["mixBlendMode"],
-                // Fade out at the top and bottom so Safari's cutoff looks intentional
-                maskImage: "linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%)",
-                WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%)",
-            }}
-        >
+        <>
             <Leva hidden={!isDev} collapsed={true} theme={levaTheme} />
-            {!isDarkMode && !disabled && (
-                <canvas
-                    ref={canvasRef}
-                    style={{
-                        width: "100vw",
-                        height: "98svh",
-                        // border: "16px solid blue",
-                        opacity,
-                    }}
-                />
-            )}
-        </div>
+            <div
+                style={{
+                    position: "fixed",
+                    top: "1svh",
+                    width: "100vw",
+                    zIndex: 50,
+                    pointerEvents: "none",
+
+                    mixBlendMode: blendMode as React.CSSProperties["mixBlendMode"],
+                    // Fade out at the top and bottom so Safari's cutoff looks intentional
+                    maskImage: "linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%)",
+                    WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%)",
+                }}
+            >
+                {!isDarkMode && !disabled && (
+                    <canvas
+                        ref={canvasRef}
+                        style={{
+                            width: "100vw",
+                            height: "98svh",
+                            // border: "16px solid blue",
+                            opacity,
+                        }}
+                    />
+                )}
+            </div>
+        </>
     );
 }
