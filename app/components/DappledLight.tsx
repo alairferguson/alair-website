@@ -692,16 +692,13 @@ export default function DappledLight() {
         gl.enableVertexAttribArray(positionLocation);
         gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 
-        // Handle resize - use lower DPR for performance
+        // Handle resize - read CSS-computed size, only set internal buffer
         const resize = () => {
             const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-            const width = window.innerWidth;
-            const height = window.innerHeight;
+            const rect = canvas.getBoundingClientRect();
 
-            canvas.width = Math.floor(width * dpr);
-            canvas.height = Math.floor(height * dpr);
-            canvas.style.width = width + "px";
-            canvas.style.height = height + "px";
+            canvas.width = Math.floor(rect.width * dpr);
+            canvas.height = Math.floor(rect.height * dpr);
 
             gl.viewport(0, 0, canvas.width, canvas.height);
         };
@@ -770,19 +767,31 @@ export default function DappledLight() {
     }, [isDarkMode, disabled]);
 
     return (
-        <>
-            <Leva hidden={!isDev} collapsed={false} theme={levaTheme} />
+        <div
+            style={{
+                position: "fixed",
+                top: "1svh",
+                width: "100vw",
+                zIndex: 50,
+
+                // Fade out at the top and bottom so Safari's cutoff looks intentional
+                maskImage: "linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%)",
+                WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%)",
+            }}
+        >
+            <Leva hidden={true} collapsed={false} theme={levaTheme} />
             {!isDarkMode && !disabled && (
                 <canvas
                     ref={canvasRef}
-                    className="fixed inset-0 w-full h-full z-50 pointer-events-none"
                     style={{
-                        display: "block",
+                        width: "100vw",
+                        height: "98svh",
+                        // border: "16px solid blue",
                         mixBlendMode: blendMode as React.CSSProperties["mixBlendMode"],
                         opacity,
                     }}
                 />
             )}
-        </>
+        </div>
     );
 }

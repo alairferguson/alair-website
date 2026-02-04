@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { EB_Garamond } from "next/font/google";
 import "./globals.css";
 import DappledLight from "./components/DappledLight";
+import FullScreenCover from "./components/FullScreenCover";
 
 const gimletDisplay = localFont({
     src: "../public/fonts/GimletDisplayCompressed-Italic-Testing.woff2",
@@ -28,6 +29,7 @@ export default function RootLayout({
     return (
         <html lang="en" className={`${gimletDisplay.variable} ${ebGaramond.variable}`}>
             <body>
+                {/* <FullScreenCover /> */}
                 <DappledLight />
                 {children}
             </body>
