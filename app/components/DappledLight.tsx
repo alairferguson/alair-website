@@ -270,6 +270,7 @@ const BLEND_MODES = {
 // Default values - single source of truth for all control defaults
 const DEFAULTS = {
     // Display
+    disabled: false,
     blendMode: "hard-light" as const,
     opacity: 0.1,
 
@@ -362,7 +363,11 @@ export default function DappledLight() {
     const [isDarkMode, setIsDarkMode] = useState(false);
 
     // Leva controls - organized by category using folders
-    const [{ blendMode, opacity }, setDisplay] = useControls("Display", () => ({
+    const [{ disabled, blendMode, opacity }, setDisplay] = useControls("Display", () => ({
+        disabled: {
+            value: DEFAULTS.disabled,
+            label: "Disabled",
+        },
         blendMode: {
             value: DEFAULTS.blendMode,
             options: BLEND_MODES,
@@ -614,7 +619,7 @@ export default function DappledLight() {
 
     useEffect(() => {
         const canvas = canvasRef.current;
-        if (!canvas || isDarkMode) return;
+        if (!canvas || isDarkMode || disabled) return;
 
         const gl = canvas.getContext("webgl", {
             antialias: false,
@@ -762,12 +767,12 @@ export default function DappledLight() {
             programRef.current = null;
             uniformLocationsRef.current = {};
         };
-    }, [isDarkMode]);
+    }, [isDarkMode, disabled]);
 
     return (
         <>
             <Leva hidden={!isDev} collapsed={false} theme={levaTheme} />
-            {!isDarkMode && (
+            {!isDarkMode && !disabled && (
                 <canvas
                     ref={canvasRef}
                     className="fixed inset-0 w-full h-full z-50 pointer-events-none"
