@@ -6,6 +6,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useControls, Leva, button } from "leva";
 
+// ============================================================================
+// SHADER CODE
+// ============================================================================
+
 const vertexShaderSource = `
   attribute vec2 a_position;
   void main() {
@@ -18,6 +22,32 @@ const fragmentShaderSource = `
   
   uniform vec2 u_resolution;
   uniform float u_time;
+  
+  // Pattern controls
+  uniform float u_scale1;
+  uniform float u_scale2;
+  uniform float u_scale3;
+  uniform float u_layerWeight1;
+  uniform float u_layerWeight2;
+  uniform float u_layerWeight3;
+  
+  // Wind/sway controls
+  uniform float u_windSpeed;
+  uniform float u_swayAmount;
+  
+  // Color controls
+  uniform vec3 u_warmTint;
+  uniform float u_tintStrength;
+  uniform float u_blendIntensity;
+  
+  // Texture controls
+  uniform float u_variationAmount;
+  uniform float u_textureAmount;
+  uniform float u_textureScale;
+  
+  // Intensity controls
+  uniform float u_spotPower;
+  uniform float u_intensityPower;
   
   // Hash functions
   vec2 hash2(vec2 p) {
@@ -99,71 +129,56 @@ const fragmentShaderSource = `
     
     float time = u_time;
     
-    // For soft-light blend mode:
-    // 0.5 gray = no change
-    // > 0.5 = brightens content below
-    // < 0.5 = darkens content below
-    
-    // Create dappled light using layered voronoi
-    float scale1 = 4.0;
-    float scale2 = 6.0;
-    float scale3 = 8.0;
-    
-    // Wind parameters
-    float windSpeed = 0.6;  // How fast the wind blows
-    float swayAmount = 0.25; // How far the light pattern moves
-    
     // Layer 1 - large spots (slow sway, like high branches)
-    vec2 sway1 = windSway(time, windSpeed * 0.6, swayAmount * 1.2, 0.0);
-    float v1 = voronoi(uvAspect * scale1 + sway1, time);
+    vec2 sway1 = windSway(time, u_windSpeed * 0.6, u_swayAmount * 1.2, 0.0);
+    float v1 = voronoi(uvAspect * u_scale1 + sway1, time);
     float spots1 = smoothstep(0.0, 0.5, v1);
     spots1 = 1.0 - spots1;
-    spots1 = pow(spots1, 1.3);
+    spots1 = pow(spots1, u_spotPower);
     
     // Layer 2 - medium spots (medium sway, middle canopy)
-    vec2 sway2 = windSway(time, windSpeed * 0.85, swayAmount * 0.9, 1.5);
-    float v2 = voronoi(uvAspect * scale2 + sway2 + 10.0, time);
+    vec2 sway2 = windSway(time, u_windSpeed * 0.85, u_swayAmount * 0.9, 1.5);
+    float v2 = voronoi(uvAspect * u_scale2 + sway2 + 10.0, time);
     float spots2 = smoothstep(0.0, 0.45, v2);
     spots2 = 1.0 - spots2;
-    spots2 = pow(spots2, 1.5);
+    spots2 = pow(spots2, u_spotPower * 1.15);
     
     // Layer 3 - small spots (faster sway, lower leaves)
-    vec2 sway3 = windSway(time, windSpeed * 1.1, swayAmount * 0.7, 3.0);
-    float v3 = voronoi(uvAspect * scale3 + sway3 + 20.0, time);
+    vec2 sway3 = windSway(time, u_windSpeed * 1.1, u_swayAmount * 0.7, 3.0);
+    float v3 = voronoi(uvAspect * u_scale3 + sway3 + 20.0, time);
     float spots3 = smoothstep(0.0, 0.4, v3);
     spots3 = 1.0 - spots3;
-    spots3 = pow(spots3, 1.7);
+    spots3 = pow(spots3, u_spotPower * 1.3);
     
-    // Combine layers with more weight on bright spots
-    float light = spots1 * 0.6 + spots2 * 0.3 + spots3 * 0.2;
+    // Combine layers with configurable weights
+    float totalWeight = u_layerWeight1 + u_layerWeight2 + u_layerWeight3;
+    float light = (spots1 * u_layerWeight1 + spots2 * u_layerWeight2 + spots3 * u_layerWeight3) / max(totalWeight, 0.001);
     
-    // Add organic variation (static, just for texture - sway handles motion)
+    // Add organic variation
     float variation = fbm(uvAspect * 3.0);
-    light = light * 0.9 + light * variation * 0.15;
+    light = light * (1.0 - u_variationAmount * 0.5) + light * variation * u_variationAmount;
     
-    // Boost intensity significantly
-    light = pow(light, 0.7); // Make spots brighter
-    
-    // Clamp
+    // Boost intensity
+    light = pow(light, u_intensityPower);
     light = clamp(light, 0.0, 1.0);
     
-    // Map to screen blend mode - MUCH more intense:
-    // Shadow areas (light=0) -> 0.0 (no change)
-    // Light spots (light=1) -> 0.7+ (very strong brightening)
-    // For screen: black (0.0) = no change, white (1.0) = maximum brightening
-    float blend = light * 0.75;
+    // Map to blend mode intensity
+    float blend = light * u_blendIntensity;
     
-    // Add intense warm tint to the light spots
-    vec3 warmTint = vec3(1.0, 0.88, 0.72); // Strong warm sunlight color
-    vec3 color = vec3(blend) * mix(vec3(1.0), warmTint, light * 0.85);
+    // Apply warm tint
+    vec3 color = vec3(blend) * mix(vec3(1.0), u_warmTint, light * u_tintStrength);
     
-    // Subtle texture
-    float texture = noise(uvAspect * 40.0) * 0.015;
+    // Add texture
+    float texture = noise(uvAspect * u_textureScale) * u_textureAmount;
     color += texture;
     
     gl_FragColor = vec4(color, 1.0);
   }
 `;
+
+// ============================================================================
+// WEBGL UTILITIES
+// ============================================================================
 
 function createShader(gl: WebGLRenderingContext, type: number, source: string): WebGLShader | null {
     const shader = gl.createShader(type);
@@ -202,6 +217,10 @@ function createProgram(
     return program;
 }
 
+// ============================================================================
+// CONSTANTS
+// ============================================================================
+
 const BLEND_MODES = {
     normal: "normal",
     multiply: "multiply",
@@ -219,17 +238,54 @@ const BLEND_MODES = {
 
 const isDev = process.env.NODE_ENV === "development";
 
+// Custom Leva theme with larger width and font size for better readability
+const levaTheme = {
+    sizes: {
+        rootWidth: "400px", // Increased from default 280px
+        colorPickerWidth: "200px", // Increased from default 160px
+        colorPickerHeight: "200px", // Increased from default 100px
+    },
+    fontSizes: {
+        root: "10px", // Increased from default 11px
+    },
+};
+
+// ============================================================================
+// COMPONENT
+// ============================================================================
+
 export default function DappledLight() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const glRef = useRef<WebGLRenderingContext | null>(null);
     const programRef = useRef<WebGLProgram | null>(null);
     const animationRef = useRef<number>(0);
+    const uniformLocationsRef = useRef<Record<string, WebGLUniformLocation | null>>({});
+
+    // Store current control values in refs so render loop can access them
+    const controlsRef = useRef({
+        scale1: 4.0,
+        scale2: 6.0,
+        scale3: 8.0,
+        layerWeight1: 0.6,
+        layerWeight2: 0.3,
+        layerWeight3: 0.2,
+        windSpeed: 0.6,
+        swayAmount: 0.25,
+        warmTint: { r: 1.0, g: 0.88, b: 0.72 },
+        tintStrength: 0.85,
+        blendIntensity: 0.75,
+        spotPower: 1.3,
+        intensityPower: 0.7,
+        variationAmount: 0.15,
+        textureAmount: 0.015,
+        textureScale: 40.0,
+    });
 
     // Detect dark mode
     const [isDarkMode, setIsDarkMode] = useState(false);
 
-    // Call all hooks unconditionally (Rules of Hooks)
-    const [{ blendMode, opacity }, set] = useControls("Dappled Light", () => ({
+    // Leva controls - organized by category using folders
+    const [{ blendMode, opacity }, setDisplay] = useControls("Display", () => ({
         blendMode: {
             value: "color-burn",
             options: BLEND_MODES,
@@ -239,16 +295,206 @@ export default function DappledLight() {
             value: 0.08,
             min: 0,
             max: 1,
-            step: 0.05,
+            step: 0.01,
             label: "Opacity",
         },
-        "Preset: Hard Light 0.14": button(() => {
-            set({ blendMode: "hard-light", opacity: 0.14 });
+    }));
+
+    const [{ scale1, scale2, scale3 }] = useControls("Pattern Size", () => ({
+        scale1: {
+            value: 2.0,
+            min: 1,
+            max: 20,
+            step: 0.5,
+            label: "Layer 1 Scale",
+        },
+        scale2: {
+            value: 4.0,
+            min: 1,
+            max: 20,
+            step: 0.5,
+            label: "Layer 2 Scale",
+        },
+        scale3: {
+            value: 8.0,
+            min: 1,
+            max: 20,
+            step: 0.5,
+            label: "Layer 3 Scale",
+        },
+    }));
+
+    const [{ layerWeight1, layerWeight2, layerWeight3 }] = useControls("Layer Weights", () => ({
+        layerWeight1: {
+            value: 0.6,
+            min: 0,
+            max: 2,
+            step: 0.1,
+            label: "Layer 1 Weight",
+        },
+        layerWeight2: {
+            value: 0.3,
+            min: 0,
+            max: 2,
+            step: 0.1,
+            label: "Layer 2 Weight",
+        },
+        layerWeight3: {
+            value: 0.2,
+            min: 0,
+            max: 2,
+            step: 0.1,
+            label: "Layer 3 Weight",
+        },
+    }));
+
+    const [{ windSpeed, swayAmount }] = useControls("Wind & Sway", () => ({
+        windSpeed: {
+            value: 1.0,
+            min: 0,
+            max: 4,
+            step: 0.1,
+            label: "Wind Speed",
+        },
+        swayAmount: {
+            value: 0.1,
+            min: 0,
+            max: 1,
+            step: 0.05,
+            label: "Sway Amount",
+        },
+    }));
+
+    const [{ warmTint, tintStrength, blendIntensity }, setColors] = useControls("Colors", () => ({
+        warmTint: {
+            value: { r: 1.0, g: 0.96, b: 0.84 }, // Hex #fff6d6
+            label: "Warm Tint",
+        },
+        tintStrength: {
+            value: 0.85,
+            min: 0,
+            max: 1,
+            step: 0.05,
+            label: "Tint Strength",
+        },
+        blendIntensity: {
+            value: 0.75,
+            min: 0,
+            max: 1,
+            step: 0.05,
+            label: "Blend Intensity",
+        },
+    }));
+
+    const [{ spotPower, intensityPower }] = useControls("Intensity", () => ({
+        spotPower: {
+            value: 1.3,
+            min: 0.5,
+            max: 3,
+            step: 0.1,
+            label: "Spot Power",
+        },
+        intensityPower: {
+            value: 0.7,
+            min: 0.1,
+            max: 2,
+            step: 0.1,
+            label: "Intensity Power",
+        },
+    }));
+
+    const [{ variationAmount, textureAmount, textureScale }] = useControls("Texture", () => ({
+        variationAmount: {
+            value: 0.15,
+            min: 0,
+            max: 1,
+            step: 0.05,
+            label: "Variation Amount",
+        },
+        textureAmount: {
+            value: 0.015,
+            min: 0,
+            max: 0.1,
+            step: 0.005,
+            label: "Texture Amount",
+        },
+        textureScale: {
+            value: 40.0,
+            min: 10,
+            max: 100,
+            step: 5,
+            label: "Texture Scale",
+        },
+    }));
+
+    const [{ backgroundColor }] = useControls("Document", () => ({
+        backgroundColor: {
+            value: "#eee",
+            label: "Background Color",
+        },
+    }));
+
+    useControls("Presets", () => ({
+        "Default": button(() => {
+            setDisplay({
+                blendMode: "color-burn",
+                opacity: 0.08,
+            });
+            setColors({
+                warmTint: { r: 1.0, g: 0.88, b: 0.72 },
+                tintStrength: 0.85,
+                blendIntensity: 0.75,
+            });
         }),
-        "Preset: Color Burn 0.10": button(() => {
-            set({ blendMode: "color-burn", opacity: 0.10 });
+        "Normal 1.0": button(() => {
+            setDisplay({ blendMode: "normal", opacity: 1.0 });
+        }),
+        "Hard Light 0.14": button(() => {
+            setDisplay({ blendMode: "hard-light", opacity: 0.14 });
+        }),
+        "Color Burn 0.08": button(() => {
+            setDisplay({ blendMode: "color-burn", opacity: 0.08 });
         }),
     }));
+
+    // Update controls ref when values change
+    useEffect(() => {
+        controlsRef.current = {
+            scale1,
+            scale2,
+            scale3,
+            layerWeight1,
+            layerWeight2,
+            layerWeight3,
+            windSpeed,
+            swayAmount,
+            warmTint,
+            tintStrength,
+            blendIntensity,
+            spotPower,
+            intensityPower,
+            variationAmount,
+            textureAmount,
+            textureScale,
+        };
+    }, [
+        scale1,
+        scale2,
+        scale3,
+        layerWeight1,
+        layerWeight2,
+        layerWeight3,
+        windSpeed,
+        swayAmount,
+        warmTint,
+        tintStrength,
+        blendIntensity,
+        spotPower,
+        intensityPower,
+        variationAmount,
+        textureAmount,
+        textureScale,
+    ]);
 
     useEffect(() => {
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -259,6 +505,11 @@ export default function DappledLight() {
 
         return () => mediaQuery.removeEventListener('change', handler);
     }, []);
+
+    // Update CSS variable when background color changes
+    useEffect(() => {
+        document.documentElement.style.setProperty('--background', backgroundColor);
+    }, [backgroundColor]);
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -303,8 +554,30 @@ export default function DappledLight() {
         );
 
         const positionLocation = gl.getAttribLocation(program, "a_position");
-        const resolutionLocation = gl.getUniformLocation(program, "u_resolution");
-        const timeLocation = gl.getUniformLocation(program, "u_time");
+
+        // Store uniform locations
+        const uniforms = {
+            resolution: gl.getUniformLocation(program, "u_resolution"),
+            time: gl.getUniformLocation(program, "u_time"),
+            scale1: gl.getUniformLocation(program, "u_scale1"),
+            scale2: gl.getUniformLocation(program, "u_scale2"),
+            scale3: gl.getUniformLocation(program, "u_scale3"),
+            layerWeight1: gl.getUniformLocation(program, "u_layerWeight1"),
+            layerWeight2: gl.getUniformLocation(program, "u_layerWeight2"),
+            layerWeight3: gl.getUniformLocation(program, "u_layerWeight3"),
+            windSpeed: gl.getUniformLocation(program, "u_windSpeed"),
+            swayAmount: gl.getUniformLocation(program, "u_swayAmount"),
+            warmTint: gl.getUniformLocation(program, "u_warmTint"),
+            tintStrength: gl.getUniformLocation(program, "u_tintStrength"),
+            blendIntensity: gl.getUniformLocation(program, "u_blendIntensity"),
+            spotPower: gl.getUniformLocation(program, "u_spotPower"),
+            intensityPower: gl.getUniformLocation(program, "u_intensityPower"),
+            variationAmount: gl.getUniformLocation(program, "u_variationAmount"),
+            textureAmount: gl.getUniformLocation(program, "u_textureAmount"),
+            textureScale: gl.getUniformLocation(program, "u_textureScale"),
+        };
+
+        uniformLocationsRef.current = uniforms;
 
         // Use program once and set up attributes (they don't change)
         gl.useProgram(program);
@@ -336,9 +609,29 @@ export default function DappledLight() {
             if (!isRunning) return;
 
             const time = (performance.now() - startTime) / 1000;
+            const uniforms = uniformLocationsRef.current;
+            const c = controlsRef.current;
 
-            gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
-            gl.uniform1f(timeLocation, time);
+            // Update uniforms
+            gl.uniform2f(uniforms.resolution, canvas.width, canvas.height);
+            gl.uniform1f(uniforms.time, time);
+            gl.uniform1f(uniforms.scale1, c.scale1);
+            gl.uniform1f(uniforms.scale2, c.scale2);
+            gl.uniform1f(uniforms.scale3, c.scale3);
+            gl.uniform1f(uniforms.layerWeight1, c.layerWeight1);
+            gl.uniform1f(uniforms.layerWeight2, c.layerWeight2);
+            gl.uniform1f(uniforms.layerWeight3, c.layerWeight3);
+            gl.uniform1f(uniforms.windSpeed, c.windSpeed);
+            gl.uniform1f(uniforms.swayAmount, c.swayAmount);
+            gl.uniform3f(uniforms.warmTint, c.warmTint.r, c.warmTint.g, c.warmTint.b);
+            gl.uniform1f(uniforms.tintStrength, c.tintStrength);
+            gl.uniform1f(uniforms.blendIntensity, c.blendIntensity);
+            gl.uniform1f(uniforms.spotPower, c.spotPower);
+            gl.uniform1f(uniforms.intensityPower, c.intensityPower);
+            gl.uniform1f(uniforms.variationAmount, c.variationAmount);
+            gl.uniform1f(uniforms.textureAmount, c.textureAmount);
+            gl.uniform1f(uniforms.textureScale, c.textureScale);
+
             gl.drawArrays(gl.TRIANGLES, 0, 6);
 
             animationRef.current = requestAnimationFrame(render);
@@ -361,12 +654,13 @@ export default function DappledLight() {
 
             glRef.current = null;
             programRef.current = null;
+            uniformLocationsRef.current = {};
         };
     }, [isDarkMode]);
 
     return (
         <>
-            <Leva hidden={!isDev} collapsed={false} />
+            <Leva hidden={!isDev} collapsed={false} theme={levaTheme} />
             {!isDarkMode && (
                 <canvas
                     ref={canvasRef}
