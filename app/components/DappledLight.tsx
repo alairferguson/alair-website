@@ -35,6 +35,10 @@ const fragmentShaderSource = `
   uniform float u_windSpeed;
   uniform float u_swayAmount;
   
+  // Voronoi controls
+  uniform float u_voronoiTimeSpeed;
+  uniform float u_debugVoronoi;
+  
   // Color controls
   uniform vec3 u_warmTint;
   uniform float u_tintStrength;
@@ -60,11 +64,12 @@ const fragmentShaderSource = `
   }
   
   // Voronoi - creates cellular pattern like light through leaves
-  float voronoi(vec2 uv, float time) {
+  float voronoi(vec2 uv, float time, out float secondMinDist) {
     vec2 i = floor(uv);
     vec2 f = fract(uv);
     
     float minDist = 1.0;
+    secondMinDist = 1.0;
     
     for (int y = -1; y <= 1; y++) {
       for (int x = -1; x <= 1; x++) {
@@ -72,11 +77,17 @@ const fragmentShaderSource = `
         vec2 point = hash2(i + neighbor);
         
         // Very subtle time variation - minimal shimmer
-        point = 0.5 + 0.35 * sin(time * 0.05 + 6.2831 * point);
+        point = 0.5 + 0.35 * sin(time * u_voronoiTimeSpeed + 6.2831 * point);
         
         vec2 diff = neighbor + point - f;
         float dist = length(diff);
-        minDist = min(minDist, dist);
+        
+        if (dist < minDist) {
+          secondMinDist = minDist;
+          minDist = dist;
+        } else if (dist < secondMinDist) {
+          secondMinDist = dist;
+        }
       }
     }
     
@@ -131,24 +142,50 @@ const fragmentShaderSource = `
     
     // Layer 1 - large spots (slow sway, like high branches)
     vec2 sway1 = windSway(time, u_windSpeed * 0.6, u_swayAmount * 1.2, 0.0);
-    float v1 = voronoi(uvAspect * u_scale1 + sway1, time);
+    float v1_second;
+    float v1 = voronoi(uvAspect * u_scale1 + sway1, time, v1_second);
     float spots1 = smoothstep(0.0, 0.5, v1);
     spots1 = 1.0 - spots1;
     spots1 = pow(spots1, u_spotPower);
     
     // Layer 2 - medium spots (medium sway, middle canopy)
     vec2 sway2 = windSway(time, u_windSpeed * 0.85, u_swayAmount * 0.9, 1.5);
-    float v2 = voronoi(uvAspect * u_scale2 + sway2 + 10.0, time);
+    float v2_second;
+    float v2 = voronoi(uvAspect * u_scale2 + sway2 + 10.0, time, v2_second);
     float spots2 = smoothstep(0.0, 0.45, v2);
     spots2 = 1.0 - spots2;
     spots2 = pow(spots2, u_spotPower * 1.15);
     
     // Layer 3 - small spots (faster sway, lower leaves)
     vec2 sway3 = windSway(time, u_windSpeed * 1.1, u_swayAmount * 0.7, 3.0);
-    float v3 = voronoi(uvAspect * u_scale3 + sway3 + 20.0, time);
+    float v3_second;
+    float v3 = voronoi(uvAspect * u_scale3 + sway3 + 20.0, time, v3_second);
     float spots3 = smoothstep(0.0, 0.4, v3);
     spots3 = 1.0 - spots3;
     spots3 = pow(spots3, u_spotPower * 1.3);
+    
+    // Debug mode - show cell boundaries
+    if (u_debugVoronoi > 0.5) {
+      // Show cell boundaries by highlighting the edge between cells
+      float edge1 = smoothstep(0.0, 0.05, v1_second - v1);
+      float edge2 = smoothstep(0.0, 0.05, v2_second - v2);
+      float edge3 = smoothstep(0.0, 0.05, v3_second - v3);
+      
+      // Normalize weights for visualization
+      float totalWeight = u_layerWeight1 + u_layerWeight2 + u_layerWeight3;
+      float w1 = u_layerWeight1 / max(totalWeight, 0.001);
+      float w2 = u_layerWeight2 / max(totalWeight, 0.001);
+      float w3 = u_layerWeight3 / max(totalWeight, 0.001);
+      
+      // Color code the layers with their respective weights
+      vec3 debugColor = vec3(0.0);
+      debugColor += vec3(1.0, 0.2, 0.2) * (1.0 - edge1) * w1;  // Red for layer 1
+      debugColor += vec3(0.2, 1.0, 0.2) * (1.0 - edge2) * w2;  // Green for layer 2
+      debugColor += vec3(0.2, 0.2, 1.0) * (1.0 - edge3) * w3;  // Blue for layer 3
+      
+      gl_FragColor = vec4(debugColor, 1.0);
+      return;
+    }
     
     // Combine layers with configurable weights
     float totalWeight = u_layerWeight1 + u_layerWeight2 + u_layerWeight3;
@@ -271,6 +308,8 @@ export default function DappledLight() {
         layerWeight3: 0.2,
         windSpeed: 0.6,
         swayAmount: 0.25,
+        voronoiTimeSpeed: 0.05,
+        debugVoronoi: false,
         warmTint: { r: 1.0, g: 0.88, b: 0.72 },
         tintStrength: 0.85,
         blendIntensity: 0.75,
@@ -348,7 +387,7 @@ export default function DappledLight() {
         },
     }));
 
-    const [{ windSpeed, swayAmount }] = useControls("Wind & Sway", () => ({
+    const [{ windSpeed, swayAmount }] = useControls("Animation", () => ({
         windSpeed: {
             value: 1.0,
             min: 0,
@@ -360,14 +399,28 @@ export default function DappledLight() {
             value: 0.1,
             min: 0,
             max: 1,
-            step: 0.05,
+            step: 0.01,
             label: "Sway Amount",
+        },
+    }));
+
+    const [{ voronoiTimeSpeed, debugVoronoi }] = useControls("Voronoi", () => ({
+        voronoiTimeSpeed: {
+            value: 0.1,
+            min: 0,
+            max: 2,
+            step: 0.01,
+            label: "Time Speed",
+        },
+        debugVoronoi: {
+            value: false,
+            label: "Debug Cells",
         },
     }));
 
     const [{ warmTint, tintStrength, blendIntensity }, setColors] = useControls("Colors", () => ({
         warmTint: {
-            value: { r: 1.0, g: 0.96, b: 0.84 }, // Hex #fff6d6
+            value: { r: 255, g: 246, b: 214 }, // Hex #fff6d6
             label: "Warm Tint",
         },
         tintStrength: {
@@ -468,6 +521,8 @@ export default function DappledLight() {
             layerWeight3,
             windSpeed,
             swayAmount,
+            voronoiTimeSpeed,
+            debugVoronoi,
             warmTint,
             tintStrength,
             blendIntensity,
@@ -486,6 +541,8 @@ export default function DappledLight() {
         layerWeight3,
         windSpeed,
         swayAmount,
+        voronoiTimeSpeed,
+        debugVoronoi,
         warmTint,
         tintStrength,
         blendIntensity,
@@ -567,6 +624,8 @@ export default function DappledLight() {
             layerWeight3: gl.getUniformLocation(program, "u_layerWeight3"),
             windSpeed: gl.getUniformLocation(program, "u_windSpeed"),
             swayAmount: gl.getUniformLocation(program, "u_swayAmount"),
+            voronoiTimeSpeed: gl.getUniformLocation(program, "u_voronoiTimeSpeed"),
+            debugVoronoi: gl.getUniformLocation(program, "u_debugVoronoi"),
             warmTint: gl.getUniformLocation(program, "u_warmTint"),
             tintStrength: gl.getUniformLocation(program, "u_tintStrength"),
             blendIntensity: gl.getUniformLocation(program, "u_blendIntensity"),
@@ -623,6 +682,8 @@ export default function DappledLight() {
             gl.uniform1f(uniforms.layerWeight3, c.layerWeight3);
             gl.uniform1f(uniforms.windSpeed, c.windSpeed);
             gl.uniform1f(uniforms.swayAmount, c.swayAmount);
+            gl.uniform1f(uniforms.voronoiTimeSpeed, c.voronoiTimeSpeed);
+            gl.uniform1f(uniforms.debugVoronoi, c.debugVoronoi ? 1.0 : 0.0);
             gl.uniform3f(uniforms.warmTint, c.warmTint.r, c.warmTint.g, c.warmTint.b);
             gl.uniform1f(uniforms.tintStrength, c.tintStrength);
             gl.uniform1f(uniforms.blendIntensity, c.blendIntensity);
