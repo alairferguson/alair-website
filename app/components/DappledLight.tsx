@@ -786,6 +786,7 @@ export default function DappledLight() {
                 top: "1svh",
                 width: "100vw",
                 zIndex: 50,
+                pointerEvents: "none",
 
                 mixBlendMode: blendMode as React.CSSProperties["mixBlendMode"],
                 // Fade out at the top and bottom so Safari's cutoff looks intentional
