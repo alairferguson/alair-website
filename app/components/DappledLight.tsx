@@ -779,7 +779,7 @@ export default function DappledLight() {
                 WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%)",
             }}
         >
-            <Leva hidden={true} collapsed={false} theme={levaTheme} />
+            <Leva hidden={!isDev} collapsed={false} theme={levaTheme} />
             {!isDarkMode && !disabled && (
                 <canvas
                     ref={canvasRef}
