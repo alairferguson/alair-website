@@ -39,9 +39,9 @@ export default function Paper({
                     <Image
                         src="/home-stamp.png"
                         alt="Home Stamp"
-                        width={80}
-                        height={80}
-                        className="select-none w-16 h-16 sm:w-20 sm:h-20 object-contain"
+                        width={256}
+                        height={256}
+                        className="select-none w-16 h-16 object-contain"
                     />
                 </button>
             )}
