@@ -14,7 +14,7 @@ export default function Paper({
     landscape = false,
     id,
     pageNum,
-    showHomeButton = false,
+    showHomeButton: homeButton = false,
 }: PaperProps) {
     const scrollToTop = () => {
         window.scrollTo({
@@ -26,36 +26,49 @@ export default function Paper({
     return (
         <div
             id={id}
-            className={`paper relative ${landscape ? 'w-full sm:w-[150%] sm:max-w-[90vw]' : 'w-full sm:w-3/4 aspect-210/297'} p-12 bg-[#fdf6e6] overflow-hidden rounded-[2px] isolate shadow-[0_4px_12px_rgba(0,0,0,0.1),0_8px_24px_rgba(0,0,0,0.05)] flex flex-col`}
+            className={`paper relative w-full sm:w-3/4 ${landscape ? 'lg:w-full' : 'lg:w-1/2'} grid bg-[#fdf6e6] overflow-hidden rounded-[2px] isolate shadow-[0_4px_12px_rgba(0,0,0,0.1),0_8px_24px_rgba(0,0,0,0.05)] outline-0 outline-blue-500`}
         >
-            {/* Home button decorator - top of page */}
-            {showHomeButton && (
-                <button
-                    onClick={scrollToTop}
-                    className="absolute top-4 left-1/2 -translate-x-1/2 z-20 cursor-pointer hover:opacity-80 active:scale-95 transition-all duration-200 outline-none"
-                    style={{ WebkitTapHighlightColor: 'transparent' }}
-                    aria-label="Scroll to top"
-                >
-                    <Image
-                        src="/home-stamp.png"
-                        alt="Home Stamp"
-                        width={256}
-                        height={256}
-                        className="select-none w-16 h-16 object-contain"
-                    />
-                </button>
+            {/* This pseudo-element forces the 210:297 ratio (or 4:3 for landscape on lg+) */}
+            {landscape ? (
+                <>
+                    <div className="col-start-1 row-start-1 lg:hidden" style={{ paddingBottom: '141.42%' }}></div>
+                    <div className="col-start-1 row-start-1 hidden lg:block" style={{ paddingBottom: '75%' }}></div>
+                </>
+            ) : (
+                <div className="col-start-1 row-start-1" style={{ paddingBottom: '141.42%' }}></div>
             )}
 
-            {/* Page number decorator - bottom center */}
-            {pageNum && (
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 text-[rgba(0,0,0,0.6)] mix-blend-multiply font-serif text-sm">
-                    {pageNum}
+            {/* Your content sits in the same grid cell */}
+            <div className={`col-start-1 row-start-1 h-full p-12 flex flex-col ${homeButton && 'pt-22'}`}>
+                {/* Home button decorator - top of page */}
+                {homeButton && (
+                    <button
+                        onClick={scrollToTop}
+                        className="absolute top-4 left-1/2 -translate-x-1/2 z-20 cursor-pointer hover:opacity-80 active:scale-95 transition-all duration-200 outline-none"
+                        style={{ WebkitTapHighlightColor: 'transparent' }}
+                        aria-label="Scroll to top"
+                    >
+                        <Image
+                            src="/home-stamp.png"
+                            alt="Home Stamp"
+                            width={256}
+                            height={256}
+                            className="select-none w-16 h-16 object-contain"
+                        />
+                    </button>
+                )}
+
+                {/* Page number decorator - bottom center */}
+                {pageNum && (
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 text-[rgba(0,0,0,0.6)] mix-blend-multiply font-serif text-sm">
+                        {pageNum}
+                    </div>
+                )}
+
+                {/* Content layer */}
+                <div className="relative z-0 flex-1 w-full min-h-0">
+                    {children}
                 </div>
-            )}
-
-            {/* Content layer */}
-            <div className="relative z-0 flex-1 w-full">
-                {children}
             </div>
 
             {/* Paper texture overlay - multiplies onto content */}

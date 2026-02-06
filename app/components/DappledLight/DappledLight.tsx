@@ -302,7 +302,7 @@ export default function DappledLight() {
 
     return (
         <>
-            <Leva hidden={!isDev} collapsed={true} theme={levaTheme} />
+            <Leva hidden={true} collapsed={true} theme={levaTheme} />
 
             <div
                 style={{
