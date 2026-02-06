@@ -71,7 +71,7 @@ export function Email() {
                     <span>Copied email</span>
                 ) : (
                     <>
-                        <span className="group-hover:hidden">I. Email</span>
+                        <span className="group-hover:hidden">Email</span>
                         <span className="hidden group-hover:inline">
                             {email}
                         </span>
