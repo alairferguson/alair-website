@@ -58,7 +58,7 @@ export default function Home() {
                             height={487}
                             quality={100}
                             unoptimized
-                            className="select-none pointer-events-none w-40 h-40 object-cover rounded-sm"
+                            className="select-none pointer-events-none w-40 h-40 object-cover corner-bevel"
                             style={{ imageRendering: 'crisp-edges' }}
                         />
 

@@ -48,3 +48,9 @@ h1 span:first-child::selection {
   content: '\A';
   white-space: pre;
 }
+
+/* Corner shape classes */
+.corner-bevel {
+  border-radius: 8px 16px 8px 4px;
+  corner-shape: bevel;
+}
