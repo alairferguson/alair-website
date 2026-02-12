@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Paper from "./Paper";
 import { Email } from "./Email";
+import { WritingLink } from "./WritingLink";
 import type { WritingPost } from "@/lib/writing";
 
 type HomeClientProps = {
@@ -90,19 +91,7 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
 
                         <ul className="outline-0 w-full max-w-sm list-none text-xl sm:text-base text-[rgba(0,0,0,0.85)] mix-blend-multiply flex flex-col gap-3">
                             {writingPosts.map((post) => (
-                                <li key={post.slug}>
-                                    <Link
-                                        href={`/writing/${post.slug}`}
-                                        className="hover:text-primary flex flex-row justify-between sm:items-baseline sm:gap-2"
-                                    >
-                                        <span className="font-medium">{post.title}</span>
-                                        {post.date && (
-                                            <span className="text-[rgba(0,0,0,0.6)] text-sm">
-                                                {post.date}
-                                            </span>
-                                        )}
-                                    </Link>
-                                </li>
+                                <WritingLink key={post.slug} post={post} />
                             ))}
                         </ul>
                     </div>
