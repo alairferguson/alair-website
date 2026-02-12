@@ -40,7 +40,7 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                                 </button>
                             </li>
                             <li>
-                                <span className="line-through opacity-50 cursor-not-allowed">
+                                <span className="line-through text-[rgba(0,0,0,0.6)] cursor-not-allowed">
                                     III. Rabbit holes
                                 </span>
                             </li>
