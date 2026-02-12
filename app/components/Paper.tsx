@@ -1,7 +1,6 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
+import Stamp from "./Stamp";
 import { ReactNode } from "react";
 
 interface PaperProps {
@@ -48,35 +47,17 @@ export default function Paper({
                 {/* Home button decorator - top of page */}
                 {homeButton && (
                     homeButtonLink ? (
-                        <Link
+                        <Stamp
                             href={homeButtonLink}
-                            className="absolute top-4 left-1/2 -translate-x-1/2 z-20 cursor-pointer hover:opacity-80 active:scale-95 transition-all duration-200 outline-none"
-                            style={{ WebkitTapHighlightColor: 'transparent' }}
+                            className="absolute top-4 left-1/2 -translate-x-1/2 z-20"
                             aria-label="Go back home"
-                        >
-                            <Image
-                                src="/home-stamp.png"
-                                alt="Home Stamp"
-                                width={256}
-                                height={256}
-                                className="select-none w-16 h-16 object-contain"
-                            />
-                        </Link>
+                        />
                     ) : (
-                        <button
+                        <Stamp
                             onClick={scrollToTop}
-                            className="absolute top-4 left-1/2 -translate-x-1/2 z-20 cursor-pointer hover:opacity-80 active:scale-95 transition-all duration-200 outline-none"
-                            style={{ WebkitTapHighlightColor: 'transparent' }}
+                            className="absolute top-4 left-1/2 -translate-x-1/2 z-20"
                             aria-label="Scroll to top"
-                        >
-                            <Image
-                                src="/home-stamp.png"
-                                alt="Home Stamp"
-                                width={256}
-                                height={256}
-                                className="select-none w-16 h-16 object-contain"
-                            />
-                        </button>
+                        />
                     )
                 )}
 
