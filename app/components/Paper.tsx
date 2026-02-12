@@ -63,7 +63,7 @@ export default function Paper({
 
                 {/* Page number decorator - bottom center */}
                 {pageNum && (
-                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 text-[rgba(0,0,0,0.6)] mix-blend-multiply font-serif text-sm">
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 text-[rgba(0,0,0,0.6)] mix-blend-multiply font-serif text-sm select-none">
                         {pageNum}
                     </div>
                 )}
