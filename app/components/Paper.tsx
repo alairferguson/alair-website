@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import Link from "next/link";
 import { ReactNode } from "react";
 
 interface PaperProps {
@@ -7,6 +10,7 @@ interface PaperProps {
     id?: string;
     pageNum?: string | number;
     showHomeButton?: boolean;
+    homeButtonLink?: string;
 }
 
 export default function Paper({
@@ -15,6 +19,7 @@ export default function Paper({
     id,
     pageNum,
     showHomeButton: homeButton = false,
+    homeButtonLink,
 }: PaperProps) {
     const scrollToTop = () => {
         window.scrollTo({
@@ -42,20 +47,37 @@ export default function Paper({
             <div className={`col-start-1 row-start-1 h-full p-12 flex flex-col ${homeButton && 'pt-22'}`}>
                 {/* Home button decorator - top of page */}
                 {homeButton && (
-                    <button
-                        onClick={scrollToTop}
-                        className="absolute top-4 left-1/2 -translate-x-1/2 z-20 cursor-pointer hover:opacity-80 active:scale-95 transition-all duration-200 outline-none"
-                        style={{ WebkitTapHighlightColor: 'transparent' }}
-                        aria-label="Scroll to top"
-                    >
-                        <Image
-                            src="/home-stamp.png"
-                            alt="Home Stamp"
-                            width={256}
-                            height={256}
-                            className="select-none w-16 h-16 object-contain"
-                        />
-                    </button>
+                    homeButtonLink ? (
+                        <Link
+                            href={homeButtonLink}
+                            className="absolute top-4 left-1/2 -translate-x-1/2 z-20 cursor-pointer hover:opacity-80 active:scale-95 transition-all duration-200 outline-none"
+                            style={{ WebkitTapHighlightColor: 'transparent' }}
+                            aria-label="Go back home"
+                        >
+                            <Image
+                                src="/home-stamp.png"
+                                alt="Home Stamp"
+                                width={256}
+                                height={256}
+                                className="select-none w-16 h-16 object-contain"
+                            />
+                        </Link>
+                    ) : (
+                        <button
+                            onClick={scrollToTop}
+                            className="absolute top-4 left-1/2 -translate-x-1/2 z-20 cursor-pointer hover:opacity-80 active:scale-95 transition-all duration-200 outline-none"
+                            style={{ WebkitTapHighlightColor: 'transparent' }}
+                            aria-label="Scroll to top"
+                        >
+                            <Image
+                                src="/home-stamp.png"
+                                alt="Home Stamp"
+                                width={256}
+                                height={256}
+                                className="select-none w-16 h-16 object-contain"
+                            />
+                        </button>
+                    )
                 )}
 
                 {/* Page number decorator - bottom center */}
