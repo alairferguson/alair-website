@@ -65,11 +65,10 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                             style={{ imageRendering: "crisp-edges" }}
                         />
 
-                        <p className="text-xl sm:text-base text-[rgba(0,0,0,0.85)] mix-blend-multiply leading-relaxed mt-2">
+                        <p className="text-xl sm:text-base text-[rgba(0,0,0,0.85)] mix-blend-multiply">
                             I&apos;m an economics, mathematics, and French graduate from Grinnell College currently working in labor and employment consulting. In the past, I have interned at Chipper Cash, Inc. and worked in academic economics research at Grinnell.
-
-                            <br /><br />
-
+                        </p>
+                        <p className="text-xl sm:text-base text-[rgba(0,0,0,0.85)] mix-blend-multiply">
                             My professional strengths blend technical skills and people-focused work; I like working on complex problems that involve both systems and humans. I&apos;m drawn to fast-paced, mission-driven, humanity-first environments. Outside of work, I spend my time distance running, backpacking, rock climbing, and creating projects that solve problems and look beautiful.
                         </p>
 
