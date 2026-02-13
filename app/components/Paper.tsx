@@ -78,7 +78,7 @@ export default function Paper({
             <div
                 className="pointer-events-none absolute inset-0 z-10 mix-blend-multiply opacity-[0.5]"
                 style={{
-                    backgroundImage: 'url("paper-texture-tile.png")',
+                    backgroundImage: 'url("/paper-texture-tile.png")',
                     backgroundRepeat: 'repeat',
                     backgroundSize: '128px 128px',
                 }}
