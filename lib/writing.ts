@@ -7,6 +7,9 @@ export type WritingPost = {
     slug: string;
     title: string;
     date: string;
+    section?: string;
+    /** When true, links to PDF in /writing/ instead of MDX subpage */
+    isPdf?: boolean;
 };
 
 export async function getWritingPosts(): Promise<WritingPost[]> {
@@ -16,11 +19,12 @@ export async function getWritingPosts(): Promise<WritingPost[]> {
     for (const file of files) {
         const slug = file.replace(/\.mdx$/, "");
         const mod = await import(`@/content/writing/${slug}.mdx`);
-        const meta = mod.metadata as { title?: string; date?: string };
+        const meta = mod.metadata as { title?: string; date?: string; section?: string };
         posts.push({
             slug,
             title: meta?.title ?? slug,
             date: meta?.date ?? "",
+            section: meta?.section,
         });
     }
 

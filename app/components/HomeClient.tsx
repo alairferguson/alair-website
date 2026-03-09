@@ -4,8 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import Paper from "./Paper";
 import { Email } from "./Email";
-import { WritingLink } from "./WritingLink";
 import type { WritingPost } from "@/lib/writing";
+import { formatDateDDMMYYYY, getWritingSections } from "@/lib/writing-display";
 
 type HomeClientProps = {
     writingPosts: WritingPost[];
@@ -88,11 +88,58 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                             Writing
                         </h2>
 
-                        <ul className="outline-0 w-full max-w-sm list-none text-xl sm:text-base text-[rgba(0,0,0,0.85)] mix-blend-multiply flex flex-col gap-3">
-                            {writingPosts.map((post) => (
-                                <WritingLink key={post.slug} post={post} />
-                            ))}
-                        </ul>
+                        <div className="outline-0 w-full max-w-xl text-xl sm:text-base text-[rgba(0,0,0,0.85)] mix-blend-multiply flex flex-col border-t-2 border-primary pt-2">
+                            {getWritingSections().map((section) => {
+                                const sectionPosts = writingPosts.filter(
+                                    (post) => post.section === section.id
+                                );
+                                if (sectionPosts.length === 0) return null;
+                                const [firstPost, ...restPosts] = sectionPosts;
+                                const renderPost = (post: (typeof writingPosts)[0], showLabel: boolean) => {
+                                    const href = post.isPdf
+                                        ? `/writing/${encodeURIComponent(post.slug + ".pdf")}`
+                                        : `/writing/${post.slug}`;
+                                    const dateStr = post.date ? formatDateDDMMYYYY(post.date) : null;
+                                    const linkClass = "hover:text-primary text-right min-w-0";
+                                    return (
+                                        <div
+                                            key={post.slug}
+                                            className="grid w-full gap-x-4 items-start"
+                                            style={{ gridTemplateColumns: "minmax(0, 1fr) 90px minmax(0, 1fr)" }}
+                                        >
+                                            <span className="font-medium shrink-0 min-w-0">
+                                                {showLabel ? section.label : ""}
+                                            </span>
+                                            <span className="text-center shrink-0 tabular-nums">
+                                                {dateStr ?? "\u00A0"}
+                                            </span>
+                                            {post.isPdf ? (
+                                                <a href={href} className={linkClass}>
+                                                    {post.title}
+                                                </a>
+                                            ) : (
+                                                <Link href={href} className={linkClass}>
+                                                    {post.title}
+                                                </Link>
+                                            )}
+                                        </div>
+                                    );
+                                };
+                                return (
+                                    <div key={section.id} className="flex flex-col">
+                                        {renderPost(firstPost, true)}
+                                        {restPosts.length > 0 && (
+                                            <div className="flex flex-col gap-1 mt-1">
+                                                {restPosts.map((post) =>
+                                                    renderPost(post, false)
+                                                )}
+                                            </div>
+                                        )}
+                                        <div className="border-t-2 border-primary mt-2 pt-2" />
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
                 </Paper>
             </main>
