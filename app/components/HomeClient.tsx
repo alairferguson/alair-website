@@ -66,10 +66,10 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                         />
 
                         <p className="text-xl sm:text-base text-[rgba(0,0,0,0.85)] mix-blend-multiply">
-                            I&apos;m an economics, mathematics, and French graduate from Grinnell College currently working in labor and employment consulting. In the past, I have interned at Chipper Cash, Inc. and worked in academic economics research at Grinnell.
+                            I&apos;m an economics, mathematics, and French graduate from Grinnell College currently working in labor and employment consulting. In the past, I focused on consumer success during my time at Chipper Cash, Inc. where I was a Product Analytics intern, and honed my quantitative analytical skills through academic economics research at Grinnell.
                         </p>
                         <p className="text-xl sm:text-base text-[rgba(0,0,0,0.85)] mix-blend-multiply">
-                            My professional strengths blend technical skills and people-focused work; I like working on complex problems that involve both systems and humans. I&apos;m drawn to fast-paced, mission-driven, humanity-first environments. Outside of work, I spend my time distance running, backpacking, rock climbing, and creating projects that solve problems and look beautiful.
+                            My professional strengths blend technical skills and people-focused work; I like working on complex problems that involve both systems and humans. I&apos;m drawn to fast-paced, mission-driven, humanity-first environments. My paramount passion is sustainability (favorite eco-literature is <em>The Overstory</em> by Richard Powers, <em>The Ministry for the Future</em> by Kim Stanley Robinson, and <em>Braiding Sweetgrass</em> by Robin Wall Kimmerer). Outside of work, I spend my time distance running, backpacking, rock climbing, and creating projects that solve problems and look beautiful.
                         </p>
 
                         <p className="text-xl sm:text-base text-[rgba(0,0,0,0.85)] mix-blend-multiply text-left self-start">
