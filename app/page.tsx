@@ -9,7 +9,6 @@ export default async function Home() {
         title: p.title,
         date: p.date,
         section: p.section,
-        isPdf: true as const,
     }));
     const writingPosts = [...mdxPosts, ...pdfPosts].sort((a, b) =>
         b.date.localeCompare(a.date)

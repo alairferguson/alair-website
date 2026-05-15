@@ -16,7 +16,7 @@ const SECTIONS: { id: string; label: string; order: number }[] = [
 /** PDF pieces (not MDX) - served from public/writing/ */
 export const PDF_PIECES: { slug: string; title: string; date: string; section: string }[] = [
     {
-        slug: "ECN395_Final Paper_AFH",
+        slug: "ECN395_Final Paper_AFH.pdf",
         title: "Inequality and Education Pre- and Post- the Brazilian Neoliberal 1990s",
         date: "12/15/2024",
         section: "undergraduate-research",

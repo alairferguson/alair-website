@@ -11,6 +11,8 @@ type HomeClientProps = {
     writingPosts: WritingPost[];
 };
 
+const linkHoverClass = "hover:text-primary hover:decoration-wavy hover:underline decoration-1";
+
 export default function HomeClient({ writingPosts }: HomeClientProps) {
     const scrollTo = (id: string) => () => {
         const el = document.getElementById(id);
@@ -30,12 +32,12 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                         </h1>
                         <ol className="list-none text-xl sm:text-base list-inside text-center text-[rgba(0,0,0,0.85)] mix-blend-multiply">
                             <li>
-                                <button onClick={scrollTo("about")} className="hover:text-primary cursor-pointer">
+                                <button onClick={scrollTo("about")} className={linkHoverClass + " cursor-pointer"}>
                                     I. About
                                 </button>
                             </li>
                             <li>
-                                <button onClick={scrollTo("writing")} className="hover:text-primary cursor-pointer">
+                                <button onClick={scrollTo("writing")} className={linkHoverClass + " cursor-pointer"}>
                                     II. Writing
                                 </button>
                             </li>
@@ -73,9 +75,9 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                         </p>
 
                         <p className="text-xl sm:text-base text-[rgba(0,0,0,0.85)] mix-blend-multiply text-left self-start">
-                            <a href="/resume.pdf" className="hover:text-primary">Resume</a>
+                            <a href="/resume.pdf" className={linkHoverClass}>Resume</a>
                             {" / "}
-                            <a href="https://www.linkedin.com/in/alairferguson/" className="hover:text-primary">LinkedIn</a>
+                            <a href="https://www.linkedin.com/in/alairferguson/" className={linkHoverClass}>LinkedIn</a>
                             {" / "}
                             <Email />
                         </p>
@@ -88,7 +90,7 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                             Writing
                         </h2>
 
-                        <div className="outline-0 w-full max-w-xl text-xl sm:text-base text-[rgba(0,0,0,0.85)] mix-blend-multiply flex flex-col border-t-2 border-primary pt-2">
+                        <div className="outline-0 w-full text-xl sm:text-base text-[rgba(0,0,0,0.85)] mix-blend-multiply flex flex-col border-t border-primary/50 pt-2">
                             {getWritingSections().map((section) => {
                                 const sectionPosts = writingPosts.filter(
                                     (post) => post.section === section.id
@@ -96,32 +98,29 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                                 if (sectionPosts.length === 0) return null;
                                 const [firstPost, ...restPosts] = sectionPosts;
                                 const renderPost = (post: (typeof writingPosts)[0], showLabel: boolean) => {
-                                    const href = post.isPdf
-                                        ? `/writing/${encodeURIComponent(post.slug + ".pdf")}`
-                                        : `/writing/${post.slug}`;
+                                    const href = `/writing/${post.slug}`;
                                     const dateStr = post.date ? formatDateDDMMYYYY(post.date) : null;
-                                    const linkClass = "hover:text-primary text-right min-w-0";
                                     return (
                                         <div
                                             key={post.slug}
                                             className="grid w-full gap-x-4 items-start"
-                                            style={{ gridTemplateColumns: "minmax(0, 1fr) 90px minmax(0, 1fr)" }}
+                                            style={{ gridTemplateColumns: "1fr auto 1fr" }}
                                         >
                                             <span className="font-medium shrink-0 min-w-0">
                                                 {showLabel ? section.label : ""}
                                             </span>
-                                            <span className="text-center shrink-0 tabular-nums">
-                                                {dateStr ?? "\u00A0"}
-                                            </span>
-                                            {post.isPdf ? (
-                                                <a href={href} className={linkClass}>
+                                            <Link
+                                                href={href}
+                                                className="contents hover:text-primary group hover:decoration-wavy hover:underline decoration-1"
+                                            >
+                                                <span className="text-center shrink-0 tabular-nums min-w-0 group-hover:decoration-wavy group-hover:underline decoration-1">
+                                                    {dateStr ?? "\u00A0"}
+                                                </span>
+                                                <span className="text-right min-w-0 group-hover:decoration-wavy group-hover:underline decoration-1">
                                                     {post.title}
-                                                </a>
-                                            ) : (
-                                                <Link href={href} className={linkClass}>
-                                                    {post.title}
-                                                </Link>
-                                            )}
+                                                </span>
+                                            </Link>
+
                                         </div>
                                     );
                                 };
@@ -135,7 +134,7 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                                                 )}
                                             </div>
                                         )}
-                                        <div className="border-t-2 border-primary mt-2 pt-2" />
+                                        <div className="border-t border-primary/50 mt-2 pt-2" />
                                     </div>
                                 );
                             })}

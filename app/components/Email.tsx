@@ -57,7 +57,7 @@ export function Email() {
                 text-center
                 ${hasCopied ? 'text-primary' : 'text-[rgba(0,0,0,0.85)]'}
                 mix-blend-multiply
-                ${!hasCopied && "group-hover:text-primary"}
+                ${!hasCopied && "group-hover:text-primary group-hover:decoration-wavy group-hover:underline decoration-1"}
                 select-text
             `}
             >

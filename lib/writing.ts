@@ -8,8 +8,6 @@ export type WritingPost = {
     title: string;
     date: string;
     section?: string;
-    /** When true, links to PDF in /writing/ instead of MDX subpage */
-    isPdf?: boolean;
 };
 
 export async function getWritingPosts(): Promise<WritingPost[]> {
