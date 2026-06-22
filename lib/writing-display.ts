@@ -27,6 +27,12 @@ export const PDF_PIECES: { slug: string; title: string; date: string; section: s
         date: "12/15/2024",
         section: "undergraduate-research",
     },
+    {
+        slug: "game_theory.pdf",
+        title: "Brexit as a Bargaining Game: Static and Dynamic Models of UK–EU Trade Negotiations",
+        date: "5/1/2024",
+        section: "undergraduate-research",
+    },
 ];
 
 export function getWritingSections(): { id: string; label: string; order: number }[] {
