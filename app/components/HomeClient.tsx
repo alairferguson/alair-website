@@ -1,9 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
+import { useEffect } from "react";
 import Paper from "./Paper";
 import { Email } from "./Email";
+import RabbitHolesContent from "./RabbitHolesContent";
 import type { WritingPost } from "@/lib/writing";
 import { formatDateDDMMYYYY, getWritingSections } from "@/lib/writing-display";
 
@@ -18,6 +20,13 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
         const el = document.getElementById(id);
         if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
     };
+
+    useEffect(() => {
+        const hash = window.location.hash.slice(1);
+        if (!hash) return;
+        const el = document.getElementById(hash);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, []);
 
     return (
         <div className="flex min-h-dvh box-border items-center justify-center font-body p-10">
@@ -42,9 +51,9 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                                 </button>
                             </li>
                             <li>
-                                <span className="line-through text-[rgba(0,0,0,0.6)] cursor-not-allowed">
+                                <button onClick={scrollTo("rabbit-holes")} className={linkHoverClass + " cursor-pointer"}>
                                     III. Rabbit holes
-                                </span>
+                                </button>
                             </li>
                         </ol>
                     </div>
@@ -140,6 +149,10 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                             })}
                         </div>
                     </div>
+                </Paper>
+
+                <Paper id="rabbit-holes" pageNum="III" showHomeButton landscape>
+                    <RabbitHolesContent />
                 </Paper>
             </main>
         </div>
