@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import PlaylistCard from "@/app/components/daily-songs/PlaylistCard";
+import SpotifyNowPlaying from "@/app/components/daily-songs/SpotifyNowPlaying";
 import {
     DAILY_SONGS_DESCRIPTION,
     DAILY_SONGS_PLAYLISTS,
@@ -9,7 +10,7 @@ import {
 } from "@/lib/daily-songs";
 
 export const metadata: Metadata = {
-    title: "Alair's Daily Songs | Rabbit Holes | Alair",
+    title: "My Daily Songs | Rabbit Holes | Alair",
 };
 
 // The site-wide `h1, h2, ... { font-family: var(--font-heading); font-style: italic }`
@@ -47,7 +48,7 @@ export default function DailySongsPage() {
                             className="text-4xl leading-[1.05] font-black tracking-tight sm:text-6xl"
                             style={sansHeading}
                         >
-                            Alair&apos;s Daily Songs
+                            My Daily Songs
                         </h1>
                     </div>
 
@@ -85,6 +86,15 @@ export default function DailySongsPage() {
                             <PlaylistCard key={playlist.year} playlist={playlist} />
                         ))}
                     </div>
+                </div>
+            </div>
+
+            <div className="px-6 pb-8 sm:px-10 md:px-14">
+                <div className="mx-auto max-w-5xl">
+                    <h2 className="mb-4 text-xl font-bold sm:text-2xl" style={sansHeading}>
+                        I&apos;m currently listening to...
+                    </h2>
+                    <SpotifyNowPlaying />
                 </div>
             </div>
 

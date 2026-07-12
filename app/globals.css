@@ -60,6 +60,16 @@ h1 span:first-child::selection {
   corner-shape: bevel;
 }
 
+@keyframes eq-bounce {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}
+
+.eq-bar {
+  animation: eq-bounce 0.9s ease-in-out infinite;
+  transform-origin: bottom;
+}
+
 .graph-paper {
   --grid-size: 24px;
   background-color: #f5f0e4;

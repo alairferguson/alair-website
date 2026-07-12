@@ -36,7 +36,7 @@ export const RABBIT_HOLES: RabbitHole[] = [
     },
     {
         slug: "alairs-daily-songs",
-        title: "Alair's Daily Songs",
+        title: "My Daily Songs",
         position: { top: "56%", left: "12%" },
         images: dailySongsImages,
     },
