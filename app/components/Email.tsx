@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from "react";
 export function Email() {
     const [hasCopied, setHasCopied] = useState(false);
     const [isHovering, setIsHovering] = useState(false);
+    const [isRevealed, setIsRevealed] = useState(false);
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
     const email = "alairferguson@gmail.com";
 
@@ -43,7 +44,13 @@ export function Email() {
             title="Copy email"
             aria-label="Copy email"
             type="button"
-            onClick={copyToClipboard}
+            onClick={() => {
+                // Touch devices have no hover — keep the address visible after tap
+                if (typeof window !== "undefined" && window.matchMedia("(hover: none)").matches) {
+                    setIsRevealed(true);
+                }
+                copyToClipboard();
+            }}
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => setIsHovering(false)}
             className={`group 
@@ -55,6 +62,7 @@ export function Email() {
                 inline-block
                 text-xl sm:text-base
                 text-center
+                max-sm:break-all
                 ${hasCopied ? 'text-primary' : 'text-[rgba(0,0,0,0.85)]'}
                 mix-blend-multiply
                 ${!hasCopied && "group-hover:text-primary group-hover:decoration-wavy group-hover:underline decoration-1"}
@@ -63,6 +71,8 @@ export function Email() {
             >
                 {hasCopied ? (
                     <span>Copied email</span>
+                ) : isRevealed ? (
+                    <span>{email}</span>
                 ) : (
                     <>
                         <span className="group-hover:hidden">Email</span>

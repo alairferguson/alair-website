@@ -29,15 +29,21 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
     }, []);
 
     return (
-        <div className="flex min-h-dvh box-border items-center justify-center font-body p-10">
-            <main className="flex min-h-full w-full max-w-4xl flex-col items-center justify-between gap-16">
+        <div className="flex min-h-dvh box-border items-center justify-center font-body p-10 max-md:p-6 max-sm:p-4">
+            <main className="flex min-h-full w-full max-w-4xl flex-col items-center justify-between gap-16 max-md:gap-12 max-sm:gap-10">
                 <Paper>
                     <div className="h-full w-full grid grid-rows-3 place-items-center">
-                        <Image src="/seal.png" alt="Ferguson Seal" width={120} height={120} className="select-none pointer-events-none" />
+                        <Image
+                            src="/seal.png"
+                            alt="Ferguson Seal"
+                            width={120}
+                            height={120}
+                            className="select-none pointer-events-none max-sm:w-20 max-sm:h-20"
+                        />
                         <h1 className="text-center font-heading mix-blend-multiply uppercase">
-                            <span className="name-line text-7xl text-primary">Alair </span>
-                            <span className="name-line text-3xl tracking-wide">Ferguson </span>
-                            <span className="text-3xl tracking-wide">Hautzinger</span>
+                            <span className="name-line text-7xl max-sm:text-[2.75rem] max-sm:leading-none text-primary">Alair </span>
+                            <span className="name-line text-3xl max-sm:text-2xl tracking-wide">Ferguson </span>
+                            <span className="text-3xl max-sm:text-2xl tracking-wide">Hautzinger</span>
                         </h1>
                         <ol className="list-none text-xl sm:text-base list-inside text-center text-[rgba(0,0,0,0.85)] mix-blend-multiply">
                             <li>
@@ -60,8 +66,8 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                 </Paper>
 
                 <Paper id="about" pageNum="I" showHomeButton landscape>
-                    <div className="h-full w-full outline-0 outline-green-500 flex flex-col justify-start items-center gap-4 md:gap-8 min-h-0">
-                        <h2 className="text-center font-heading mix-blend-multiply uppercase text-3xl tracking-wide">
+                    <div className="h-full max-lg:h-auto w-full outline-0 outline-green-500 flex flex-col justify-start items-center gap-4 md:gap-8 min-h-0">
+                        <h2 className="text-center font-heading mix-blend-multiply uppercase text-3xl max-sm:text-2xl tracking-wide">
                             About
                         </h2>
 
@@ -72,7 +78,7 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                             height={487}
                             quality={100}
                             unoptimized
-                            className="select-none pointer-events-none w-40 h-40 object-cover corner-bevel"
+                            className="select-none pointer-events-none w-40 h-40 max-sm:w-32 max-sm:h-32 object-cover corner-bevel"
                             style={{ imageRendering: "crisp-edges" }}
                         />
 
@@ -94,8 +100,8 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                 </Paper>
 
                 <Paper id="writing" pageNum="II" showHomeButton landscape>
-                    <div className="h-full w-full outline-0 flex flex-col justify-start items-center gap-4 md:gap-8 min-h-0">
-                        <h2 className="outline-0 text-center font-heading mix-blend-multiply uppercase text-3xl tracking-wide">
+                    <div className="h-full max-lg:h-auto w-full outline-0 flex flex-col justify-start items-center gap-4 md:gap-8 min-h-0">
+                        <h2 className="outline-0 text-center font-heading mix-blend-multiply uppercase text-3xl max-sm:text-2xl tracking-wide">
                             Writing
                         </h2>
 
@@ -110,26 +116,45 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                                     const href = `/writing/${post.slug}`;
                                     const dateStr = post.date ? formatDateDDMMYYYY(post.date) : null;
                                     return (
-                                        <div
-                                            key={post.slug}
-                                            className="grid w-full gap-x-4 items-start"
-                                            style={{ gridTemplateColumns: "1fr auto 1fr" }}
-                                        >
-                                            <span className="font-medium shrink-0 min-w-0">
-                                                {showLabel ? section.label : ""}
-                                            </span>
+                                        <div key={post.slug} className="w-full">
+                                            {/* Mobile: stacked entry */}
                                             <Link
                                                 href={href}
-                                                className="contents hover:text-primary group hover:decoration-wavy hover:underline decoration-1"
+                                                className={`flex flex-col gap-0.5 py-2 lg:hidden ${linkHoverClass}`}
                                             >
-                                                <span className="text-center shrink-0 tabular-nums min-w-0 group-hover:decoration-wavy group-hover:underline decoration-1">
-                                                    {dateStr ?? "\u00A0"}
-                                                </span>
-                                                <span className="text-right min-w-0 group-hover:decoration-wavy group-hover:underline decoration-1">
-                                                    {post.title}
-                                                </span>
+                                                {showLabel && (
+                                                    <span className="font-medium text-primary/80">
+                                                        {section.label}
+                                                    </span>
+                                                )}
+                                                <span className="min-w-0">{post.title}</span>
+                                                {dateStr && (
+                                                    <span className="tabular-nums text-sm text-[rgba(0,0,0,0.55)]">
+                                                        {dateStr}
+                                                    </span>
+                                                )}
                                             </Link>
 
+                                            {/* Desktop: original 3-column grid */}
+                                            <div
+                                                className="hidden lg:grid w-full gap-x-4 items-start"
+                                                style={{ gridTemplateColumns: "1fr auto 1fr" }}
+                                            >
+                                                <span className="font-medium shrink-0 min-w-0">
+                                                    {showLabel ? section.label : ""}
+                                                </span>
+                                                <Link
+                                                    href={href}
+                                                    className="contents hover:text-primary group hover:decoration-wavy hover:underline decoration-1"
+                                                >
+                                                    <span className="text-center shrink-0 tabular-nums min-w-0 group-hover:decoration-wavy group-hover:underline decoration-1">
+                                                        {dateStr ?? "\u00A0"}
+                                                    </span>
+                                                    <span className="text-right min-w-0 group-hover:decoration-wavy group-hover:underline decoration-1">
+                                                        {post.title}
+                                                    </span>
+                                                </Link>
+                                            </div>
                                         </div>
                                     );
                                 };
@@ -137,7 +162,7 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                                     <div key={section.id} className="flex flex-col">
                                         {renderPost(firstPost, true)}
                                         {restPosts.length > 0 && (
-                                            <div className="flex flex-col gap-1 mt-1">
+                                            <div className="flex flex-col gap-1 mt-1 max-lg:mt-0 max-lg:gap-0">
                                                 {restPosts.map((post) =>
                                                     renderPost(post, false)
                                                 )}

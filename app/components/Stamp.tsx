@@ -20,7 +20,7 @@ export default function Stamp({ href, onClick, className, "aria-label": ariaLabe
             alt="Home Stamp"
             width={256}
             height={256}
-            className="select-none w-16 h-16 object-contain"
+            className="select-none w-16 h-16 max-sm:w-12 max-sm:h-12 object-contain"
         />
     );
 
