@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { Fragment } from "react";
 import PlaylistCard from "@/app/components/daily-songs/PlaylistCard";
 import SpotifyNowPlaying from "@/app/components/daily-songs/SpotifyNowPlaying";
 import {
@@ -66,7 +67,21 @@ export default function DailySongsPage() {
 
                         <div className="flex min-w-0 flex-col items-center gap-3 text-center sm:items-start sm:text-left">
                             <p className="max-w-xl text-sm leading-relaxed text-white/70 sm:text-base">
-                                {DAILY_SONGS_DESCRIPTION}
+                                {DAILY_SONGS_DESCRIPTION.split("Alex").map((part, i, parts) => (
+                                    <Fragment key={i}>
+                                        {part}
+                                        {i < parts.length - 1 && (
+                                            <a
+                                                href="https://www.alexsafayan.com/"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="underline decoration-transparent transition-colors duration-200 hover:text-[#1ED760] hover:decoration-[#1ED760]"
+                                            >
+                                                Alex
+                                            </a>
+                                        )}
+                                    </Fragment>
+                                ))}
                             </p>
                             <p className="text-sm text-white/60">
                                 {DAILY_SONGS_PLAYLISTS.length} playlists · a song every day since January 1, 2021
