@@ -86,27 +86,18 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                             <p className="text-xl sm:text-base text-[rgba(0,0,0,0.85)] mix-blend-multiply">
                                 I&apos;m an economics, mathematics, and French graduate from Grinnell College currently working in labor and employment consulting. In the past, I focused on consumer success during my time at Chipper Cash, Inc. where I was a Product Analytics intern, and honed my quantitative analytical skills through academic economics research at Grinnell.
                             </p>
-                            <p className="mt-4 md:mt-8 text-xl sm:text-base text-[rgba(0,0,0,0.85)] mix-blend-multiply">
+                            <p className="mt-3 md:mt-4 text-xl sm:text-base text-[rgba(0,0,0,0.85)] mix-blend-multiply">
                                 My professional strengths blend technical skills and people-focused work; I like working on complex problems that involve both systems and humans. I&apos;m drawn to fast-paced, mission-driven, humanity-first environments. My paramount passion is sustainability (favorite eco-literature is <em>The Overstory</em> by Richard Powers, <em>The Ministry for the Future</em> by Kim Stanley Robinson, and <em>Braiding Sweetgrass</em> by Robin Wall Kimmerer). Outside of work, I spend my time distance running, backpacking, rock climbing, and creating projects that solve problems and look beautiful.
                             </p>
                         </div>
 
-                        <p className="text-xl sm:text-base text-[rgba(0,0,0,0.85)] mix-blend-multiply text-left self-start">
+                        <p className="lg:mt-40 text-xl sm:text-base text-[rgba(0,0,0,0.85)] mix-blend-multiply text-left self-start">
                             <a href="/resume.pdf" className={linkHoverClass}>Resume</a>
                             {" / "}
                             <a href="https://www.linkedin.com/in/alairferguson/" className={linkHoverClass}>LinkedIn</a>
                             {" / "}
                             <Email />
                         </p>
-
-                        <div className="w-full text-left self-start flex flex-col gap-1.5">
-                            <h3 className="text-base sm:text-sm uppercase tracking-widest text-[rgba(0,0,0,0.75)] mix-blend-multiply">
-                                AI-Use Statement
-                            </h3>
-                            <p className="text-base sm:text-sm leading-relaxed text-[rgba(0,0,0,0.8)] mix-blend-multiply not-italic">
-                                In creating this personal website, I collaborated with Cursor and Claude to assist with web development and technical expertise. No written prose on the website or linked from the website was generated with AI. I affirm that all AI-generated and co-created content underwent thorough review and evaluation. While AI assistance was instrumental in the process, I maintain full responsibility for the content, its accuracy, and its presentation. This disclosure is made in the spirit of transparency and to acknowledge the role of AI in the creation process.
-                            </p>
-                        </div>
                     </div>
                 </Paper>
 
@@ -183,6 +174,15 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                                     </div>
                                 );
                             })}
+                        </div>
+
+                        <div className="w-full text-left self-start flex flex-col gap-1.5">
+                            <h3 className="text-base sm:text-sm uppercase tracking-widest text-[rgba(0,0,0,0.75)] mix-blend-multiply">
+                                AI-Use Statement
+                            </h3>
+                            <p className="text-xs sm:text-[0.7rem] leading-relaxed text-[rgba(0,0,0,0.8)] mix-blend-multiply not-italic">
+                                In creating this personal website, I collaborated with Cursor and Claude to assist with web development and technical expertise. No written prose on the website or linked from the website was generated with AI.
+                            </p>
                         </div>
                     </div>
                 </Paper>
