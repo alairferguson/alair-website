@@ -21,8 +21,13 @@ const dailySongsImages = [
 export const RABBIT_HOLES: RabbitHole[] = [
     {
         slug: "health",
-        title: "Health",
+        title: "75 Hard Tracker",
         position: { top: "28%", left: "10%" },
+        images: [
+            "/rabbit-holes/health-gradient-1.svg",
+            "/rabbit-holes/health-gradient-2.svg",
+            "/rabbit-holes/health-cover-v2.svg",
+        ],
     },
     {
         slug: "plants",

@@ -9,7 +9,7 @@ type PageProps = {
 
 // Slugs with their own standalone route under app/rabbit-holes/<slug>/, which
 // takes precedence over this dynamic catch-all.
-const STANDALONE_SLUGS = ["alairs-daily-songs"];
+const STANDALONE_SLUGS = ["alairs-daily-songs", "health"];
 
 export async function generateStaticParams() {
     return getRabbitHoleSlugs()

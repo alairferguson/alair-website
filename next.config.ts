@@ -5,6 +5,10 @@ const nextConfig: NextConfig = {
     pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
     images: {
         remotePatterns: [{ protocol: "https", hostname: "i.scdn.co" }],
+        // Only serves our own trusted, hand-authored local SVGs (rabbit-holes cover art) — no user/remote SVG input.
+        dangerouslyAllowSVG: true,
+        contentDispositionType: "inline",
+        contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     },
 };
 
