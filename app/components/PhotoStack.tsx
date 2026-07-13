@@ -46,7 +46,7 @@ export default function PhotoStack({ slug, title, images, className, style }: Ph
                 {title}
             </span>
 
-            <div className="relative w-[5.5rem] h-[6.5rem] max-sm:w-[4.75rem] max-sm:h-[5.75rem]">
+            <div className="relative w-[5.5rem] h-[5.5rem] max-sm:w-[4.75rem] max-sm:h-[4.75rem]">
                 {layers.map((layer, i) => (
                     <div
                         key={i}
