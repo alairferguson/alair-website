@@ -66,38 +66,44 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                 </Paper>
 
                 <Paper id="about" pageNum="I" showHomeButton landscape>
-                    <div className="h-full max-lg:h-auto w-full outline-0 outline-green-500 flex flex-col justify-start items-center gap-4 md:gap-8 min-h-0">
-                        <h2 className="text-center font-heading mix-blend-multiply uppercase text-3xl max-sm:text-2xl tracking-wide">
+                    <div className="h-full max-lg:h-auto w-full flex flex-col min-h-0">
+                        <h2 className="text-center font-heading mix-blend-multiply uppercase text-3xl max-sm:text-2xl tracking-wide shrink-0">
                             About
                         </h2>
 
-                        <div className="w-full overflow-hidden">
-                            <Image
-                                src="/alair.jpg"
-                                alt="Alair"
-                                width={487}
-                                height={487}
-                                quality={100}
-                                unoptimized
-                                className="select-none pointer-events-none float-left mr-4 mb-2 sm:mr-6 sm:mb-3 w-32 h-32 sm:w-40 sm:h-40 object-cover corner-bevel"
-                                style={{ imageRendering: "crisp-edges" }}
-                            />
+                        <div className="flex-1 flex flex-col justify-center min-h-0">
+                            <div className="w-full flex flex-col gap-4">
+                                <div className="w-full overflow-hidden">
+                                    <Image
+                                        src="/alair.jpg"
+                                        alt="Alair"
+                                        width={487}
+                                        height={487}
+                                        quality={100}
+                                        unoptimized
+                                        className="select-none pointer-events-none float-left mr-5 mb-3 sm:mr-6 sm:mb-4 w-32 h-32 sm:w-40 sm:h-40 object-cover corner-bevel"
+                                        style={{ imageRendering: "crisp-edges" }}
+                                    />
 
-                            <p className="text-xl sm:text-base text-[rgba(0,0,0,0.85)] mix-blend-multiply">
-                                I&apos;m an economics, mathematics, and French graduate from Grinnell College currently working in labor and employment consulting. In the past, I focused on consumer success during my time at Chipper Cash, Inc. where I was a Product Analytics intern, and honed my quantitative analytical skills through academic economics research at Grinnell.
-                            </p>
-                            <p className="mt-3 md:mt-4 text-xl sm:text-base text-[rgba(0,0,0,0.85)] mix-blend-multiply">
-                                My professional strengths blend technical skills and people-focused work; I like working on complex problems that involve both systems and humans. I&apos;m drawn to fast-paced, mission-driven, humanity-first environments. My paramount passion is sustainability (favorite eco-literature is <em>The Overstory</em> by Richard Powers, <em>The Ministry for the Future</em> by Kim Stanley Robinson, and <em>Braiding Sweetgrass</em> by Robin Wall Kimmerer). Outside of work, I spend my time distance running, backpacking, rock climbing, and creating projects that solve problems and look beautiful.
-                            </p>
+                                    <div className="space-y-4 text-xl sm:text-base leading-relaxed text-[rgba(0,0,0,0.85)] mix-blend-multiply">
+                                        <p>
+                                            I&apos;m an economics, mathematics, and French graduate from Grinnell College currently working in labor and employment consulting. In the past, I focused on consumer success during my time at Chipper Cash, Inc. where I was a Product Analytics intern, and honed my quantitative analytical skills through academic economics research at Grinnell.
+                                        </p>
+                                        <p>
+                                            My professional strengths blend technical skills and people-focused work; I like working on complex problems that involve both systems and humans. I&apos;m drawn to fast-paced, mission-driven, humanity-first environments. My paramount passion is sustainability (favorite eco-literature is <em>The Overstory</em> by Richard Powers, <em>The Ministry for the Future</em> by Kim Stanley Robinson, and <em>Braiding Sweetgrass</em> by Robin Wall Kimmerer). Outside of work, I spend my time distance running, backpacking, rock climbing, and creating projects that solve problems and look beautiful.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <p className="text-xl sm:text-base text-[rgba(0,0,0,0.85)] mix-blend-multiply text-left">
+                                    <a href="/resume.pdf" className={linkHoverClass}>Resume</a>
+                                    {" / "}
+                                    <a href="https://www.linkedin.com/in/alairferguson/" className={linkHoverClass}>LinkedIn</a>
+                                    {" / "}
+                                    <Email />
+                                </p>
+                            </div>
                         </div>
-
-                        <p className="lg:mt-40 text-xl sm:text-base text-[rgba(0,0,0,0.85)] mix-blend-multiply text-left self-start">
-                            <a href="/resume.pdf" className={linkHoverClass}>Resume</a>
-                            {" / "}
-                            <a href="https://www.linkedin.com/in/alairferguson/" className={linkHoverClass}>LinkedIn</a>
-                            {" / "}
-                            <Email />
-                        </p>
                     </div>
                 </Paper>
 
