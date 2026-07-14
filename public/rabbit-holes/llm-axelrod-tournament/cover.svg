@@ -1,0 +1,74 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="LLM Axelrod Tournament">
+  <defs>
+    <linearGradient id="arena" x1="12%" y1="6%" x2="92%" y2="98%">
+      <stop offset="0%" stop-color="#f4e7cf" />
+      <stop offset="45%" stop-color="#e8d5b4" />
+      <stop offset="100%" stop-color="#c5d2c4" />
+    </linearGradient>
+    <radialGradient id="glow" cx="48%" cy="44%" r="46%">
+      <stop offset="0%" stop-color="#fff9ec" stop-opacity="0.95" />
+      <stop offset="60%" stop-color="#e8dcc4" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#c5d2c4" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="inkA" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#31423d" />
+      <stop offset="100%" stop-color="#1c2824" />
+    </linearGradient>
+    <linearGradient id="inkB" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#9a4330" />
+      <stop offset="100%" stop-color="#6e2c1c" />
+    </linearGradient>
+  </defs>
+
+  <rect width="200" height="200" fill="url(#arena)" />
+  <rect width="200" height="200" fill="url(#glow)" />
+
+  <!-- soft arena rings -->
+  <g stroke="#2a3a36" fill="none">
+    <circle cx="100" cy="100" r="76" stroke-opacity="0.06" stroke-width="1" />
+    <circle cx="100" cy="100" r="58" stroke-opacity="0.08" stroke-width="1" />
+    <circle cx="100" cy="100" r="68" stroke-opacity="0.22" stroke-width="1.5" />
+    <circle cx="100" cy="100" r="68" stroke-opacity="0.08" stroke-width="8" />
+  </g>
+
+  <!-- reciprocity arcs — tit-for-tat echo -->
+  <path
+    d="M 54 122 C 54 74, 76 46, 100 46 C 114 46, 124 52, 130 62"
+    fill="none"
+    stroke="url(#inkA)"
+    stroke-width="8.5"
+    stroke-linecap="round"
+  />
+  <path
+    d="M 146 78 C 146 126, 124 154, 100 154 C 86 154, 76 148, 70 138"
+    fill="none"
+    stroke="url(#inkB)"
+    stroke-width="8.5"
+    stroke-linecap="round"
+  />
+
+  <!-- center meeting point -->
+  <circle cx="100" cy="100" r="11" fill="#fff6e4" fill-opacity="0.7" />
+  <circle cx="100" cy="100" r="5.5" fill="#2a3a36" fill-opacity="0.72" />
+
+  <!-- classic strategies = circles -->
+  <g fill="#2a3a36">
+    <circle cx="100" cy="28" r="4" opacity="0.8" />
+    <circle cx="160" cy="56" r="3.2" opacity="0.55" />
+    <circle cx="172" cy="114" r="3.6" opacity="0.7" />
+    <circle cx="140" cy="166" r="3" opacity="0.5" />
+    <circle cx="58" cy="164" r="3.4" opacity="0.65" />
+    <circle cx="30" cy="106" r="3.1" opacity="0.55" />
+    <circle cx="44" cy="48" r="2.8" opacity="0.45" />
+  </g>
+
+  <!-- LLM personas = stars -->
+  <g fill="#8a3a28">
+    <path transform="translate(134 34)" d="M0-5.2 L1.6-1.6 L5.5-1.4 L2.4 1.2 L3.4 5 L0 2.8 L-3.4 5 L-2.4 1.2 L-5.5-1.4 L-1.6-1.6 Z" opacity="0.88" />
+    <path transform="translate(170 84)" d="M0-4.4 L1.3-1.3 L4.6-1.2 L2 1 L2.8 4.2 L0 2.4 L-2.8 4.2 L-2 1 L-4.6-1.2 L-1.3-1.3 Z" opacity="0.72" />
+    <path transform="translate(154 150)" d="M0-4.8 L1.4-1.5 L5-1.3 L2.2 1.1 L3.1 4.6 L0 2.6 L-3.1 4.6 L-2.2 1.1 L-5-1.3 L-1.4-1.5 Z" opacity="0.78" />
+    <path transform="translate(74 172)" d="M0-4.2 L1.2-1.3 L4.4-1.1 L1.9 1 L2.7 4 L0 2.3 L-2.7 4 L-1.9 1 L-4.4-1.1 L-1.2-1.3 Z" opacity="0.68" />
+    <path transform="translate(28 76)" d="M0-5 L1.5-1.5 L5.2-1.3 L2.3 1.1 L3.2 4.8 L0 2.7 L-3.2 4.8 L-2.3 1.1 L-5.2-1.3 L-1.5-1.5 Z" opacity="0.82" />
+    <path transform="translate(84 26)" d="M0-4.4 L1.3-1.3 L4.6-1.2 L2 1 L2.8 4.2 L0 2.4 L-2.8 4.2 L-2 1 L-4.6-1.2 L-1.3-1.3 Z" opacity="0.7" />
+  </g>
+</svg>

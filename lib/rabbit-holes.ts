@@ -38,6 +38,11 @@ export const RABBIT_HOLES: RabbitHole[] = [
         slug: "llm-axelrod-tournament",
         title: "LLM Axelrod Tournament",
         position: { top: "56%", right: "10%" },
+        images: [
+            "/rabbit-holes/llm-axelrod-tournament/cover-gradient-1.svg",
+            "/rabbit-holes/llm-axelrod-tournament/cover-gradient-2.svg",
+            "/rabbit-holes/llm-axelrod-tournament/cover.svg",
+        ],
     },
     {
         slug: "alairs-daily-songs",
