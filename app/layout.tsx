@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { EB_Garamond } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 // import DappledLight from "./components/DappledLight";
 // import FullScreenCover from "./components/FullScreenCover";
@@ -32,6 +33,7 @@ export default function RootLayout({
                 {/* <FullScreenCover /> */}
                 {/* <DappledLight /> */}
                 {children}
+                <Analytics />
             </body>
         </html>
     );
