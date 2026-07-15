@@ -10,6 +10,7 @@
     --ipd-panel: #ffffff;
     --ipd-halo: #f7f7f4;
     --ipd-hover: rgba(20, 18, 11, 0.06);
+    --ipd-link: #7a2e3a;
     --ipd-ease: cubic-bezier(0.4, 0, 0.2, 1);
 
     min-height: 100dvh;
@@ -388,6 +389,31 @@
 
 .ipd-prose p:last-child {
     margin-bottom: 0;
+}
+
+.ipd-report .ipd-prose-link {
+    color: var(--ipd-link);
+    text-decoration: none;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    background-size: 0% 1px;
+    transition:
+        background-size 220ms var(--ipd-ease),
+        color 140ms ease;
+}
+
+.ipd-report .ipd-prose-link:hover {
+    background-size: 100% 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ipd-report .ipd-prose-link {
+        transition: none;
+        text-decoration: underline;
+        text-underline-offset: 0.18em;
+        background-image: none;
+    }
 }
 
 .ipd-prose ul {
