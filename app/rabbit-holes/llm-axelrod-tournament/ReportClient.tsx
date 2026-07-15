@@ -12,6 +12,7 @@ import {
 } from "./content";
 import FingerprintScatter from "./FingerprintScatter";
 import LeaderboardTable from "./LeaderboardTable";
+import PersonaSlope from "./PersonaSlope";
 import ProseSection from "./ProseSection";
 import type { MetricId, Report } from "./types";
 import "./report.css";
@@ -92,7 +93,8 @@ export default function ReportClient({ report }: Props) {
                             <h2>Results</h2>
                             <p>
                                 Every player placed in strategy space, ranked by
-                                outcome, and matched to its nearest classic.
+                                outcome, matched to its nearest classic, then
+                                read through the persona knob.
                             </p>
                         </div>
                     </div>
@@ -130,6 +132,20 @@ export default function ReportClient({ report }: Props) {
                         Ranked by mean score per turn. Nearest classic is
                         Euclidean distance across the five fingerprint
                         dimensions.
+                    </p>
+
+                    <p className="ipd-kicker ipd-mono ipd-results-label ipd-results-label--spaced">
+                        Persona knob
+                    </p>
+                    <PersonaSlope
+                        report={report}
+                        highlightedId={highlightedId}
+                        onHighlight={setHighlightedId}
+                    />
+                    <p className="ipd-footnote">
+                        Four system prompts, same models, temperature 0. Switch
+                        metrics to see which fingerprint traits the disposition
+                        moves; overlay the curves to compare swings directly.
                     </p>
                 </section>
 
