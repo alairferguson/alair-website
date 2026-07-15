@@ -182,7 +182,7 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                             })}
                         </div>
 
-                        <div className="w-full text-left self-start flex flex-col gap-1.5">
+                        <div className="mt-auto w-full text-left self-start flex flex-col gap-1.5">
                             <h3 className="text-base sm:text-sm uppercase tracking-widest text-[rgba(0,0,0,0.75)] mix-blend-multiply">
                                 AI-Use Statement
                             </h3>
