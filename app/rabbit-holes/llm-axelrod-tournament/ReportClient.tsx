@@ -2,8 +2,17 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import {
+    CONCLUSION,
+    CREDITS,
+    DISCUSSION,
+    INTRODUCTION,
+    LIMITATIONS,
+    METHODOLOGY,
+} from "./content";
 import FingerprintScatter from "./FingerprintScatter";
 import LeaderboardTable from "./LeaderboardTable";
+import ProseSection from "./ProseSection";
 import type { MetricId, Report } from "./types";
 import "./report.css";
 
@@ -57,7 +66,40 @@ export default function ReportClient({ report }: Props) {
                     </div>
                 </header>
 
-                <section aria-label="Fingerprint scatter">
+                <ProseSection id="introduction" {...INTRODUCTION} />
+
+                <ProseSection id="methodology" {...METHODOLOGY}>
+                    <p className="ipd-kicker ipd-mono ipd-results-label">
+                        Fingerprint dimensions
+                    </p>
+                    <div className="ipd-dims">
+                        {dimCards.map((metric) => (
+                            <article key={metric.id} className="ipd-dim-card">
+                                <h3>{metric.label}</h3>
+                                <p>{metric.description}</p>
+                            </article>
+                        ))}
+                    </div>
+                </ProseSection>
+
+                <section
+                    className="ipd-section ipd-section--numbered"
+                    id="results"
+                    aria-label="Results"
+                >
+                    <div className="ipd-section-head">
+                        <div>
+                            <h2>Results</h2>
+                            <p>
+                                Every player placed in strategy space, ranked by
+                                outcome, and matched to its nearest classic.
+                            </p>
+                        </div>
+                    </div>
+
+                    <p className="ipd-kicker ipd-mono ipd-results-label">
+                        Strategy space
+                    </p>
                     <FingerprintScatter
                         report={report}
                         xMetric={xMetric}
@@ -75,45 +117,31 @@ export default function ReportClient({ report }: Props) {
                         or table row to inspect the fingerprint; switch axes to
                         re-project strategy space.
                     </p>
-                </section>
 
-                <section className="ipd-section" aria-label="Leaderboard">
-                    <div className="ipd-section-head">
-                        <div>
-                            <h2>Leaderboard</h2>
-                            <p>
-                                Ranked by mean score per turn. Nearest classic is
-                                Euclidean distance across the five fingerprint
-                                dimensions.
-                            </p>
-                        </div>
-                    </div>
+                    <p className="ipd-kicker ipd-mono ipd-results-label ipd-results-label--spaced">
+                        Leaderboard
+                    </p>
                     <LeaderboardTable
                         report={report}
                         highlightedId={highlightedId}
                         onHighlight={setHighlightedId}
                     />
+                    <p className="ipd-footnote">
+                        Ranked by mean score per turn. Nearest classic is
+                        Euclidean distance across the five fingerprint
+                        dimensions.
+                    </p>
                 </section>
 
-                <section className="ipd-section" aria-label="Fingerprint dimensions">
-                    <div className="ipd-section-head">
-                        <div>
-                            <h2>Fingerprint dimensions</h2>
-                            <p>
-                                The measurement frame follows Axelrod: not just
-                                who won, but how each player behaved.
-                            </p>
-                        </div>
-                    </div>
-                    <div className="ipd-dims">
-                        {dimCards.map((metric) => (
-                            <article key={metric.id} className="ipd-dim-card">
-                                <h3>{metric.label}</h3>
-                                <p>{metric.description}</p>
-                            </article>
-                        ))}
-                    </div>
-                </section>
+                <ProseSection id="discussion" {...DISCUSSION} />
+                <ProseSection id="limitations" {...LIMITATIONS} />
+                <ProseSection id="conclusion" {...CONCLUSION} />
+
+                <footer className="ipd-footer ipd-mono">
+                    {CREDITS.paragraphs.map((text, i) => (
+                        <p key={i}>{text}</p>
+                    ))}
+                </footer>
             </div>
         </div>
     );
