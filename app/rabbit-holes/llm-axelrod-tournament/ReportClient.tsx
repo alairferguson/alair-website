@@ -12,6 +12,7 @@ import {
 } from "./content";
 import FingerprintScatter from "./FingerprintScatter";
 import LeaderboardTable from "./LeaderboardTable";
+import PayoffMatrix from "./PayoffMatrix";
 import PersonaSlope from "./PersonaSlope";
 import ProseSection from "./ProseSection";
 import type { MetricId, Report } from "./types";
@@ -70,7 +71,17 @@ export default function ReportClient({ report }: Props) {
                 <ProseSection id="introduction" {...INTRODUCTION} />
 
                 <ProseSection id="methodology" {...METHODOLOGY}>
-                    <p className="ipd-kicker ipd-mono ipd-results-label">
+                    <p className="ipd-kicker ipd-mono ipd-results-label ipd-results-label--spaced">
+                        Payoff matrix
+                    </p>
+                    <PayoffMatrix />
+                    <p className="ipd-footnote">
+                        Standard Axelrod payoffs. Hover or pick moves to read
+                        each outcome; toggle to the one-sided view the model
+                        sees in its prompt.
+                    </p>
+
+                    <p className="ipd-kicker ipd-mono ipd-results-label ipd-results-label--spaced">
                         Fingerprint dimensions
                     </p>
                     <div className="ipd-dims">
