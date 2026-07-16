@@ -106,7 +106,8 @@ export const METHODOLOGY: MethodologyCopy = {
             id: "llms-nearest-classic-strategy",
             heading: "LLMs’ Nearest Classic Strategy",
             paragraphs: [
-               "Each player's behavioral fingerprint (cooperation rate, niceness, retaliation, forgiveness, and provocability) is computed from its actual moves across all 70 round-robin matches, the same fingerprint plotted in the strategy-space figure below. To find an LLM × persona player's nearest classic strategy, I take the Euclidean distance between its fingerprint and every classic strategy's fingerprint in that same five-dimensional space, and report the closest match.",
+                "Each player's behavioral fingerprint (cooperation rate, niceness, retaliation, forgiveness, and provocability) is computed from its actual moves across all 70 round-robin matches. These fingerprints are plotted in the [strategy-space figure below](#strategy-space).",
+                "To find an LLM × persona player's nearest classic strategy, I take the Euclidean distance between its fingerprint and every classic strategy's fingerprint in that same five-dimensional space, and report the closest match.",
                 "A short distance means an LLM's aggregate behavior (how often it cooperates, how it opens, how sharply it punishes and how readily it forgives) statistically resembles a classic strategy's. It does not mean the LLM is internally running that strategy's exact rule; see Limitations for more on this distinction.",
             ],
             slotAfterParagraph: 0,

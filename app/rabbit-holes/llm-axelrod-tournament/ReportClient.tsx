@@ -81,8 +81,8 @@ export default function ReportClient({ report }: Props) {
                     slots={{
                         "the-tournament": <PayoffMatrix />,
                         "llms-nearest-classic-strategy": (
-                            <>
-                                <p className="ipd-kicker ipd-mono ipd-results-label ipd-results-label--spaced">
+                            <div className="ipd-dims-wrap">
+                                <p className="ipd-kicker ipd-mono ipd-results-label">
                                     Fingerprint dimensions
                                 </p>
                                 <div className="ipd-dims">
@@ -96,7 +96,7 @@ export default function ReportClient({ report }: Props) {
                                         </article>
                                     ))}
                                 </div>
-                            </>
+                            </div>
                         ),
                     }}
                 />
@@ -117,20 +117,22 @@ export default function ReportClient({ report }: Props) {
                         </div>
                     </div>
 
-                    <p className="ipd-kicker ipd-mono ipd-results-label">
-                        Strategy space
-                    </p>
-                    <FingerprintScatter
-                        report={report}
-                        xMetric={xMetric}
-                        yMetric={yMetric}
-                        onXMetricChange={setXMetric}
-                        onYMetricChange={setYMetric}
-                        filter={filter}
-                        onFilterChange={setFilter}
-                        highlightedId={highlightedId}
-                        onHighlight={setHighlightedId}
-                    />
+                    <div id="strategy-space">
+                        <p className="ipd-kicker ipd-mono ipd-results-label">
+                            Strategy space
+                        </p>
+                        <FingerprintScatter
+                            report={report}
+                            xMetric={xMetric}
+                            yMetric={yMetric}
+                            onXMetricChange={setXMetric}
+                            onYMetricChange={setYMetric}
+                            filter={filter}
+                            onFilterChange={setFilter}
+                            highlightedId={highlightedId}
+                            onHighlight={setHighlightedId}
+                        />
+                    </div>
                     <p className="ipd-footnote">
                         Classics are circles; LLM × persona variants are stars.
                         Lines connect personas of the same model. Hover a point

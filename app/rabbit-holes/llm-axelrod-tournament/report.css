@@ -388,6 +388,7 @@
     margin-top: 2.5rem;
 }
 
+.ipd-subsection > .ipd-dims-wrap + .ipd-prose,
 .ipd-subsection > .ipd-dims + .ipd-prose,
 .ipd-subsection > .ipd-chart-shell + .ipd-prose {
     margin-top: 1.75rem;
@@ -572,41 +573,49 @@ li.ipd-draft-note {
     color: var(--ipd-muted);
 }
 
+.ipd-dims-wrap {
+    /* Match .ipd-prose column */
+    width: 100%;
+    max-width: 40rem;
+    margin-inline: auto;
+    margin-top: 2rem;
+}
+
+.ipd-dims-wrap .ipd-results-label {
+    margin-bottom: 0.6rem;
+}
+
 .ipd-dims {
-    margin-top: 2.5rem;
     display: grid;
-    gap: 0.85rem;
-    grid-template-columns: 1fr;
-}
-
-@media (min-width: 720px) {
-    .ipd-dims {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-
-@media (min-width: 980px) {
-    .ipd-dims {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.45rem;
+    width: 100%;
 }
 
 .ipd-dim-card {
+    aspect-ratio: 1;
+    min-width: 0;
     border: 1px solid var(--ipd-border);
     background: var(--ipd-panel);
-    padding: 0.9rem 1rem;
+    padding: 0.55rem 0.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    overflow: hidden;
 }
 
 .ipd-dim-card h3 {
-    font-size: 1rem;
-    margin-bottom: 0.35rem;
+    font-size: clamp(0.7rem, 1.7vw, 0.95rem);
+    line-height: 1.2;
+    margin: 0;
 }
 
 .ipd-dim-card p {
     margin: 0;
     color: var(--ipd-muted);
-    font-size: 0.875rem;
-    line-height: 1.45;
+    font-size: clamp(0.6rem, 1.35vw, 0.75rem);
+    line-height: 1.35;
+    overflow: hidden;
 }
 
 .ipd-prompt-grid {
