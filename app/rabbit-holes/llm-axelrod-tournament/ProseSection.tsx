@@ -12,12 +12,12 @@ export function isDraft(text: string): boolean {
 }
 
 /**
- * Render inline markdown: `[label](url)` links and `*italics*`.
- * Links are matched first so brackets inside URLs never become italics.
+ * Render inline markdown: `[label](url)` links, `**bold**`, and `*italics*`.
+ * Links are matched first so brackets inside URLs never become emphasis.
  */
 export function renderInline(text: string, keyPrefix = "n"): ReactNode[] {
     const nodes: ReactNode[] = [];
-    const linkPattern = /\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g;
+    const linkPattern = /\[([^\]]+)\]\(((?:https?:\/\/|#)[^)\s]+)\)/g;
     let last = 0;
     let match: RegExpExecArray | null;
     let key = 0;
@@ -28,13 +28,28 @@ export function renderInline(text: string, keyPrefix = "n"): ReactNode[] {
                 ...renderEmphasis(text.slice(last, match.index), `${keyPrefix}-t${key}`),
             );
         }
+        const href = match[2];
+        const isAnchor = href.startsWith("#");
         nodes.push(
             <a
                 key={`${keyPrefix}-a${key++}`}
-                href={match[2]}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={href}
+                target={isAnchor ? undefined : "_blank"}
+                rel={isAnchor ? undefined : "noopener noreferrer"}
                 className="ipd-prose-link"
+                onClick={
+                    isAnchor
+                        ? (e) => {
+                              const scrollTarget = document.querySelector(href);
+                              if (!scrollTarget) return;
+                              e.preventDefault();
+                              scrollTarget.scrollIntoView({
+                                  behavior: "smooth",
+                                  block: "start",
+                              });
+                          }
+                        : undefined
+                }
             >
                 {match[1]}
             </a>,
@@ -50,6 +65,31 @@ export function renderInline(text: string, keyPrefix = "n"): ReactNode[] {
 }
 
 function renderEmphasis(text: string, keyPrefix: string): ReactNode[] {
+    const nodes: ReactNode[] = [];
+    // Bold first so `**name**` is not eaten by the italic matcher.
+    const boldPattern = /\*\*([^*]+)\*\*/g;
+    let last = 0;
+    let match: RegExpExecArray | null;
+    let key = 0;
+
+    while ((match = boldPattern.exec(text)) !== null) {
+        if (match.index > last) {
+            nodes.push(
+                ...renderItalics(text.slice(last, match.index), `${keyPrefix}-i${key}`),
+            );
+        }
+        nodes.push(<strong key={`${keyPrefix}-b${key++}`}>{match[1]}</strong>);
+        last = match.index + match[0].length;
+    }
+
+    if (last < text.length) {
+        nodes.push(...renderItalics(text.slice(last), `${keyPrefix}-i${key}`));
+    }
+
+    return nodes;
+}
+
+function renderItalics(text: string, keyPrefix: string): ReactNode[] {
     const nodes: ReactNode[] = [];
     const pattern = /\*([^*]+)\*/g;
     let last = 0;

@@ -3,13 +3,17 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import {
+    APPENDIX,
     CONCLUSION,
     CREDITS,
     DISCUSSION,
     INTRODUCTION,
     LIMITATIONS,
     METHODOLOGY,
+    PERSONA_PROMPTS,
+    USER_PROMPT_EXAMPLES,
 } from "./content";
+import AppendixSection from "./AppendixSection";
 import FingerprintScatter from "./FingerprintScatter";
 import LeaderboardTable from "./LeaderboardTable";
 import MethodologySection from "./MethodologySection";
@@ -166,6 +170,12 @@ export default function ReportClient({ report }: Props) {
                 <ProseSection id="discussion" {...DISCUSSION} />
                 <ProseSection id="limitations" {...LIMITATIONS} />
                 <ProseSection id="conclusion" {...CONCLUSION} />
+                <AppendixSection
+                    id="appendix"
+                    {...APPENDIX}
+                    personaPrompts={PERSONA_PROMPTS}
+                    userPromptExamples={USER_PROMPT_EXAMPLES}
+                />
 
                 <footer className="ipd-footer ipd-mono">
                     {CREDITS.paragraphs.map((text, i) => (

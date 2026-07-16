@@ -45,7 +45,7 @@ export const METHODOLOGY: MethodologyCopy = {
             id: "the-game",
             heading: "The Game",
             paragraphs: [
-                "Imagine for a moment that you and a sharp, quick-witted accomplice plan and execute an elaborate heist. A year later, thinking you got away with your crime, you see flashing lights and a smug detective, whose restless sleep your seemingly perfect crime has haunted for the past year, reads you your Miranda Rights as she shoves you into the back of her squad car. Next to you is a shadowy face you thought you’d never see again: your partner-in-crime is eyeing you with a glint of mistrust in their eye. Unease sets in. They take you to separate interrogation rooms, lay out the damning evidence, and explain very clearly what will happen if you confess. If you and your partner both stay silent, you will both face ten years in prison. If you or your partner confess and the other stays silent, the one who confesses will walk without serving time, while the other will face a double sentence. If you both confess, you will both serve five years in prison. You remember that look of doubt in your partner’s eyes in the back of the car… what do you do? Confess or hold your silence?",
+                "Imagine for a moment that you and a sharp, quick-witted accomplice plan and execute an elaborate heist. A year later, thinking you got away with your crime, you see flashing lights and a smug detective reads you your Miranda Rights as she shoves you into the back of her squad car. Next to you is a face you thought you’d never see again: your partner-in-crime is eyeing you with a glint of mistrust in their eye. Unease sets in. They take you to separate interrogation rooms, lay out the damning evidence, and explain very clearly what will happen if you confess. If you and your partner both stay silent, you will both face ten years in prison. If you or your partner confess and the other stays silent, the one who confesses will walk without serving time, while the other will face a double sentence. If you both confess, you will both serve five years in prison. You remember that look of doubt in your partner’s eyes in the back of the car… what do you do? Confess or hold your silence?",
             ],
         },
         {
@@ -53,7 +53,7 @@ export const METHODOLOGY: MethodologyCopy = {
             heading: "The Tournament",
             paragraphs: [
                 "In an Axelrod tournament, we play an iterated version of the above Prisoner’s Dilemma. In one game of the tournament, Player A and Player B are presented with the following payoff matrix:",
-                "The values on the left in each box represent a reward for Player A associated with the given outcome, and the values on the right are rewards for Player B. Player A chooses to Cooperate or Defect, Player B chooses to Cooperate or Defect, Player A chooses, Player B chooses, etc. for 30 rounds per game. This tournament has 15 players (7 classic strategies and 8 LLM × personas), and each plays each other 5 times, for a total of 70 games.",
+                "Each round, Player A and Player B choose to Cooperate or Defect simultaneously, without seeing the other's move; this repeats for 30 rounds per game. This tournament has 15 players (7 classic strategies and 8 LLM × personas), and each plays each other 5 times, for a total of 70 games.",
             ],
             slotAfterParagraph: 0,
         },
@@ -64,20 +64,30 @@ export const METHODOLOGY: MethodologyCopy = {
                 "In Axelrod’s original and subsequent tournaments, players submitted their chosen strategies ahead of time and the tournament ran on these fixed instructions. Of those that have proven the strongest over time, seven classic strategies were selected as players for this simulation:",
             ],
             list: [
-                "Tit For Tat: Cooperates on the first move, then mirrors whatever the opponent played the turn before. Simple and transparent, and famously hard to beat — it never defects first, retaliates immediately, and forgives just as fast.",
-                "GTFT (Generous Tit For Tat): Plays Tit For Tat’s mirroring rule, but occasionally cooperates anyway after an opponent’s defection. That built-in generosity keeps a single accidental or noisy defection from spiraling into a long run of mutual retaliation.",
-                "Win-Stay Lose-Shift: Repeats its last move if that move scored well, and switches otherwise. It settles into mutual cooperation and stays there — but it can just as easily settle into mutual defection and stay there too.",
-                "Grudger: Cooperates until the opponent defects once, then defects for the rest of the match. Nice and provocable, but entirely unforgiving.",
-                "Cooperator: Always cooperates, regardless of what the opponent does. A baseline for how exploitable pure niceness is.",
-                "Defector: Always defects, regardless of what the opponent does. A baseline for pure self-interest.",
-                "Random (0.5): Cooperates or defects with equal probability each turn, independent of history. A noise baseline against which genuine strategy can be measured.",
+                "**Tit For Tat:** Cooperates on the first move, then mirrors whatever the opponent played the turn before. Famously hard to beat.",
+                "**GTFT (Generous Tit For Tat):** Plays Tit For Tat’s mirroring rule, but occasionally cooperates anyway after an opponent’s defection.",
+                "**Win-Stay Lose-Shift:** Repeats its last move if that move scored well, and switches otherwise.",
+                "**Grudger:** Cooperates until the opponent defects once, then defects for the rest of the match.",
+                "**Cooperator:** Always cooperates, regardless of what the opponent does. A baseline for pure niceness.",
+                "**Defector:** Always defects, regardless of what the opponent does. A baseline for pure self-interest.",
+                "**Random (0.5):** Cooperates or defects with equal probability each turn, independent of history. A noise baseline against which genuine strategy can be measured.",
             ],
         },
         {
             id: "llm-persona-players",
             heading: "LLM × Persona Players",
             paragraphs: [
-                "I used Claude Haiku 4.5 and GPT-4o-mini as the two models in this tournament. Each was presented the game through four system-prompt personas: selfish, cooperative, payoff-only, and neutral. See the index for how each prompt was phrased. Crossing two models with four personas produced the 8 LLM × persona players in the tournament.",
+              "I used Claude Haiku 4.5 and GPT-4o-mini as the two models in this tournament. Each was presented the game through four system-prompt personas: selfish, cooperative, payoff-only, and neutral. See the [Appendix](#appendix-system-prompts) for how each prompt was phrased. Crossing two models with four personas produced the 8 LLM × persona players in the tournament:",
+            ],
+            list: [
+                "**Claude Haiku 4.5 × selfish**",
+                "**Claude Haiku 4.5 × cooperative**",
+                "**Claude Haiku 4.5 × payoff-only**",
+                "**Claude Haiku 4.5 × neutral**",
+                "**GPT-4o-mini × selfish**",
+                "**GPT-4o-mini × cooperative**",
+                "**GPT-4o-mini × payoff-only**",
+                "**GPT-4o-mini × neutral**",
             ],
         },
         {
@@ -87,17 +97,17 @@ export const METHODOLOGY: MethodologyCopy = {
                 "Three constraints keep the comparison between LLM players and classic strategies fair by construction, rather than by adjustment after the fact:",
             ],
             list: [
-                "Per-match statelessness: every match starts with no memory of any other match. A player's move in one game can't be informed by what happened in a previous game against a different opponent, so each match tests the strategy fresh, exactly as Axelrod's original tournament format assumes.",
-                "Moves-only prompts: LLM players are never told who they're playing. Each turn's prompt shows only the payoff matrix and the sequence of C/D moves exchanged so far — no model name, no persona label, no reputation. This rules out an LLM shifting its play because it recognizes or guesses its opponent, rather than because of what that opponent has actually done.",
-                "Temperature = 0: for the main runs, LLM players sample at temperature 0, so a given match history always produces the same next move. This is what makes the comparison to a classic strategy meaningful in the first place — both are treated as deterministic functions from history to move, not as a distribution over moves.",
+                "**Per-match statelessness:** every match starts with no memory of any other match. A player's move in one game can't be informed by what happened in a previous game against a different opponent, so each match tests the fresh strategy, as Axelrod's original tournament format assumes.",
+                "**Moves-only prompts:** LLM players are never told who they're playing. Each turn's prompt shows only the payoff matrix and the sequence of C/D moves exchanged so far: no model name, no persona label, no reputation. This rules out an LLM shifting its play because it recognizes or guesses its opponent, rather than because of what that opponent has actually done.",
+                "**Temperature = 0:** for the main runs, LLM players sample at temperature 0, so a given match history always produces the same next move. This is what makes the comparison to a classic strategy meaningful in the first place. Both are treated as deterministic functions from history to move, not as a distribution over moves.",
             ],
         },
         {
             id: "llms-nearest-classic-strategy",
             heading: "LLMs’ Nearest Classic Strategy",
             paragraphs: [
-                "Each player's behavioral fingerprint — cooperation rate, niceness, retaliation, forgiveness, and provocability — is computed from its actual moves across all 70 round-robin matches, the same fingerprint plotted in the strategy-space figure below. To find an LLM × persona player's nearest classic strategy, I take the Euclidean distance between its fingerprint and every classic strategy's fingerprint in that same five-dimensional space, and report the closest match.",
-                "A short distance means an LLM's aggregate behavior — how often it cooperates, how it opens, how sharply it punishes and how readily it forgives — statistically resembles a classic strategy's. It does not mean the LLM is internally running that strategy's exact rule; see Limitations for more on this distinction.",
+               "Each player's behavioral fingerprint (cooperation rate, niceness, retaliation, forgiveness, and provocability) is computed from its actual moves across all 70 round-robin matches, the same fingerprint plotted in the strategy-space figure below. To find an LLM × persona player's nearest classic strategy, I take the Euclidean distance between its fingerprint and every classic strategy's fingerprint in that same five-dimensional space, and report the closest match.",
+                "A short distance means an LLM's aggregate behavior (how often it cooperates, how it opens, how sharply it punishes and how readily it forgives) statistically resembles a classic strategy's. It does not mean the LLM is internally running that strategy's exact rule; see Limitations for more on this distinction.",
             ],
             slotAfterParagraph: 0,
         },
@@ -139,3 +149,61 @@ export const CREDITS = {
         "Built on Axelrod-Python (Knight et al., Journal of Open Research Software, 2016).",
     ],
 };
+
+export type PersonaPrompt = {
+    id: string;
+    label: string;
+    systemPrompt: string;
+};
+
+export const APPENDIX: ProseCopy = {
+    title: "Appendix",
+    dek: "Full prompt text for each persona.",
+    paragraphs: [
+        "Each LLM player receives a system prompt that sets its disposition (below) and, every turn, a user prompt built from the live payoff matrix and this match's move history only — the same information a classic strategy can see, and nothing about who the opponent is (see Fairness Safeguards). Three of the four personas share an identical output format around a different disposition paragraph; payoff-only goes further and strips the Cooperate/Defect framing entirely, presenting the same game as a bare choice between A and B.",
+    ],
+};
+
+export const PERSONA_PROMPTS: PersonaPrompt[] = [
+    {
+        id: "neutral",
+        label: "Neutral",
+        systemPrompt:
+            "You are playing a repeated Prisoner's Dilemma. Each round choose Cooperate (C) or Defect (D). You will see the payoff table and this match's move history.\nOutput rules (strict):\n  - Reply with exactly one character: C or D\n  - No explanation, punctuation, or other text",
+    },
+    {
+        id: "selfish",
+        label: "Selfish",
+        systemPrompt:
+            "You are a ruthless, self-interested agent. Your only goal is to maximize your own score, with no regard for the other player. Each round choose Cooperate (C) or Defect (D). You will see the payoff table and this match's move history.\nOutput rules (strict):\n  - Reply with exactly one character: C or D\n  - No explanation, punctuation, or other text",
+    },
+    {
+        id: "cooperative",
+        label: "Cooperative",
+        systemPrompt:
+            "You are a fair-minded agent who values mutual benefit and long-term trust. Each round choose Cooperate (C) or Defect (D). You will see the payoff table and this match's move history.\nOutput rules (strict):\n  - Reply with exactly one character: C or D\n  - No explanation, punctuation, or other text",
+    },
+    {
+        id: "payoff_only",
+        label: "Payoff-only",
+        systemPrompt:
+            "You are playing a repeated two-player game. Each round you choose action A or action B. You will see a payoff table and this match's choice history. Maximize your own total points.\nOutput rules (strict):\n  - Reply with exactly one character: A or B\n  - No explanation, punctuation, or other text",
+    },
+];
+
+export const USER_PROMPT_EXAMPLES: Array<{
+    id: string;
+    label: string;
+    body: string;
+}> = [
+    {
+        id: "cd",
+        label: "Neutral · Selfish · Cooperative (C/D)",
+        body: "Payoffs each round (your_move, their_move) -> your_points:\n  (C, C) -> 3    (you cooperate, they cooperate)\n  (C, D) -> 0    (you cooperate, they defect)\n  (D, C) -> 5    (you defect, they cooperate)\n  (D, D) -> 1    (you defect, they defect)\n\nHistory so far:\n  Round 1: you played C, they played C\n  Round 2: you played C, they played D\n  Round 3: you played D, they played D\n\nYour move this round (reply with ONLY C or D, no other text):",
+    },
+    {
+        id: "ab",
+        label: "Payoff-only (A/B)",
+        body: "Payoffs each round (your choice, their choice) -> your_points:\n  (A, A) -> 3\n  (A, B) -> 0\n  (B, A) -> 5\n  (B, B) -> 1\n\nHistory so far:\n  Round 1: you chose A, they chose A\n  Round 2: you chose A, they chose B\n  Round 3: you chose B, they chose B\n\nYour move this round (reply with ONLY A or B, no other text):",
+    },
+];
