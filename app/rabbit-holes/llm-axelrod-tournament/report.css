@@ -380,6 +380,20 @@
     margin: 0 auto;
 }
 
+.ipd-subsection + .ipd-subsection {
+    margin-top: 2.5rem;
+}
+
+.ipd-subsection > .ipd-dims + .ipd-prose,
+.ipd-subsection > .ipd-chart-shell + .ipd-prose {
+    margin-top: 1.75rem;
+}
+
+.ipd-prose h3 {
+    font-size: 1.1rem;
+    margin: 0 0 0.85rem;
+}
+
 .ipd-prose p {
     margin: 0 0 1rem;
     font-size: 0.975rem;
@@ -841,13 +855,11 @@ li.ipd-draft-note {
 
 .ipd-payoff-shell {
     overflow: hidden;
-}
-
-.ipd-payoff-toolbar-note {
-    margin: 0;
-    font-size: 0.6875rem;
-    color: var(--ipd-faint);
-    letter-spacing: 0.02em;
+    /* Match .ipd-prose column */
+    width: 100%;
+    max-width: 40rem;
+    margin-inline: auto;
+    margin-top: 2rem;
 }
 
 .ipd-payoff-layout {
@@ -857,16 +869,17 @@ li.ipd-draft-note {
 
 @media (min-width: 860px) {
     .ipd-payoff-layout {
-        grid-template-columns: minmax(0, 1fr) 15rem;
+        grid-template-columns: minmax(0, 1fr) 13.5rem;
     }
 }
 
 .ipd-payoff-stage {
-    padding: 1rem 1.05rem 1.15rem;
+    padding: 0.75rem 0.85rem 0.7rem;
     background: var(--ipd-panel);
     display: flex;
     flex-direction: column;
-    gap: 0.85rem;
+    gap: 0.55rem;
+    min-width: 0;
 }
 
 @media (min-width: 860px) {
@@ -875,38 +888,31 @@ li.ipd-draft-note {
     }
 }
 
-.ipd-payoff-pickers {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem 1.25rem;
-}
-
-.ipd-payoff-picker {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.45rem;
+.ipd-payoff-title {
+    margin: 0;
 }
 
 .ipd-payoff-grid-wrap {
     display: grid;
-    grid-template-columns: minmax(5.5rem, 7.5rem) 1fr 1fr;
-    gap: 0.4rem;
+    grid-template-columns: auto 1fr 1fr;
+    column-gap: 0.35rem;
+    row-gap: 0.3rem;
     align-items: stretch;
-    max-width: 34rem;
+    width: 100%;
 }
 
 .ipd-payoff-corner {
-    min-height: 1.5rem;
+    min-height: 1.1rem;
 }
 
 .ipd-payoff-colhead {
     text-align: center;
-    font-size: 0.6875rem;
-    letter-spacing: 0.04em;
+    font-size: 0.625rem;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     color: var(--ipd-faint);
-    padding: 0 0.25rem 0.15rem;
+    padding: 0 0.15rem 0.05rem;
+    line-height: 1.2;
 }
 
 .ipd-payoff-row {
@@ -918,12 +924,12 @@ li.ipd-draft-note {
     align-items: center;
     justify-content: flex-end;
     text-align: right;
-    font-size: 0.6875rem;
-    letter-spacing: 0.04em;
+    font-size: 0.625rem;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     color: var(--ipd-faint);
-    padding-right: 0.55rem;
-    line-height: 1.3;
+    padding-right: 0.4rem;
+    line-height: 1.25;
 }
 
 .ipd-payoff-cell {
@@ -934,12 +940,13 @@ li.ipd-draft-note {
     cursor: pointer;
     font: inherit;
     text-align: left;
-    min-height: 6.25rem;
-    padding: 0.75rem 0.85rem;
+    /* Compact but still easy to hit; score stays the visual center */
+    min-height: 4.75rem;
+    padding: 0.5rem 0.55rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 0.35rem;
+    gap: 0.2rem;
     transition:
         border-color 140ms ease,
         background 160ms var(--ipd-ease);
@@ -972,13 +979,14 @@ li.ipd-draft-note {
 }
 
 .ipd-payoff-cell-letter {
-    font-size: 0.6875rem;
+    font-size: 0.625rem;
     letter-spacing: 0.08em;
     color: var(--ipd-faint);
+    line-height: 1;
 }
 
 .ipd-payoff-cell-scores {
-    font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+    font-size: clamp(1.2rem, 2.2vw, 1.55rem);
     font-weight: 500;
     line-height: 1;
     letter-spacing: -0.02em;
@@ -989,32 +997,35 @@ li.ipd-draft-note {
     margin: 0 0.05rem;
 }
 
-.ipd-payoff-you-score {
+.ipd-payoff-a-score {
     color: var(--ipd-fg);
 }
 
-.ipd-payoff-them-score {
+.ipd-payoff-b-score {
     color: var(--ipd-muted);
 }
 
 .ipd-payoff-cell-name {
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
     color: var(--ipd-muted);
+    line-height: 1.2;
 }
 
 .ipd-payoff-legend {
     margin: 0;
-    font-size: 0.6875rem;
+    font-size: 0.625rem;
     color: var(--ipd-faint);
+    letter-spacing: 0.02em;
 }
 
 .ipd-payoff-aside {
-    padding: 1rem 1.05rem 1.15rem;
+    padding: 0.75rem 0.85rem;
     background: var(--ipd-panel);
     border-top: 1px solid var(--ipd-border);
     display: flex;
     flex-direction: column;
-    gap: 0.45rem;
+    /* Name + joint sit as one unit; rules breathe below */
+    gap: 0.2rem;
 }
 
 @media (min-width: 860px) {
@@ -1024,75 +1035,78 @@ li.ipd-draft-note {
 }
 
 .ipd-payoff-aside h3 {
-    font-size: 1.15rem;
-    line-height: 1.25;
-}
-
-.ipd-payoff-blurb {
+    font-size: 1.05rem;
+    line-height: 1.2;
     margin: 0;
-    color: var(--ipd-muted);
-    font-size: 0.8125rem;
-    line-height: 1.5;
 }
 
 .ipd-payoff-readout {
-    margin: 0.55rem 0 0;
+    margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
-    font-size: 0.75rem;
+    font-size: 0.6875rem;
 }
 
 .ipd-payoff-readout > div {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     justify-content: space-between;
-    gap: 0.75rem;
+    gap: 0.5rem;
 }
 
 .ipd-payoff-readout dt {
     color: var(--ipd-muted);
+    line-height: 1.3;
 }
 
 .ipd-payoff-readout dd {
     margin: 0;
     color: var(--ipd-fg);
+    font-size: 0.875rem;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
 }
 
 .ipd-payoff-rules {
-    margin-top: 0.85rem;
-    padding-top: 0.75rem;
+    /* Separate conceptual block; pin to bottom when aside stretches with matrix */
+    margin-top: auto;
+    padding-top: 0.65rem;
     border-top: 1px solid var(--ipd-border);
+}
+
+.ipd-payoff-rules .ipd-kicker {
+    margin: 0;
 }
 
 .ipd-payoff-rules ul {
     list-style: none;
-    margin: 0.45rem 0 0;
+    margin: 0.35rem 0 0;
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.45rem;
+    gap: 0.35rem;
 }
 
 .ipd-payoff-rules li {
     display: flex;
     flex-direction: column;
-    gap: 0.1rem;
-    font-size: 0.75rem;
+    gap: 0.05rem;
+    font-size: 0.6875rem;
     color: var(--ipd-muted);
+    line-height: 1.3;
 }
 
 .ipd-payoff-rule-label {
     color: var(--ipd-fg);
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
 }
 
 .ipd-payoff-rules li[data-ok="true"] .ipd-payoff-rule-label::before {
     content: "";
     display: inline-block;
-    width: 0.35rem;
-    height: 0.35rem;
-    margin-right: 0.4rem;
+    width: 0.3rem;
+    height: 0.3rem;
+    margin-right: 0.35rem;
     margin-bottom: 0.05rem;
     background: var(--ipd-fg);
     vertical-align: middle;

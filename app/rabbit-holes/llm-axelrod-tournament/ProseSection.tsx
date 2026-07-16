@@ -6,7 +6,7 @@ type Props = ProseCopy & {
     children?: ReactNode;
 };
 
-function isDraft(text: string): boolean {
+export function isDraft(text: string): boolean {
     const trimmed = text.trim();
     return trimmed.startsWith("[") && trimmed.endsWith("]");
 }
@@ -15,7 +15,7 @@ function isDraft(text: string): boolean {
  * Render inline markdown: `[label](url)` links and `*italics*`.
  * Links are matched first so brackets inside URLs never become italics.
  */
-function renderInline(text: string, keyPrefix = "n"): ReactNode[] {
+export function renderInline(text: string, keyPrefix = "n"): ReactNode[] {
     const nodes: ReactNode[] = [];
     const linkPattern = /\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g;
     let last = 0;

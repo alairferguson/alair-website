@@ -12,6 +12,7 @@ import {
 } from "./content";
 import FingerprintScatter from "./FingerprintScatter";
 import LeaderboardTable from "./LeaderboardTable";
+import MethodologySection from "./MethodologySection";
 import PayoffMatrix from "./PayoffMatrix";
 import PersonaSlope from "./PersonaSlope";
 import ProseSection from "./ProseSection";
@@ -70,29 +71,31 @@ export default function ReportClient({ report }: Props) {
 
                 <ProseSection id="introduction" {...INTRODUCTION} />
 
-                <ProseSection id="methodology" {...METHODOLOGY}>
-                    <p className="ipd-kicker ipd-mono ipd-results-label ipd-results-label--spaced">
-                        Payoff matrix
-                    </p>
-                    <PayoffMatrix />
-                    <p className="ipd-footnote">
-                        Standard Axelrod payoffs. Hover or pick moves to read
-                        each outcome; toggle to the one-sided view the model
-                        sees in its prompt.
-                    </p>
-
-                    <p className="ipd-kicker ipd-mono ipd-results-label ipd-results-label--spaced">
-                        Fingerprint dimensions
-                    </p>
-                    <div className="ipd-dims">
-                        {dimCards.map((metric) => (
-                            <article key={metric.id} className="ipd-dim-card">
-                                <h3>{metric.label}</h3>
-                                <p>{metric.description}</p>
-                            </article>
-                        ))}
-                    </div>
-                </ProseSection>
+                <MethodologySection
+                    id="methodology"
+                    {...METHODOLOGY}
+                    slots={{
+                        "the-tournament": <PayoffMatrix />,
+                        "llms-nearest-classic-strategy": (
+                            <>
+                                <p className="ipd-kicker ipd-mono ipd-results-label ipd-results-label--spaced">
+                                    Fingerprint dimensions
+                                </p>
+                                <div className="ipd-dims">
+                                    {dimCards.map((metric) => (
+                                        <article
+                                            key={metric.id}
+                                            className="ipd-dim-card"
+                                        >
+                                            <h3>{metric.label}</h3>
+                                            <p>{metric.description}</p>
+                                        </article>
+                                    ))}
+                                </div>
+                            </>
+                        ),
+                    }}
+                />
 
                 <section
                     className="ipd-section ipd-section--numbered"
