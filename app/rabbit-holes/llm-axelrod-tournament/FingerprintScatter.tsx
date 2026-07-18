@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import SeriesLegend from "./SeriesLegend";
 import type { MetricId, Player, Report, Series } from "./types";
 
 type Filter = "all" | "llm" | "classic";
@@ -136,17 +137,17 @@ function formatTickClean(v: number): string {
     return Number(v.toFixed(2)).toString();
 }
 
-/** Compact on-plot name; full name stays in the hover card. */
+/**
+ * Compact on-plot name; full name stays in the hover card. Model is no
+ * longer spelled out here — color carries model identity (see the legend
+ * above the chart) — so LLM points are labeled by persona alone.
+ */
 function plotLabel(player: Player): string {
     if (player.kind === "classic") {
         return CLASSIC_PLOT_LABEL[player.label] ?? player.label;
     }
-    const [rawModel, rawPersona = ""] = player.shortLabel.split(" · ");
-    let model = rawModel;
-    if (model.startsWith("gpt-4o-mini")) model = "4o-mini";
-    else if (model.includes("haiku")) model = "haiku";
-    const persona = PERSONA_PLOT_LABEL[rawPersona] ?? rawPersona;
-    return persona ? `${model} · ${persona}` : model;
+    const persona = player.persona ?? "";
+    return PERSONA_PLOT_LABEL[persona] ?? persona;
 }
 
 function labelWidth(text: string): number {
@@ -767,6 +768,13 @@ export default function FingerprintScatter({
                             </button>
                         ))}
                     </div>
+                </div>
+
+                <div className="ipd-toolbar-custom">
+                    <SeriesLegend
+                        series={report.series}
+                        onHighlight={onHighlight}
+                    />
                 </div>
 
                 {customOpen && (

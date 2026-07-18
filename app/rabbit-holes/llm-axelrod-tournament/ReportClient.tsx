@@ -122,11 +122,12 @@ export default function ReportClient({ report }: Props) {
                                 />
                                 <p className="ipd-footnote">
                                     Classics are circles; LLM × persona
-                                    variants are stars. Lines connect personas
-                                    of the same model. Plot labels are
-                                    abbreviated — hover a point for the full
-                                    name. Use Behavior, Punishment, or Outcome
-                                    to re-project; Custom axes for any pair.
+                                    variants are stars, colored by model (see
+                                    the key above). Lines connect personas of
+                                    the same model. Plot labels show persona
+                                    only — hover a point for the full name.
+                                    Use Behavior, Punishment, or Outcome to
+                                    re-project; Custom axes for any pair.
                                 </p>
                             </>
                         ),
@@ -140,6 +141,8 @@ export default function ReportClient({ report }: Props) {
                                 <p className="ipd-footnote">
                                     Each cell is how often the row player
                                     cooperated against the column player.
+                                    Row/column labels show persona only and
+                                    are colored by model (see the key above).
                                     Switch to LLMs × LLMs for model-to-model
                                     play; Full matrix includes every pairing.
                                     Hover shows both directions when the
@@ -170,10 +173,11 @@ export default function ReportClient({ report }: Props) {
                                 />
                                 <p className="ipd-footnote">
                                     Four system prompts, same models,
-                                    temperature 0. Switch metrics to see which
-                                    fingerprint traits the disposition moves;
-                                    overlaid curves make the shared swing
-                                    obvious.
+                                    temperature 0. Curves are colored by model
+                                    (see the key above). Switch metrics to see
+                                    which fingerprint traits the disposition
+                                    moves; overlaid curves make the shared
+                                    swing obvious.
                                 </p>
                             </>
                         ),

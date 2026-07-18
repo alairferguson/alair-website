@@ -151,6 +151,46 @@
     padding: 0.75rem 0.85rem;
 }
 
+.ipd-legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.55rem 0.9rem;
+    color: var(--ipd-faint);
+}
+
+.ipd-legend-item {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: 0;
+    background: transparent;
+    padding: 0.15rem 0.3rem;
+    margin: -0.15rem -0.3rem;
+    font: inherit;
+    font-size: 0.75rem;
+    color: inherit;
+    cursor: pointer;
+    transition:
+        background 140ms ease,
+        color 140ms ease;
+}
+
+.ipd-legend-item:hover,
+.ipd-legend-item:focus-visible {
+    background: var(--ipd-hover);
+    color: var(--ipd-fg);
+}
+
+.ipd-legend-swatch {
+    display: inline-block;
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 99px;
+    flex: none;
+}
+
 .ipd-toolbar-custom {
     display: flex;
     flex-wrap: wrap;
@@ -842,26 +882,6 @@ li.ipd-draft-note {
 
 .ipd-slope-marker[data-dimmed="true"] {
     opacity: 0.2;
-}
-
-.ipd-slope-value {
-    fill: var(--ipd-fg);
-    font-size: 11px;
-    font-weight: 500;
-    pointer-events: none;
-    paint-order: stroke;
-    stroke: var(--ipd-panel);
-    stroke-width: 3px;
-    stroke-linejoin: round;
-    transition: opacity 140ms ease;
-}
-
-.ipd-slope-value[data-dimmed="true"] {
-    opacity: 0.2;
-}
-
-.ipd-slope-value[data-active="true"] {
-    font-weight: 600;
 }
 
 .ipd-slope-xtick {

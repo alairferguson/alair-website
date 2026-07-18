@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import SeriesLegend from "./SeriesLegend";
 import type { MetricId, Player, Report, Series } from "./types";
 
 type Props = {
@@ -28,7 +29,6 @@ const HEIGHT = 460;
 const MARGIN = { top: 40, right: 20, bottom: 58, left: 54 };
 const INNER_W = WIDTH - MARGIN.left - MARGIN.right;
 const INNER_H = HEIGHT - MARGIN.top - MARGIN.bottom;
-const LABEL_GAP = 14;
 const FINGERPRINT_METRICS: MetricId[] = [
     "cooperation_rate",
     "niceness",
@@ -75,17 +75,6 @@ function diamondPath(size = 7): string {
     return `M0,${-size} L${size},0 L0,${size} L${-size},0 Z`;
 }
 
-type PlacedValue = {
-    persona: string;
-    player: Player;
-    value: number;
-    color: string;
-    x: number;
-    y: number;
-    labelDX: number;
-    labelDY: number;
-};
-
 type ModelCurve = {
     series: Series;
     points: Array<{
@@ -97,91 +86,6 @@ type ModelCurve = {
     }>;
     path: string;
 };
-
-/**
- * Place value labels so co-located / near points never collide.
- * Prefer above the marker; flip below near the top edge; stagger vertically
- * and slightly horizontally when several share a column.
- */
-function placeValueLabels(
-    points: Array<{
-        persona: string;
-        player: Player;
-        value: number;
-        color: string;
-        x: number;
-        y: number;
-    }>,
-): PlacedValue[] {
-    const byPersona = new Map<string, typeof points>();
-    for (const pt of points) {
-        const list = byPersona.get(pt.persona);
-        if (list) list.push(pt);
-        else byPersona.set(pt.persona, [pt]);
-    }
-
-    const placed: PlacedValue[] = [];
-
-    for (const group of byPersona.values()) {
-        group.sort((a, b) => a.y - b.y || a.player.id.localeCompare(b.player.id));
-        const n = group.length;
-
-        group.forEach((pt, i) => {
-            const nearTop = pt.y < 22;
-            const nearBottom = pt.y > INNER_H - 18;
-            let labelDY: number;
-            let labelDX = 0;
-
-            if (n === 1) {
-                if (nearTop) labelDY = 16;
-                else if (nearBottom) labelDY = -14;
-                else labelDY = -13;
-            } else {
-                // Overlay / stacked column: alternate above/below, nudge sideways.
-                const above = !nearTop && (nearBottom || i % 2 === 0);
-                labelDY = above ? -13 - Math.floor(i / 2) * LABEL_GAP : 16 + Math.floor(i / 2) * LABEL_GAP;
-                labelDX = n > 1 ? (i % 2 === 0 ? -10 : 10) : 0;
-
-                // If the pair is vertically separated enough, keep labels on their own markers.
-                if (n === 2 && Math.abs(group[0].y - group[1].y) >= LABEL_GAP + 6) {
-                    labelDY = nearTop ? 16 : -13;
-                    labelDX = i === 0 ? -8 : 8;
-                }
-            }
-
-            // Clamp so labels stay inside the plot band.
-            const absY = pt.y + labelDY;
-            if (absY < 8) labelDY = 8 - pt.y;
-            if (absY > INNER_H - 4) labelDY = INNER_H - 4 - pt.y;
-
-            placed.push({ ...pt, labelDX, labelDY });
-        });
-
-        // Final vertical deconflict within the column.
-        const col = placed
-            .filter((p) => p.persona === group[0].persona)
-            .sort((a, b) => a.y + a.labelDY - (b.y + b.labelDY));
-        for (let i = 1; i < col.length; i++) {
-            const prev = col[i - 1];
-            const curr = col[i];
-            const prevAbs = prev.y + prev.labelDY;
-            const currAbs = curr.y + curr.labelDY;
-            if (currAbs - prevAbs < LABEL_GAP && Math.abs(curr.labelDX - prev.labelDX) < 18) {
-                curr.labelDY = prevAbs + LABEL_GAP - curr.y;
-                if (curr.y + curr.labelDY > INNER_H - 4) {
-                    // Push the earlier label up instead.
-                    prev.labelDY = curr.y + curr.labelDY - LABEL_GAP - prev.y;
-                    if (prev.y + prev.labelDY < 8) {
-                        prev.labelDY = 8 - prev.y;
-                        curr.labelDY = prev.y + prev.labelDY + LABEL_GAP - curr.y;
-                    }
-                }
-            }
-        }
-    }
-
-    return placed;
-}
 
 export default function PersonaSlope({
     report,
@@ -267,20 +171,10 @@ export default function PersonaSlope({
             };
         });
 
-        const valueLabels = placeValueLabels(
-            modelCurves.flatMap((curve) =>
-                curve.points.map((pt) => ({
-                    ...pt,
-                    color: curve.series.color,
-                })),
-            ),
-        );
-
         return {
             panelW,
             xOf,
             modelCurves,
-            valueLabels,
         };
     }, [curves, yOf]);
 
@@ -328,6 +222,12 @@ export default function PersonaSlope({
                                 ))}
                         </div>
                     </div>
+                </div>
+                <div className="ipd-toolbar-custom">
+                    <SeriesLegend
+                        series={report.series}
+                        onHighlight={onHighlight}
+                    />
                 </div>
             </div>
 
@@ -411,13 +311,18 @@ export default function PersonaSlope({
                                 const isActive =
                                     activePlayerId === pt.player.id ||
                                     activePersona === pt.persona;
+                                const sameModel =
+                                    activePlayer != null &&
+                                    activePlayer.kind === "llm" &&
+                                    activePlayer.model === pt.player.model;
                                 const dimmed =
-                                    (activePlayerId != null &&
-                                        activePlayerId !== pt.player.id &&
-                                        activePersona !== pt.persona) ||
-                                    (activePersona != null &&
-                                        activePersona !== pt.persona &&
-                                        activePlayerId == null);
+                                    (activePlayerId != null ||
+                                        activePersona != null) &&
+                                    !(
+                                        activePlayerId === pt.player.id ||
+                                        activePersona === pt.persona ||
+                                        sameModel
+                                    );
                                 return (
                                     <g
                                         key={pt.player.id}
@@ -458,34 +363,6 @@ export default function PersonaSlope({
                                 );
                             }),
                         )}
-
-                        {/* Value labels rendered after markers so halo wins; positions pre-resolved. */}
-                        {laidOut.valueLabels.map((pt) => {
-                            const isActive =
-                                activePlayerId === pt.player.id ||
-                                activePersona === pt.persona;
-                            const dimmed =
-                                (activePlayerId != null &&
-                                    activePlayerId !== pt.player.id &&
-                                    activePersona !== pt.persona) ||
-                                (activePersona != null &&
-                                    activePersona !== pt.persona &&
-                                    activePlayerId == null);
-                            return (
-                                <text
-                                    key={`val-${pt.player.id}`}
-                                    className="ipd-slope-value ipd-mono"
-                                    x={pt.x + pt.labelDX}
-                                    y={pt.y + pt.labelDY}
-                                    textAnchor="middle"
-                                    dominantBaseline="middle"
-                                    data-dimmed={dimmed}
-                                    data-active={isActive}
-                                >
-                                    {formatVal(pt.value)}
-                                </text>
-                            );
-                        })}
 
                         {PERSONA_ORDER.map((persona, i) => {
                             const meta = PERSONA_META.find(

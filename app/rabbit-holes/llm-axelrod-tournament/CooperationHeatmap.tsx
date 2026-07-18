@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import SeriesLegend from "./SeriesLegend";
 import type { Player, Report } from "./types";
 
 type ViewMode = "llm-classic" | "llm-llm" | "full";
@@ -18,8 +19,8 @@ type HoverCell = {
 };
 
 const CELL = 34;
-const LABEL_W = 132;
-const LABEL_H = 120;
+const LABEL_W = 92;
+const LABEL_H = 88;
 const LEGEND_W = 14;
 const LEGEND_GAP = 20;
 const PAD = { top: 10, right: 14, bottom: 12, left: 10 };
@@ -32,13 +33,6 @@ function coopFill(v: number): string {
     const c = 4 + t * 46;
     const h = 350 - t * 8;
     return `oklch(${l.toFixed(1)}% ${c.toFixed(1)}% ${h.toFixed(0)})`;
-}
-
-function compactModel(model: string | null): string {
-    if (!model) return "llm";
-    if (model.includes("gpt-4o-mini")) return "4o-mini";
-    if (model.includes("haiku")) return "haiku";
-    return model;
 }
 
 function compactPersona(persona: string | null): string {
@@ -66,9 +60,14 @@ const CLASSIC_SHORT: Record<string, string> = {
     Defector: "Defector",
 };
 
+/**
+ * Model is dropped from the label text — color carries model identity now
+ * (the label itself is tinted with the player's color; see the legend
+ * above the chart) — so LLM rows/columns are labeled by persona alone.
+ */
 function axisLabel(player: Player): string {
     if (player.kind === "llm") {
-        return `${compactModel(player.model)} · ${compactPersona(player.persona)}`;
+        return compactPersona(player.persona);
     }
     return CLASSIC_SHORT[player.label] ?? player.label;
 }
@@ -118,13 +117,22 @@ export default function CooperationHeatmap({
     const hoveredRow = hover?.rowId ?? null;
     const hoveredCol = hover?.colId ?? null;
     const activeId = highlightedId;
+    const activePlayer = activeId ? (byId.get(activeId) ?? null) : null;
+
+    /** True if `id` is the active player, or shares its model — lets a legend/leaderboard hover select every persona of that model. */
+    function isModelActive(id: string): boolean {
+        if (id === activeId) return true;
+        if (!activePlayer || activePlayer.kind !== "llm") return false;
+        const player = byId.get(id);
+        return player?.kind === "llm" && player.model === activePlayer.model;
+    }
 
     function cellDimmed(rowId: string, colId: string): boolean {
         if (hover) {
             return rowId !== hover.rowId && colId !== hover.colId;
         }
         if (activeId) {
-            return rowId !== activeId && colId !== activeId;
+            return !isModelActive(rowId) && !isModelActive(colId);
         }
         return false;
     }
@@ -170,6 +178,12 @@ export default function CooperationHeatmap({
                         </button>
                     </div>
                 </div>
+                <div className="ipd-toolbar-custom">
+                    <SeriesLegend
+                        series={report.series}
+                        onHighlight={onHighlight}
+                    />
+                </div>
             </div>
 
             <div
@@ -193,12 +207,17 @@ export default function CooperationHeatmap({
                         {colIds.map((colId, ci) => {
                             const player = byId.get(colId)!;
                             const active =
-                                colId === hoveredCol || colId === activeId;
+                                colId === hoveredCol || isModelActive(colId);
                             return (
                                 <text
                                     key={`col-${colId}`}
                                     className="ipd-heatmap-label ipd-mono"
                                     data-active={active}
+                                    style={
+                                        player.kind === "llm"
+                                            ? { fill: player.color }
+                                            : undefined
+                                    }
                                     transform={`translate(${
                                         ci * CELL + CELL / 2
                                     }, -12) rotate(-60)`}
@@ -212,12 +231,17 @@ export default function CooperationHeatmap({
                         {rowIds.map((rowId, ri) => {
                             const player = byId.get(rowId)!;
                             const active =
-                                rowId === hoveredRow || rowId === activeId;
+                                rowId === hoveredRow || isModelActive(rowId);
                             return (
                                 <text
                                     key={`row-${rowId}`}
                                     className="ipd-heatmap-label ipd-mono"
                                     data-active={active}
+                                    style={
+                                        player.kind === "llm"
+                                            ? { fill: player.color }
+                                            : undefined
+                                    }
                                     x={-10}
                                     y={ri * CELL + CELL / 2}
                                     textAnchor="end"
