@@ -8,35 +8,36 @@ import type { Player, Report, Series } from "./types";
  * Claude / Anthropic logo "Crail" burnt orange: #C15F3C
  * OpenAI blue kept as the contrasting LLM series color.
  *
- * The tournament is expanding from 2 models to 5. Models with a known brand
- * get an exact or family-regex color below; anything else falls back to
- * FALLBACK_LLM_COLORS, assigned deterministically (sorted by model id, so
- * assignment doesn't depend on report.json's array order) and stably (a
- * given model id always lands on the same slot across regenerations, as
- * long as the set of unrecognized models doesn't change). Once the new
- * models' real ids are known, add exact entries to LLM_MODEL_COLORS so they
- * get deliberate on-brand colors instead of a fallback slot.
+ * The 5-model tournament (Claude Haiku 4.5, GPT-4o-mini, Gemini 3.1 Flash
+ * Lite, Grok 4.1 Fast, Qwen 2.5 7B) is in; each has a deliberate, CVD-safe
+ * color via the exact/family map below. Anything beyond these five falls
+ * back to FALLBACK_LLM_COLORS, assigned deterministically (sorted by model
+ * id, so assignment doesn't depend on report.json's array order) and stably
+ * (a given model id always lands on the same slot across regenerations, as
+ * long as the set of unrecognized models doesn't change).
  */
 export const CLAUDE_COLOR = "#C15F3C";
 export const OPENAI_COLOR = "#218BFF";
+export const GEMINI_COLOR = "#1BAF7A";
+export const GROK_COLOR = "#4A3AA7";
+export const QWEN_COLOR = "#EDA100";
 export const CLASSIC_COLOR = "#8B949E";
 
 /** Exact model-id overrides (keys match report.json `model` / series `id`). */
 export const LLM_MODEL_COLORS: Record<string, string> = {
     "claude-haiku-4-5": CLAUDE_COLOR,
     "gpt-4o-mini": OPENAI_COLOR,
+    "gemini-3.1-flash-lite": GEMINI_COLOR,
+    "grok-4-1-fast-non-reasoning": GROK_COLOR,
+    "qwen2.5:7b": QWEN_COLOR,
 };
 
 /**
  * Colors for models that match neither an exact override nor a known family
- * regex, in assignment order. CVD-validated against CLAUDE_COLOR/OPENAI_COLOR
+ * regex, in assignment order. CVD-validated against the five colors above
  * (worst adjacent ΔE 76.8 in `oklch`, `dataviz` skill's validate_palette.js).
- * Five slots covers the 5-model tournament with room to spare.
  */
 const FALLBACK_LLM_COLORS = [
-    "#1BAF7A", // aqua/green
-    "#4A3AA7", // violet
-    "#EDA100", // amber
     "#E87BA4", // magenta
     "#0D366B", // deep blue
 ];
@@ -44,6 +45,9 @@ const FALLBACK_LLM_COLORS = [
 function familyColorForModelId(modelId: string): string | null {
     if (/claude|haiku|sonnet|opus/i.test(modelId)) return CLAUDE_COLOR;
     if (/gpt|openai|\bo[1-4]\b/i.test(modelId)) return OPENAI_COLOR;
+    if (/gemini/i.test(modelId)) return GEMINI_COLOR;
+    if (/grok/i.test(modelId)) return GROK_COLOR;
+    if (/qwen/i.test(modelId)) return QWEN_COLOR;
     return null;
 }
 

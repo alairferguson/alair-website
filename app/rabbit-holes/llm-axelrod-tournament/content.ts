@@ -54,7 +54,7 @@ export const METHODOLOGY: SlottedCopy = {
             heading: "The Tournament",
             paragraphs: [
                 "In an Axelrod tournament, we play an iterated version of the above Prisoner’s Dilemma. In one game of the tournament, Player A and Player B are presented with the following payoff matrix:",
-                "Each round, Player A and Player B choose to Cooperate or Defect simultaneously, without seeing the other's move; this repeats for 30 rounds per game. This tournament has 15 players (7 classic strategies and 8 LLM × personas), and each plays each other 5 times, for a total of 70 games.",
+                "Each round, Player A and Player B choose to Cooperate or Defect simultaneously, without seeing the other's move; this repeats for 30 rounds per game. This tournament has 27 players (7 classic strategies and 20 LLM × personas), and each plays each other 5 times, for a total of 130 games.",
             ],
             slotAfterParagraph: 0,
         },
@@ -78,7 +78,7 @@ export const METHODOLOGY: SlottedCopy = {
             id: "llm-persona-players",
             heading: "LLM × Persona Players",
             paragraphs: [
-              "I used Claude Haiku 4.5 and GPT-4o-mini as the two models in this tournament. Each was presented the game through four system-prompt personas: selfish, cooperative, payoff-only, and neutral. See the [Appendix](#appendix-system-prompts) for how each prompt was phrased. Crossing two models with four personas produced the 8 LLM × persona players in the tournament:",
+              "I used five models in this tournament: Claude Haiku 4.5, GPT-4o-mini, Gemini 3.1 Flash Lite, Grok 4.1 Fast (non-reasoning), and Qwen 2.5 7B. Each was presented the game through four system-prompt personas: selfish, cooperative, payoff-only, and neutral. See the [Appendix](#appendix-system-prompts) for how each prompt was phrased. Crossing five models with four personas produced the 20 LLM × persona players in the tournament:",
             ],
             list: [
                 "**Claude Haiku 4.5 × selfish**",
@@ -89,6 +89,18 @@ export const METHODOLOGY: SlottedCopy = {
                 "**GPT-4o-mini × cooperative**",
                 "**GPT-4o-mini × payoff-only**",
                 "**GPT-4o-mini × neutral**",
+                "**Gemini 3.1 Flash Lite × selfish**",
+                "**Gemini 3.1 Flash Lite × cooperative**",
+                "**Gemini 3.1 Flash Lite × payoff-only**",
+                "**Gemini 3.1 Flash Lite × neutral**",
+                "**Grok 4.1 Fast (non-reasoning) × selfish**",
+                "**Grok 4.1 Fast (non-reasoning) × cooperative**",
+                "**Grok 4.1 Fast (non-reasoning) × payoff-only**",
+                "**Grok 4.1 Fast (non-reasoning) × neutral**",
+                "**Qwen 2.5 7B × selfish**",
+                "**Qwen 2.5 7B × cooperative**",
+                "**Qwen 2.5 7B × payoff-only**",
+                "**Qwen 2.5 7B × neutral**",
             ],
         },
         {
@@ -107,7 +119,7 @@ export const METHODOLOGY: SlottedCopy = {
             id: "llms-nearest-classic-strategy",
             heading: "LLMs’ Nearest Classic Strategy",
             paragraphs: [
-                "Each player's behavioral fingerprint (cooperation rate, niceness, retaliation, forgiveness, and provocability) is computed from its actual moves across all 70 round-robin matches. These fingerprints are plotted in the [strategy-space figure below](#strategy-space).",
+                "Each player's behavioral fingerprint (cooperation rate, niceness, retaliation, forgiveness, and provocability) is computed from its actual moves across all 130 round-robin matches. These fingerprints are plotted in the [strategy-space figure below](#strategy-space).",
                 "To find an LLM × persona player's nearest classic strategy, I take the Euclidean distance between its fingerprint and every classic strategy's fingerprint in that same five-dimensional space, and report the closest match.",
                 "A short distance means an LLM's aggregate behavior (how often it cooperates, how it opens, how sharply it punishes and how readily it forgives) statistically resembles a classic strategy's. It does not mean the LLM is internally running that strategy's exact rule; see Limitations for more on this distinction.",
             ],
