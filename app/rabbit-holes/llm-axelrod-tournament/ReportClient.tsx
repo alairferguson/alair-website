@@ -172,8 +172,8 @@ export default function ReportClient({ report }: Props) {
                                     Four system prompts, same models,
                                     temperature 0. Switch metrics to see which
                                     fingerprint traits the disposition moves;
-                                    overlay the curves to compare swings
-                                    directly.
+                                    overlaid curves make the shared swing
+                                    obvious.
                                 </p>
                             </>
                         ),

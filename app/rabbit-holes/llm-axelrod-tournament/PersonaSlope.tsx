@@ -9,40 +9,16 @@ type Props = {
     onHighlight: (id: string | null) => void;
 };
 
-type ViewMode = "split" | "overlay";
-
 type PersonaMeta = {
     id: string;
     label: string;
-    shortLabel: string;
-    blurb: string;
 };
 
 const PERSONA_META: PersonaMeta[] = [
-    {
-        id: "cooperative",
-        label: "cooperative",
-        shortLabel: "coop.",
-        blurb: "Fair-minded framing that values mutual benefit and long-term trust.",
-    },
-    {
-        id: "neutral",
-        label: "neutral",
-        shortLabel: "neutral",
-        blurb: "Bare game instructions — cooperate or defect, no dispositional push.",
-    },
-    {
-        id: "payoff_only",
-        label: "payoff-only",
-        shortLabel: "payoff",
-        blurb: "Maximize own points with A/B action labels — no cooperate/defect language.",
-    },
-    {
-        id: "selfish",
-        label: "selfish",
-        shortLabel: "selfish",
-        blurb: "Ruthless self-interest: maximize your score with no regard for the other player.",
-    },
+    { id: "cooperative", label: "cooperative" },
+    { id: "neutral", label: "neutral" },
+    { id: "payoff_only", label: "payoff-only" },
+    { id: "selfish", label: "selfish" },
 ];
 
 const PERSONA_ORDER = PERSONA_META.map((p) => p.id);
@@ -131,7 +107,7 @@ type ModelCurve = {
 /**
  * Place value labels so co-located / near points never collide.
  * Prefer above the marker; flip below near the top edge; stagger vertically
- * (and slightly horizontally in overlay) when several share a column.
+ * and slightly horizontally when several share a column.
  */
 function placeValueLabels(
     points: Array<{
@@ -219,7 +195,6 @@ export default function PersonaSlope({
     onHighlight,
 }: Props) {
     const [metric, setMetric] = useState<MetricId>("cooperation_rate");
-    const [viewMode, setViewMode] = useState<ViewMode>("split");
     const [hoverPersona, setHoverPersona] = useState<string | null>(null);
     const [focusPersona, setFocusPersona] = useState<string | null>(null);
     const [hoverPlayerId, setHoverPlayerId] = useState<string | null>(null);
@@ -275,99 +250,50 @@ export default function PersonaSlope({
     const yTicks = ticks(domain, 4);
     const yOf = useMemo(() => scale(domain, [INNER_H, 0]), [domain]);
 
-    const panels = useMemo(() => {
-        if (viewMode === "overlay") {
-            return [{ id: "all", label: null as string | null, curves }];
-        }
-        return curves.map((c) => ({
-            id: c.series.id,
-            label: c.series.label,
-            curves: [c],
-        }));
-    }, [viewMode, curves]);
-
     const laidOut = useMemo(() => {
-        const panelCount = Math.max(panels.length, 1);
-        const gap = viewMode === "split" ? 36 : 0;
-        const panelW = (INNER_W - gap * (panelCount - 1)) / panelCount;
+        const panelW = INNER_W;
         // Inset endpoints so edge labels ("cooperative", "selfish") don't clip.
         const xPad = Math.min(28, panelW * 0.08);
+        const xOf = (i: number) =>
+            xPad +
+            (i / Math.max(PERSONA_ORDER.length - 1, 1)) * (panelW - 2 * xPad);
 
-        return panels.map((panel, panelIndex) => {
-            const offsetX = panelIndex * (panelW + gap);
-            const xOf = (i: number) =>
-                offsetX +
-                xPad +
-                (i / Math.max(PERSONA_ORDER.length - 1, 1)) * (panelW - 2 * xPad);
-
-            const modelCurves: ModelCurve[] = panel.curves.map((curve) => {
-                const points = curve.raw.map((pt) => ({
-                    ...pt,
-                    x: xOf(PERSONA_ORDER.indexOf(pt.persona)),
-                    y: yOf(pt.value),
-                }));
-                const path = points
-                    .map(
-                        (p, i) =>
-                            `${i === 0 ? "M" : "L"}${p.x.toFixed(2)},${p.y.toFixed(2)}`,
-                    )
-                    .join(" ");
-                return {
-                    series: curve.series,
-                    points,
-                    path,
-                    swing: curve.swing,
-                };
-            });
-
-            const valueLabels = placeValueLabels(
-                modelCurves.flatMap((curve) =>
-                    curve.points.map((pt) => ({
-                        ...pt,
-                        color: curve.series.color,
-                    })),
-                ),
-            );
-
+        const modelCurves: ModelCurve[] = curves.map((curve) => {
+            const points = curve.raw.map((pt) => ({
+                ...pt,
+                x: xOf(PERSONA_ORDER.indexOf(pt.persona)),
+                y: yOf(pt.value),
+            }));
+            const path = points
+                .map(
+                    (p, i) =>
+                        `${i === 0 ? "M" : "L"}${p.x.toFixed(2)},${p.y.toFixed(2)}`,
+                )
+                .join(" ");
             return {
-                ...panel,
-                offsetX,
-                panelW,
-                xOf,
-                modelCurves,
-                valueLabels,
+                series: curve.series,
+                points,
+                path,
+                swing: curve.swing,
             };
         });
-    }, [panels, yOf, viewMode]);
 
-    const personaMeta = PERSONA_META.find((p) => p.id === activePersona) ?? null;
-
-    const personaReadout = useMemo(() => {
-        if (!activePersona) return null;
-        return curves
-            .map((curve) => {
-                const pt = curve.raw.find((p) => p.persona === activePersona);
-                if (!pt) return null;
-                return {
-                    model: curve.series.label,
+        const valueLabels = placeValueLabels(
+            modelCurves.flatMap((curve) =>
+                curve.points.map((pt) => ({
+                    ...pt,
                     color: curve.series.color,
-                    value: pt.value,
-                    player: pt.player,
-                };
-            })
-            .filter(Boolean) as Array<{
-            model: string;
-            color: string;
-            value: number;
-            player: Player;
-        }>;
-    }, [activePersona, curves]);
+                })),
+            ),
+        );
 
-    const crossModelGap = useMemo(() => {
-        if (!personaReadout || personaReadout.length < 2) return null;
-        const vals = personaReadout.map((r) => r.value);
-        return Math.max(...vals) - Math.min(...vals);
-    }, [personaReadout]);
+        return {
+            panelW,
+            xOf,
+            modelCurves,
+            valueLabels,
+        };
+    }, [curves, yOf]);
 
     const activePlayerId = hoverPlayerId ?? highlightedId;
     const activePlayer = activePlayerId
@@ -377,6 +303,7 @@ export default function PersonaSlope({
     function clearHover() {
         setHoverPersona(null);
         setHoverPlayerId(null);
+        onHighlight(null);
     }
 
     function togglePersona(id: string) {
@@ -385,364 +312,256 @@ export default function PersonaSlope({
 
     if (!curves.length) return null;
 
-    const useShortXTicks = viewMode === "split";
-
     return (
         <div className="ipd-chart-shell ipd-slope-shell">
             <div className="ipd-chart-toolbar">
-                <div className="ipd-axis-group">
-                    <span className="ipd-axis-label ipd-mono">Metric</span>
-                    <div className="ipd-toggle" role="group" aria-label="Slope metric">
-                        {report.metrics
-                            .filter((m) => FINGERPRINT_METRICS.includes(m.id))
-                            .map((m) => (
-                                <button
-                                    key={m.id}
-                                    type="button"
-                                    data-active={m.id === metric}
-                                    onClick={() => setMetric(m.id)}
-                                >
-                                    {m.shortLabel}
-                                </button>
-                            ))}
-                    </div>
-                </div>
-                <div className="ipd-filter" role="group" aria-label="Slope layout">
-                    {(
-                        [
-                            ["split", "Side by side"],
-                            ["overlay", "Overlay"],
-                        ] as const
-                    ).map(([id, label]) => (
-                        <button
-                            key={id}
-                            type="button"
-                            data-active={viewMode === id}
-                            onClick={() => setViewMode(id)}
+                <div className="ipd-toolbar-primary">
+                    <div className="ipd-axis-group">
+                        <span className="ipd-axis-label ipd-mono">Metric</span>
+                        <div
+                            className="ipd-toggle"
+                            role="group"
+                            aria-label="Slope metric"
                         >
-                            {label}
-                        </button>
-                    ))}
+                            {report.metrics
+                                .filter((m) =>
+                                    FINGERPRINT_METRICS.includes(m.id),
+                                )
+                                .map((m) => (
+                                    <button
+                                        key={m.id}
+                                        type="button"
+                                        data-active={m.id === metric}
+                                        onClick={() => setMetric(m.id)}
+                                    >
+                                        {m.shortLabel}
+                                    </button>
+                                ))}
+                        </div>
+                    </div>
+                    <ul
+                        className="ipd-slope-swings ipd-mono"
+                        aria-label="Persona swing cooperative to selfish"
+                    >
+                        <li className="ipd-slope-swings-label">
+                            Δ coop→selfish
+                        </li>
+                        {curves.map((curve) => (
+                            <li key={curve.series.id}>
+                                <span
+                                    className="ipd-swatch"
+                                    style={{ background: curve.series.color }}
+                                />
+                                <span className="ipd-slope-model-name">
+                                    {curve.series.label}
+                                </span>
+                                <strong>{formatDelta(curve.swing)}</strong>
+                            </li>
+                        ))}
+                    </ul>
                 </div>
             </div>
 
-            <div className="ipd-slope-layout">
-                <div
-                    className="ipd-chart ipd-slope-chart"
-                    onMouseLeave={clearHover}
+            <div
+                className="ipd-chart ipd-slope-chart"
+                onMouseLeave={clearHover}
+            >
+                <svg
+                    viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
+                    role="img"
+                    aria-label={`${metricMeta.label} across personas`}
                 >
-                    <svg
-                        viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
-                        role="img"
-                        aria-label={`${metricMeta.label} across personas`}
-                    >
-                        <g transform={`translate(${MARGIN.left}, ${MARGIN.top})`}>
-                            {yTicks.map((tick) => (
-                                <line
-                                    key={`yg-${tick}`}
-                                    className="ipd-gridline"
-                                    x1={0}
-                                    x2={INNER_W}
-                                    y1={yOf(tick)}
-                                    y2={yOf(tick)}
-                                />
-                            ))}
+                    <g transform={`translate(${MARGIN.left}, ${MARGIN.top})`}>
+                        {yTicks.map((tick) => (
+                            <line
+                                key={`yg-${tick}`}
+                                className="ipd-gridline"
+                                x1={0}
+                                x2={INNER_W}
+                                y1={yOf(tick)}
+                                y2={yOf(tick)}
+                            />
+                        ))}
 
-                            {laidOut.map((panel) => (
-                                <g key={panel.id}>
-                                    {PERSONA_ORDER.map((persona, i) => {
-                                        const x = panel.xOf(i);
-                                        const active =
-                                            activePersona == null ||
-                                            activePersona === persona;
-                                        const laneW =
-                                            panel.panelW / PERSONA_ORDER.length;
-                                        return (
-                                            <g key={`${panel.id}-${persona}`}>
-                                                <rect
-                                                    className="ipd-slope-lane"
-                                                    data-active={
-                                                        activePersona === persona
-                                                    }
-                                                    x={x - laneW / 2}
-                                                    y={0}
-                                                    width={laneW}
-                                                    height={INNER_H}
-                                                    onMouseEnter={() =>
-                                                        setHoverPersona(persona)
-                                                    }
-                                                    onClick={() =>
-                                                        togglePersona(persona)
-                                                    }
-                                                />
-                                                <line
-                                                    className="ipd-slope-guide"
-                                                    data-active={
-                                                        activePersona === persona
-                                                    }
-                                                    data-dimmed={!active}
-                                                    x1={x}
-                                                    x2={x}
-                                                    y1={0}
-                                                    y2={INNER_H}
-                                                />
-                                            </g>
-                                        );
-                                    })}
-
-                                    {panel.label && (
-                                        <text
-                                            className="ipd-slope-model"
-                                            x={panel.offsetX + panel.panelW / 2}
-                                            y={-14}
-                                            textAnchor="middle"
-                                        >
-                                            {panel.label}
-                                        </text>
-                                    )}
+                        {PERSONA_ORDER.map((persona, i) => {
+                            const x = laidOut.xOf(i);
+                            const active =
+                                activePersona == null ||
+                                activePersona === persona;
+                            const laneW =
+                                laidOut.panelW / PERSONA_ORDER.length;
+                            return (
+                                <g key={persona}>
+                                    <rect
+                                        className="ipd-slope-lane"
+                                        data-active={
+                                            activePersona === persona
+                                        }
+                                        x={x - laneW / 2}
+                                        y={0}
+                                        width={laneW}
+                                        height={INNER_H}
+                                        onMouseEnter={() =>
+                                            setHoverPersona(persona)
+                                        }
+                                        onClick={() => togglePersona(persona)}
+                                    />
+                                    <line
+                                        className="ipd-slope-guide"
+                                        data-active={
+                                            activePersona === persona
+                                        }
+                                        data-dimmed={!active}
+                                        x1={x}
+                                        x2={x}
+                                        y1={0}
+                                        y2={INNER_H}
+                                    />
                                 </g>
-                            ))}
+                            );
+                        })}
 
-                            {laidOut.flatMap((panel) =>
-                                panel.modelCurves.map((curve) => {
-                                    const seriesDimmed =
-                                        activePlayer != null &&
-                                        activePlayer.kind === "llm" &&
-                                        activePlayer.model !== curve.series.id;
-                                    return (
+                        {laidOut.modelCurves.map((curve) => {
+                            const seriesDimmed =
+                                activePlayer != null &&
+                                activePlayer.kind === "llm" &&
+                                activePlayer.model !== curve.series.id;
+                            return (
+                                <path
+                                    key={`${curve.series.id}-line`}
+                                    className="ipd-slope-line"
+                                    d={curve.path}
+                                    stroke={curve.series.color}
+                                    data-dimmed={seriesDimmed}
+                                />
+                            );
+                        })}
+
+                        {laidOut.modelCurves.flatMap((curve) =>
+                            curve.points.map((pt) => {
+                                const isActive =
+                                    activePlayerId === pt.player.id ||
+                                    activePersona === pt.persona;
+                                const dimmed =
+                                    (activePlayerId != null &&
+                                        activePlayerId !== pt.player.id &&
+                                        activePersona !== pt.persona) ||
+                                    (activePersona != null &&
+                                        activePersona !== pt.persona &&
+                                        activePlayerId == null);
+                                return (
+                                    <g
+                                        key={pt.player.id}
+                                        className="ipd-point-group"
+                                        transform={`translate(${pt.x}, ${pt.y})`}
+                                        onMouseEnter={() => {
+                                            setHoverPersona(pt.persona);
+                                            setHoverPlayerId(pt.player.id);
+                                            onHighlight(pt.player.id);
+                                        }}
+                                        onMouseLeave={() => {
+                                            setHoverPlayerId(null);
+                                        }}
+                                        onClick={() => {
+                                            onHighlight(pt.player.id);
+                                            togglePersona(pt.persona);
+                                        }}
+                                    >
+                                        <circle
+                                            r={14}
+                                            fill="transparent"
+                                            className="ipd-point-hit"
+                                        />
                                         <path
-                                            key={`${panel.id}-${curve.series.id}-line`}
-                                            className="ipd-slope-line"
-                                            d={curve.path}
-                                            stroke={curve.series.color}
-                                            data-dimmed={seriesDimmed}
-                                        />
-                                    );
-                                }),
-                            )}
-
-                            {laidOut.flatMap((panel) =>
-                                panel.modelCurves.flatMap((curve) =>
-                                    curve.points.map((pt) => {
-                                        const isActive =
-                                            activePlayerId === pt.player.id ||
-                                            activePersona === pt.persona;
-                                        const dimmed =
-                                            (activePlayerId != null &&
-                                                activePlayerId !==
-                                                    pt.player.id &&
-                                                activePersona !== pt.persona) ||
-                                            (activePersona != null &&
-                                                activePersona !== pt.persona &&
-                                                activePlayerId == null);
-                                        return (
-                                            <g
-                                                key={pt.player.id}
-                                                className="ipd-point-group"
-                                                transform={`translate(${pt.x}, ${pt.y})`}
-                                                onMouseEnter={() => {
-                                                    setHoverPersona(pt.persona);
-                                                    setHoverPlayerId(
-                                                        pt.player.id,
-                                                    );
-                                                    onHighlight(pt.player.id);
-                                                }}
-                                                onMouseLeave={() => {
-                                                    setHoverPlayerId(null);
-                                                }}
-                                                onClick={() => {
-                                                    onHighlight(pt.player.id);
-                                                    togglePersona(pt.persona);
-                                                }}
-                                            >
-                                                <circle
-                                                    r={14}
-                                                    fill="transparent"
-                                                    className="ipd-point-hit"
-                                                />
-                                                <path
-                                                    className="ipd-slope-marker"
-                                                    d={diamondPath(
-                                                        isActive ? 8 : 6.5,
-                                                    )}
-                                                    fill={curve.series.color}
-                                                    stroke="#fff"
-                                                    strokeWidth={1.5}
-                                                    data-dimmed={dimmed}
-                                                    tabIndex={0}
-                                                    role="button"
-                                                    aria-label={`${pt.player.label}: ${formatVal(pt.value)}`}
-                                                />
-                                            </g>
-                                        );
-                                    }),
-                                ),
-                            )}
-
-                            {/* Value labels rendered after markers so halo wins; positions pre-resolved. */}
-                            {laidOut.flatMap((panel) =>
-                                panel.valueLabels.map((pt) => {
-                                    const isActive =
-                                        activePlayerId === pt.player.id ||
-                                        activePersona === pt.persona;
-                                    const dimmed =
-                                        (activePlayerId != null &&
-                                            activePlayerId !== pt.player.id &&
-                                            activePersona !== pt.persona) ||
-                                        (activePersona != null &&
-                                            activePersona !== pt.persona &&
-                                            activePlayerId == null);
-                                    return (
-                                        <text
-                                            key={`val-${pt.player.id}`}
-                                            className="ipd-slope-value ipd-mono"
-                                            x={pt.x + pt.labelDX}
-                                            y={pt.y + pt.labelDY}
-                                            textAnchor="middle"
-                                            dominantBaseline="middle"
+                                            className="ipd-slope-marker"
+                                            d={diamondPath(
+                                                isActive ? 8 : 6.5,
+                                            )}
+                                            fill={curve.series.color}
+                                            stroke="#fff"
+                                            strokeWidth={1.5}
                                             data-dimmed={dimmed}
-                                            data-active={isActive}
-                                        >
-                                            {formatVal(pt.value)}
-                                        </text>
-                                    );
-                                }),
-                            )}
-
-                            {laidOut.map((panel) =>
-                                PERSONA_ORDER.map((persona, i) => {
-                                    const meta = PERSONA_META.find(
-                                        (p) => p.id === persona,
-                                    )!;
-                                    return (
-                                        <text
-                                            key={`${panel.id}-xl-${persona}`}
-                                            className="ipd-axis-tick ipd-mono ipd-slope-xtick"
-                                            data-active={
-                                                activePersona === persona
-                                            }
-                                            x={panel.xOf(i)}
-                                            y={INNER_H + 20}
-                                            textAnchor="middle"
-                                            onClick={() =>
-                                                togglePersona(persona)
-                                            }
-                                            onMouseEnter={() =>
-                                                setHoverPersona(persona)
-                                            }
-                                        >
-                                            {useShortXTicks
-                                                ? meta.shortLabel
-                                                : meta.label}
-                                        </text>
-                                    );
-                                }),
-                            )}
-
-                            {yTicks.map((tick) => (
-                                <text
-                                    key={`yl-${tick}`}
-                                    className="ipd-axis-tick ipd-mono"
-                                    x={-10}
-                                    y={yOf(tick)}
-                                    textAnchor="end"
-                                    dominantBaseline="middle"
-                                >
-                                    {formatVal(tick)}
-                                </text>
-                            ))}
-
-                            <text
-                                className="ipd-axis-title"
-                                transform={`translate(-42, ${INNER_H / 2}) rotate(-90)`}
-                                textAnchor="middle"
-                            >
-                                {metricMeta.label}
-                            </text>
-                        </g>
-                    </svg>
-                </div>
-
-                <aside className="ipd-slope-aside" aria-live="polite">
-                    {personaMeta && personaReadout ? (
-                        <>
-                            <p className="ipd-kicker ipd-mono">Persona</p>
-                            <h3>{personaMeta.label}</h3>
-                            <p className="ipd-slope-blurb">{personaMeta.blurb}</p>
-                            <dl className="ipd-slope-readout ipd-mono">
-                                {personaReadout.map((row) => (
-                                    <div key={row.model}>
-                                        <dt>
-                                            <span
-                                                className="ipd-swatch"
-                                                style={{
-                                                    background: row.color,
-                                                }}
-                                            />
-                                            <span className="ipd-slope-model-name">
-                                                {row.model}
-                                            </span>
-                                        </dt>
-                                        <dd>
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    onHighlight(row.player.id)
-                                                }
-                                            >
-                                                {formatVal(row.value)}
-                                            </button>
-                                        </dd>
-                                    </div>
-                                ))}
-                                {crossModelGap != null && (
-                                    <div className="ipd-slope-gap">
-                                        <dt>Model gap</dt>
-                                        <dd>{crossModelGap.toFixed(2)}</dd>
-                                    </div>
-                                )}
-                            </dl>
-                            {focusPersona && (
-                                <button
-                                    type="button"
-                                    className="ipd-slope-clear"
-                                    onClick={() => setFocusPersona(null)}
-                                >
-                                    Clear focus
-                                </button>
-                            )}
-                        </>
-                    ) : (
-                        <>
-                            <p className="ipd-kicker ipd-mono">Reading</p>
-                            <h3>Persona moves the needle</h3>
-                            <p className="ipd-slope-blurb">
-                                Same four system prompts on each model. Hover a
-                                column to compare models at that disposition;
-                                click to pin it. Overlay mode stacks the curves
-                                so the shared swing is obvious.
-                            </p>
-                            <ul className="ipd-slope-swings ipd-mono">
-                                {curves.map((curve) => (
-                                    <li key={curve.series.id}>
-                                        <span
-                                            className="ipd-swatch"
-                                            style={{
-                                                background: curve.series.color,
-                                            }}
+                                            tabIndex={0}
+                                            role="button"
+                                            aria-label={`${pt.player.label}: ${formatVal(pt.value)}`}
                                         />
-                                        <span className="ipd-slope-model-name">
-                                            {curve.series.label}
-                                        </span>
-                                        <strong>
-                                            {formatDelta(curve.swing)}
-                                        </strong>
-                                    </li>
-                                ))}
-                            </ul>
-                        </>
-                    )}
-                </aside>
+                                    </g>
+                                );
+                            }),
+                        )}
+
+                        {/* Value labels rendered after markers so halo wins; positions pre-resolved. */}
+                        {laidOut.valueLabels.map((pt) => {
+                            const isActive =
+                                activePlayerId === pt.player.id ||
+                                activePersona === pt.persona;
+                            const dimmed =
+                                (activePlayerId != null &&
+                                    activePlayerId !== pt.player.id &&
+                                    activePersona !== pt.persona) ||
+                                (activePersona != null &&
+                                    activePersona !== pt.persona &&
+                                    activePlayerId == null);
+                            return (
+                                <text
+                                    key={`val-${pt.player.id}`}
+                                    className="ipd-slope-value ipd-mono"
+                                    x={pt.x + pt.labelDX}
+                                    y={pt.y + pt.labelDY}
+                                    textAnchor="middle"
+                                    dominantBaseline="middle"
+                                    data-dimmed={dimmed}
+                                    data-active={isActive}
+                                >
+                                    {formatVal(pt.value)}
+                                </text>
+                            );
+                        })}
+
+                        {PERSONA_ORDER.map((persona, i) => {
+                            const meta = PERSONA_META.find(
+                                (p) => p.id === persona,
+                            )!;
+                            return (
+                                <text
+                                    key={`xl-${persona}`}
+                                    className="ipd-axis-tick ipd-mono ipd-slope-xtick"
+                                    data-active={activePersona === persona}
+                                    x={laidOut.xOf(i)}
+                                    y={INNER_H + 20}
+                                    textAnchor="middle"
+                                    onClick={() => togglePersona(persona)}
+                                    onMouseEnter={() =>
+                                        setHoverPersona(persona)
+                                    }
+                                >
+                                    {meta.label}
+                                </text>
+                            );
+                        })}
+
+                        {yTicks.map((tick) => (
+                            <text
+                                key={`yl-${tick}`}
+                                className="ipd-axis-tick ipd-mono"
+                                x={-10}
+                                y={yOf(tick)}
+                                textAnchor="end"
+                                dominantBaseline="middle"
+                            >
+                                {formatVal(tick)}
+                            </text>
+                        ))}
+
+                        <text
+                            className="ipd-axis-title"
+                            transform={`translate(-42, ${INNER_H / 2}) rotate(-90)`}
+                            textAnchor="middle"
+                        >
+                            {metricMeta.label}
+                        </text>
+                    </g>
+                </svg>
             </div>
         </div>
     );

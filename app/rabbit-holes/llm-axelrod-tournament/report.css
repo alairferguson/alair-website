@@ -782,26 +782,8 @@ li.ipd-draft-note {
     overflow: visible;
 }
 
-.ipd-slope-layout {
-    display: grid;
-    grid-template-columns: 1fr;
-}
-
-@media (min-width: 860px) {
-    .ipd-slope-layout {
-        grid-template-columns: minmax(0, 1fr) 14.5rem;
-    }
-}
-
 .ipd-slope-chart {
-    aspect-ratio: 16 / 7.2;
-    border-right: 0;
-}
-
-@media (min-width: 860px) {
-    .ipd-slope-chart {
-        border-right: 1px solid var(--ipd-border);
-    }
+    aspect-ratio: 16 / 6.4;
 }
 
 .ipd-slope-lane {
@@ -878,12 +860,6 @@ li.ipd-draft-note {
     font-weight: 600;
 }
 
-.ipd-slope-model {
-    fill: var(--ipd-fg);
-    font-size: 13px;
-    font-weight: 500;
-}
-
 .ipd-slope-xtick {
     cursor: pointer;
     transition: fill 140ms ease;
@@ -901,124 +877,29 @@ li.ipd-draft-note {
     min-width: 0;
 }
 
-.ipd-slope-readout dt {
-    color: var(--ipd-muted);
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    min-width: 0;
-    flex: 1;
-}
-
-.ipd-slope-aside {
-    padding: 1rem 1.05rem 1.15rem;
-    background: var(--ipd-panel);
-    border-top: 1px solid var(--ipd-border);
-    display: flex;
-    flex-direction: column;
-    gap: 0.45rem;
-    min-height: 11rem;
-}
-
-@media (min-width: 860px) {
-    .ipd-slope-aside {
-        border-top: 0;
-    }
-}
-
-.ipd-slope-aside h3 {
-    font-size: 1.05rem;
-    line-height: 1.25;
-}
-
-.ipd-slope-blurb {
+.ipd-slope-swings {
+    list-style: none;
     margin: 0;
-    color: var(--ipd-muted);
-    font-size: 0.8125rem;
-    line-height: 1.5;
-}
-
-.ipd-slope-readout {
-    margin: 0.55rem 0 0;
+    padding: 0;
     display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.55rem 1rem;
     font-size: 0.75rem;
 }
 
-.ipd-slope-readout > div {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-}
-
-.ipd-slope-readout dd {
-    margin: 0;
-}
-
-.ipd-slope-readout dd button {
-    appearance: none;
-    border: 0;
-    background: transparent;
-    color: var(--ipd-fg);
-    cursor: pointer;
-    font: inherit;
-    padding: 0;
-}
-
-.ipd-slope-readout dd button:hover {
-    text-decoration: underline;
-}
-
-.ipd-slope-gap {
-    margin-top: 0.25rem;
-    padding-top: 0.45rem;
-    border-top: 1px solid var(--ipd-border);
-}
-
-.ipd-slope-gap dt {
+.ipd-slope-swings-label {
+    font-size: 0.625rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
     color: var(--ipd-faint);
 }
 
-.ipd-slope-clear {
-    appearance: none;
-    border: 1px solid var(--ipd-border);
-    background: transparent;
-    color: var(--ipd-muted);
-    cursor: pointer;
-    font: inherit;
-    font-size: 0.6875rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    margin-top: 0.65rem;
-    padding: 0.35rem 0.5rem;
-    align-self: start;
-    transition:
-        color 140ms ease,
-        background 140ms ease;
-}
-
-.ipd-slope-clear:hover {
-    color: var(--ipd-fg);
-    background: var(--ipd-hover);
-}
-
-.ipd-slope-swings {
-    list-style: none;
-    margin: 0.55rem 0 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    font-size: 0.75rem;
-}
-
-.ipd-slope-swings li {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
+.ipd-slope-swings li:not(.ipd-slope-swings-label) {
+    display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.35rem;
     color: var(--ipd-muted);
 }
 
