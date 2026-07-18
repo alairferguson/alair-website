@@ -169,9 +169,6 @@ export default function CooperationHeatmap({
                             Full matrix
                         </button>
                     </div>
-                    <p className="ipd-heatmap-hint ipd-mono">
-                        Cell = row player&apos;s cooperation rate vs column
-                    </p>
                 </div>
             </div>
 

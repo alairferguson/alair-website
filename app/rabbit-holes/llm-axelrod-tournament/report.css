@@ -397,13 +397,6 @@
     line-height: 1.45;
 }
 
-.ipd-heatmap-hint {
-    margin: 0;
-    font-size: 0.75rem;
-    color: var(--ipd-muted);
-    letter-spacing: 0.02em;
-}
-
 .ipd-heatmap {
     position: relative;
     width: 100%;
