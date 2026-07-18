@@ -33,7 +33,7 @@ export const INTRODUCTION: ProseCopy = {
         "Game theory has long sought to formalize rational decision-making into mathematical concreteness, and as compute increases at a seemingly exponential rate, the rationality proposed by this discipline can be tested by repeated simulations. Artificial Intelligence brings with it exciting possibilities of simulated tests to explore the differences between mathematically rational behavior and the decisions that simulated humans make.",
         "This project simulates an Axelrod tournament in which a set of players faces one another in multiple Iterated Prisoner’s Dilemma games. Axelrod’s tournaments have a rich history in economics, and if you are unfamiliar, I highly recommend that you peruse [this write-up](https://egtheory.wordpress.com/2015/03/02/ipd/). While [past](https://edwardbrookman.substack.com/p/ai-evolves-a-winning-strategy-in?r=2pe9fn) work has sought to explore whether or not LLMs can *win*, I seek to understand *how LLMs play*.",
         "[Axelrod’s analyses of the original 1980 tournament](https://www.jstor.org/stable/173932) identified niceness, forgiveness, retaliation, and provocability as the traits that separated the winners from the rest. My analysis adds the cooperation rate of a strategy to characterize play in this project. These five traits form the behavioral fingerprint of the player.",
-        "What follows: overview of how the tournament was run, a strategy-space plot comparing players across the traits of the behavioral fingerprint, a leaderboard ranked by outcome, and each LLM player’s nearest classic strategy. I conclude by discussing the main takeaway: prompting choices make the largest difference in how LLM players strategize.",
+        "What follows: overview of how the tournament was run, a strategy-space plot comparing players across the traits of the behavioral fingerprint, a cooperation matrix of who cooperates with whom, a leaderboard ranked by outcome, and each LLM player’s nearest classic strategy. I conclude by discussing the main takeaway: prompting choices make the largest difference in how LLM players strategize.",
     ],
 };
 
@@ -133,7 +133,6 @@ export const LIMITATIONS: ProseCopy = {
         "[Scope cut — fine-tuning / LoRA: the disposition question is answered via prompting (the persona knob), not gradient updates.]",
         "[Scope cut — leakage into unrelated tasks: out of scope, a different project.]",
         "[Scope cut — full (T, S) game-grid sweep across Stag Hunt / Chicken / Harmony: a natural v2.]",
-        "[Known refinement — label de-overlap on the strategy-space plot when many players cluster.]",
     ],
 };
 

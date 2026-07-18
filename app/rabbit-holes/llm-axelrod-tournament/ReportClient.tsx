@@ -14,6 +14,7 @@ import {
     USER_PROMPT_EXAMPLES,
 } from "./content";
 import AppendixSection from "./AppendixSection";
+import CooperationHeatmap from "./CooperationHeatmap";
 import FingerprintScatter from "./FingerprintScatter";
 import LeaderboardTable from "./LeaderboardTable";
 import MethodologySection from "./MethodologySection";
@@ -110,9 +111,9 @@ export default function ReportClient({ report }: Props) {
                         <div>
                             <h2>Results</h2>
                             <p>
-                                Every player placed in strategy space, ranked by
-                                outcome, matched to its nearest classic, then
-                                read through the persona knob.
+                                Every player placed in strategy space, matched
+                                by who they cooperate with, ranked by outcome,
+                                then read through the persona knob.
                             </p>
                         </div>
                     </div>
@@ -135,9 +136,28 @@ export default function ReportClient({ report }: Props) {
                     </div>
                     <p className="ipd-footnote">
                         Classics are circles; LLM × persona variants are stars.
-                        Lines connect personas of the same model. Hover a point
-                        or table row to inspect the fingerprint; switch axes to
-                        re-project strategy space.
+                        Lines connect personas of the same model. Plot labels are
+                        abbreviated — hover a point for the full name. Use
+                        Behavior, Punishment, or Outcome to re-project; Custom
+                        axes for any pair.
+                    </p>
+
+                    <div id="cooperation-matrix">
+                        <p className="ipd-kicker ipd-mono ipd-results-label ipd-results-label--spaced">
+                            Cooperation matrix
+                        </p>
+                        <CooperationHeatmap
+                            report={report}
+                            highlightedId={highlightedId}
+                            onHighlight={setHighlightedId}
+                        />
+                    </div>
+                    <p className="ipd-footnote">
+                        Each cell is how often the row player cooperated against
+                        the column player. Switch to LLMs × LLMs for
+                        model-to-model play; Full matrix includes every pairing.
+                        Hover shows both directions when the matchup is
+                        asymmetric.
                     </p>
 
                     <p className="ipd-kicker ipd-mono ipd-results-label ipd-results-label--spaced">

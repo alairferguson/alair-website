@@ -133,12 +133,28 @@
 
 .ipd-chart-toolbar {
     display: flex;
+    flex-direction: column;
+    gap: 0;
+    border-bottom: 1px solid var(--ipd-border);
+}
+
+.ipd-toolbar-primary {
+    display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
     padding: 0.75rem 0.85rem;
-    border-bottom: 1px solid var(--ipd-border);
+}
+
+.ipd-toolbar-custom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.1rem;
+    padding: 0.55rem 0.85rem 0.75rem;
+    border-top: 1px solid var(--ipd-border);
+    background: var(--ipd-bg);
 }
 
 .ipd-axis-group {
@@ -182,6 +198,46 @@
 .ipd-toggle button[data-active="true"] {
     background: var(--ipd-hover);
     color: var(--ipd-fg);
+}
+
+.ipd-custom-axes {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--ipd-muted);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.75rem;
+    line-height: 1;
+    padding: 0.35rem 0.55rem;
+    transition:
+        background 140ms ease,
+        color 140ms ease,
+        border-color 140ms ease;
+}
+
+.ipd-custom-axes:hover {
+    color: var(--ipd-fg);
+}
+
+.ipd-custom-axes[data-active="true"] {
+    border-color: var(--ipd-border);
+    background: var(--ipd-hover);
+    color: var(--ipd-fg);
+}
+
+.ipd-custom-axes-chevron {
+    display: inline-block;
+    font-size: 0.65rem;
+    line-height: 1;
+    transition: transform 140ms ease;
+}
+
+.ipd-custom-axes[data-open="true"] .ipd-custom-axes-chevron {
+    transform: rotate(-180deg);
 }
 
 .ipd-filter {
@@ -339,6 +395,82 @@
     color: var(--ipd-faint);
     font-size: 0.75rem;
     line-height: 1.45;
+}
+
+.ipd-heatmap-hint {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--ipd-muted);
+    letter-spacing: 0.02em;
+}
+
+.ipd-heatmap {
+    position: relative;
+    width: 100%;
+    background: var(--ipd-panel);
+    overflow-x: auto;
+}
+
+.ipd-heatmap svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.ipd-heatmap-cell {
+    cursor: pointer;
+    stroke: rgba(20, 18, 11, 0.1);
+    stroke-width: 1;
+    transition: opacity 140ms ease;
+}
+
+.ipd-heatmap-cell[data-dimmed="true"] {
+    opacity: 0.22;
+}
+
+.ipd-heatmap-cell:focus {
+    outline: 2px solid var(--ipd-fg);
+    outline-offset: 1px;
+}
+
+.ipd-heatmap-label {
+    fill: var(--ipd-fg);
+    font-size: 11px;
+    paint-order: stroke;
+    stroke: var(--ipd-halo);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+    transition:
+        fill 140ms ease,
+        opacity 140ms ease;
+}
+
+.ipd-heatmap-label[data-active="true"] {
+    fill: var(--ipd-fg);
+    font-weight: 600;
+}
+
+.ipd-heatmap-legend-label {
+    fill: var(--ipd-muted);
+    font-size: 11px;
+}
+
+.ipd-heatmap-legend-title {
+    fill: var(--ipd-muted);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.ipd-heatmap-card {
+    left: 0.75rem;
+    top: 0.75rem;
+    max-width: 20rem;
+}
+
+.ipd-heatmap-card-vs {
+    color: var(--ipd-muted);
+    font-weight: 400;
 }
 
 .ipd-section {
