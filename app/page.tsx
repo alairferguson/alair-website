@@ -1,4 +1,5 @@
 import HomeClient from "./components/HomeClient";
+import { getBookshelfSpines } from "@/lib/bookshelf";
 import { getWritingPosts } from "@/lib/writing";
 import { PDF_PIECES } from "@/lib/writing-display";
 
@@ -13,5 +14,6 @@ export default async function Home() {
     const writingPosts = [...mdxPosts, ...pdfPosts].sort((a, b) =>
         b.date.localeCompare(a.date)
     );
-    return <HomeClient writingPosts={writingPosts} />;
+    const spines = await getBookshelfSpines();
+    return <HomeClient writingPosts={writingPosts} spines={spines} />;
 }

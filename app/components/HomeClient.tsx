@@ -6,16 +6,19 @@ import { useEffect } from "react";
 import Paper from "./Paper";
 import { Email } from "./Email";
 import RabbitHolesContent from "./RabbitHolesContent";
+import Bookshelf from "./bookshelf/Bookshelf";
+import type { Spine } from "@/lib/bookshelf-types";
 import type { WritingPost } from "@/lib/writing";
 import { formatDateDDMMYYYY, getWritingSections } from "@/lib/writing-display";
 
 type HomeClientProps = {
     writingPosts: WritingPost[];
+    spines: Spine[];
 };
 
 const linkHoverClass = "hover:text-primary hover:decoration-wavy hover:underline decoration-1";
 
-export default function HomeClient({ writingPosts }: HomeClientProps) {
+export default function HomeClient({ writingPosts, spines }: HomeClientProps) {
     const scrollTo = (id: string) => () => {
         const el = document.getElementById(id);
         if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -192,6 +195,8 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                         </div>
                     </div>
                 </Paper>
+
+                <Bookshelf spines={spines} />
 
                 <Paper id="rabbit-holes" pageNum="III" showHomeButton landscape>
                     <RabbitHolesContent />
