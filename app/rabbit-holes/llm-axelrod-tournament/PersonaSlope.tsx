@@ -24,8 +24,8 @@ const PERSONA_META: PersonaMeta[] = [
 const PERSONA_ORDER = PERSONA_META.map((p) => p.id);
 
 const WIDTH = 960;
-const HEIGHT = 440;
-const MARGIN = { top: 40, right: 20, bottom: 42, left: 54 };
+const HEIGHT = 460;
+const MARGIN = { top: 40, right: 20, bottom: 58, left: 54 };
 const INNER_W = WIDTH - MARGIN.left - MARGIN.right;
 const INNER_H = HEIGHT - MARGIN.top - MARGIN.bottom;
 const LABEL_GAP = 14;
@@ -71,11 +71,6 @@ function formatVal(v: number): string {
     return v.toFixed(2);
 }
 
-function formatDelta(v: number): string {
-    const sign = v > 0 ? "+" : v < 0 ? "−" : "";
-    return `${sign}${Math.abs(v).toFixed(2)}`;
-}
-
 function diamondPath(size = 7): string {
     return `M0,${-size} L${size},0 L0,${size} L${-size},0 Z`;
 }
@@ -101,7 +96,6 @@ type ModelCurve = {
         y: number;
     }>;
     path: string;
-    swing: number;
 };
 
 /**
@@ -222,18 +216,14 @@ export default function PersonaSlope({
                     value: number;
                 }>;
                 if (points.length < 2) return null;
-                const first = points[0].value;
-                const last = points[points.length - 1].value;
                 return {
                     series,
                     raw: points,
-                    swing: last - first,
                 };
             })
             .filter(Boolean) as Array<{
             series: Series;
             raw: Array<{ persona: string; player: Player; value: number }>;
-            swing: number;
         }>;
     }, [report.series, report.players, metric]);
 
@@ -274,7 +264,6 @@ export default function PersonaSlope({
                 series: curve.series,
                 points,
                 path,
-                swing: curve.swing,
             };
         });
 
@@ -339,26 +328,6 @@ export default function PersonaSlope({
                                 ))}
                         </div>
                     </div>
-                    <ul
-                        className="ipd-slope-swings ipd-mono"
-                        aria-label="Persona swing cooperative to selfish"
-                    >
-                        <li className="ipd-slope-swings-label">
-                            Δ coop→selfish
-                        </li>
-                        {curves.map((curve) => (
-                            <li key={curve.series.id}>
-                                <span
-                                    className="ipd-swatch"
-                                    style={{ background: curve.series.color }}
-                                />
-                                <span className="ipd-slope-model-name">
-                                    {curve.series.label}
-                                </span>
-                                <strong>{formatDelta(curve.swing)}</strong>
-                            </li>
-                        ))}
-                    </ul>
                 </div>
             </div>
 
@@ -559,6 +528,15 @@ export default function PersonaSlope({
                             textAnchor="middle"
                         >
                             {metricMeta.label}
+                        </text>
+
+                        <text
+                            className="ipd-axis-title"
+                            x={INNER_W / 2}
+                            y={INNER_H + 42}
+                            textAnchor="middle"
+                        >
+                            Model Prompt Personas
                         </text>
                     </g>
                 </svg>

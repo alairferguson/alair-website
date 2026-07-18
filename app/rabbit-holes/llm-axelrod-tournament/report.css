@@ -11,6 +11,10 @@
     --ipd-halo: #f7f7f4;
     --ipd-hover: rgba(20, 18, 11, 0.06);
     --ipd-link: #7a2e3a;
+    /* Series palette — keep in sync with colors.ts */
+    --ipd-claude: #c15f3c;
+    --ipd-openai: #218bff;
+    --ipd-classic: #8b949e;
     --ipd-ease: cubic-bezier(0.4, 0, 0.2, 1);
 
     min-height: 100dvh;
@@ -867,44 +871,6 @@ li.ipd-draft-note {
 
 .ipd-slope-xtick[data-active="true"] {
     fill: var(--ipd-fg);
-    font-weight: 500;
-}
-
-.ipd-slope-model-name {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    min-width: 0;
-}
-
-.ipd-slope-swings {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 0.55rem 1rem;
-    font-size: 0.75rem;
-}
-
-.ipd-slope-swings-label {
-    font-size: 0.625rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--ipd-faint);
-}
-
-.ipd-slope-swings li:not(.ipd-slope-swings-label) {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    color: var(--ipd-muted);
-}
-
-.ipd-slope-swings strong {
-    color: var(--ipd-fg);
     font-weight: 500;
 }
 
