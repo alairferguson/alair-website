@@ -12,19 +12,20 @@ export type ProseCopy = {
     list?: string[];
 };
 
-export type MethodologySubsection = {
+export type SlottedSubsection = {
     id: string;
-    heading: string;
+    /** Omit to render the subsection as an unheaded prose block. */
+    heading?: string;
     paragraphs: string[];
     list?: string[];
     /** Index of the paragraph after which a full-width slot (chart, card grid) is inserted. */
     slotAfterParagraph?: number;
 };
 
-export type MethodologyCopy = {
+export type SlottedCopy = {
     title: string;
     dek?: string;
-    subsections: MethodologySubsection[];
+    subsections: SlottedSubsection[];
 };
 
 export const INTRODUCTION: ProseCopy = {
@@ -37,7 +38,7 @@ export const INTRODUCTION: ProseCopy = {
     ],
 };
 
-export const METHODOLOGY: MethodologyCopy = {
+export const METHODOLOGY: SlottedCopy = {
     title: "Methodology",
     dek: "How the tournament was run, and how fairness was enforced by construction.",
     subsections: [
@@ -115,12 +116,71 @@ export const METHODOLOGY: MethodologyCopy = {
     ],
 };
 
-export const DISCUSSION: ProseCopy = {
+export const RESULTS: SlottedCopy = {
+    title: "Results",
+    dek: "Every player placed in strategy space, matched by who they cooperate with, ranked by outcome, then read through the persona knob.",
+    subsections: [
+        {
+            id: "strategy-space",
+            heading: "Strategy Space",
+            paragraphs: [
+                "[Lead-in: what to look for in the scatter before the reader sees it — clustering by persona, and how classics (circles) sit relative to LLM × persona variants (stars).]",
+            ],
+            slotAfterParagraph: 0,
+        },
+        {
+            id: "cooperation-matrix",
+            heading: "Cooperation Matrix",
+            paragraphs: [
+                "[Lead-in: what the heatmap shows before the reader sees it — row-vs-column asymmetry, and what switching to LLMs × LLMs isolates.]",
+            ],
+            slotAfterParagraph: 0,
+        },
+        {
+            id: "leaderboard",
+            heading: "Leaderboard",
+            paragraphs: [
+                "[Lead-in: how to read the ranking — mean score per turn, and what the nearest-classic column is doing.]",
+            ],
+            slotAfterParagraph: 0,
+        },
+        {
+            id: "persona-knob",
+            heading: "Persona Knob",
+            paragraphs: [
+                "[Lead-in: what the slope chart isolates — same two models, four dispositions, which fingerprint metrics move most.]",
+            ],
+            slotAfterParagraph: 0,
+        },
+    ],
+};
+
+export const DISCUSSION: SlottedCopy = {
     title: "Discussion",
-    paragraphs: [
-        "[Interpret the strategy-space plot: where do the LLM × persona points fall relative to the classics, and what does that placement mean behaviorally?]",
-        "[Discuss the persona knob results — how much does a system-prompt disposition shift move the fingerprint of the same underlying model?]",
-        "[Discuss any notable cross-model differences, and anything that ran counter to expectation going in.]",
+    subsections: [
+        {
+            id: "strategy-space-reading",
+            heading: "Reading the Strategy Space",
+            paragraphs: [
+                "[Interpret the strategy-space plot: LLM × persona points collapse into three clusters rather than a spectrum — neutral prompts sit near Grudger, selfish/payoff-only prompts sit near Defector, and only the cooperative persona moves off that axis, landing near TFT/GTFT. What does that clustering mean behaviorally?]",
+            ],
+        },
+        {
+            id: "the-persona-knob",
+            heading: "The Persona Knob",
+            paragraphs: [
+                "[Discuss the persona knob results: within a single model, disposition swings cooperation and forgiveness further than switching models does. Forgiveness moves from ~0 under selfish/payoff-only to 0.78–1.0 under cooperative, while retaliation stays pinned near 1.0 almost everywhere — the persona prompt behaves like a forgiveness dial more than a cooperation dial.]",
+                "[After the inset: note how this within-model swing compares to the cross-model gap at the same persona.]",
+            ],
+            slotAfterParagraph: 0,
+        },
+        {
+            id: "cross-model-surprises",
+            heading: "Cross-Model Differences and Surprises",
+            paragraphs: [
+                "[Discuss cross-model differences and anything counter to expectation: 'neutral' collapses to Grudger-like play by default rather than sitting between Cooperator and Defector, and it's also the top-ranked player overall. Cooperative personas rank worse than neutral for both models, echoing Cooperator's weak finish among classics. Under the cooperative persona, GPT-4o-mini reaches true reciprocal generosity (nearest GTFT) while Claude Haiku keeps retaliation higher (nearest TFT) — same instruction, different underlying disposition. Payoff-only framing doesn't push either model toward colder rationality uniformly.]",
+            ],
+        },
     ],
 };
 

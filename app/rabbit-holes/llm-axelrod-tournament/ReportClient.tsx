@@ -11,16 +11,17 @@ import {
     LIMITATIONS,
     METHODOLOGY,
     PERSONA_PROMPTS,
+    RESULTS,
     USER_PROMPT_EXAMPLES,
 } from "./content";
 import AppendixSection from "./AppendixSection";
 import CooperationHeatmap from "./CooperationHeatmap";
 import FingerprintScatter from "./FingerprintScatter";
 import LeaderboardTable from "./LeaderboardTable";
-import MethodologySection from "./MethodologySection";
 import PayoffMatrix from "./PayoffMatrix";
 import PersonaSlope from "./PersonaSlope";
 import ProseSection from "./ProseSection";
+import SlottedSection from "./SlottedSection";
 import type { MetricId, Report } from "./types";
 import "./report.css";
 
@@ -76,7 +77,7 @@ export default function ReportClient({ report }: Props) {
 
                 <ProseSection id="introduction" {...INTRODUCTION} />
 
-                <MethodologySection
+                <SlottedSection
                     id="methodology"
                     {...METHODOLOGY}
                     slots={{
@@ -102,94 +103,96 @@ export default function ReportClient({ report }: Props) {
                     }}
                 />
 
-                <section
-                    className="ipd-section ipd-section--numbered"
+                <SlottedSection
                     id="results"
-                    aria-label="Results"
-                >
-                    <div className="ipd-section-head">
-                        <div>
-                            <h2>Results</h2>
-                            <p>
-                                Every player placed in strategy space, matched
-                                by who they cooperate with, ranked by outcome,
-                                then read through the persona knob.
-                            </p>
-                        </div>
-                    </div>
+                    {...RESULTS}
+                    slots={{
+                        "strategy-space": (
+                            <>
+                                <FingerprintScatter
+                                    report={report}
+                                    xMetric={xMetric}
+                                    yMetric={yMetric}
+                                    onXMetricChange={setXMetric}
+                                    onYMetricChange={setYMetric}
+                                    filter={filter}
+                                    onFilterChange={setFilter}
+                                    highlightedId={highlightedId}
+                                    onHighlight={setHighlightedId}
+                                />
+                                <p className="ipd-footnote">
+                                    Classics are circles; LLM × persona
+                                    variants are stars. Lines connect personas
+                                    of the same model. Plot labels are
+                                    abbreviated — hover a point for the full
+                                    name. Use Behavior, Punishment, or Outcome
+                                    to re-project; Custom axes for any pair.
+                                </p>
+                            </>
+                        ),
+                        "cooperation-matrix": (
+                            <>
+                                <CooperationHeatmap
+                                    report={report}
+                                    highlightedId={highlightedId}
+                                    onHighlight={setHighlightedId}
+                                />
+                                <p className="ipd-footnote">
+                                    Each cell is how often the row player
+                                    cooperated against the column player.
+                                    Switch to LLMs × LLMs for model-to-model
+                                    play; Full matrix includes every pairing.
+                                    Hover shows both directions when the
+                                    matchup is asymmetric.
+                                </p>
+                            </>
+                        ),
+                        leaderboard: (
+                            <>
+                                <LeaderboardTable
+                                    report={report}
+                                    highlightedId={highlightedId}
+                                    onHighlight={setHighlightedId}
+                                />
+                                <p className="ipd-footnote">
+                                    Ranked by mean score per turn. Nearest
+                                    classic is Euclidean distance across the
+                                    five fingerprint dimensions.
+                                </p>
+                            </>
+                        ),
+                        "persona-knob": (
+                            <>
+                                <PersonaSlope
+                                    report={report}
+                                    highlightedId={highlightedId}
+                                    onHighlight={setHighlightedId}
+                                />
+                                <p className="ipd-footnote">
+                                    Four system prompts, same models,
+                                    temperature 0. Switch metrics to see which
+                                    fingerprint traits the disposition moves;
+                                    overlay the curves to compare swings
+                                    directly.
+                                </p>
+                            </>
+                        ),
+                    }}
+                />
 
-                    <div id="strategy-space">
-                        <p className="ipd-kicker ipd-mono ipd-results-label">
-                            Strategy space
-                        </p>
-                        <FingerprintScatter
-                            report={report}
-                            xMetric={xMetric}
-                            yMetric={yMetric}
-                            onXMetricChange={setXMetric}
-                            onYMetricChange={setYMetric}
-                            filter={filter}
-                            onFilterChange={setFilter}
-                            highlightedId={highlightedId}
-                            onHighlight={setHighlightedId}
-                        />
-                    </div>
-                    <p className="ipd-footnote">
-                        Classics are circles; LLM × persona variants are stars.
-                        Lines connect personas of the same model. Plot labels are
-                        abbreviated — hover a point for the full name. Use
-                        Behavior, Punishment, or Outcome to re-project; Custom
-                        axes for any pair.
-                    </p>
-
-                    <div id="cooperation-matrix">
-                        <p className="ipd-kicker ipd-mono ipd-results-label ipd-results-label--spaced">
-                            Cooperation matrix
-                        </p>
-                        <CooperationHeatmap
-                            report={report}
-                            highlightedId={highlightedId}
-                            onHighlight={setHighlightedId}
-                        />
-                    </div>
-                    <p className="ipd-footnote">
-                        Each cell is how often the row player cooperated against
-                        the column player. Switch to LLMs × LLMs for
-                        model-to-model play; Full matrix includes every pairing.
-                        Hover shows both directions when the matchup is
-                        asymmetric.
-                    </p>
-
-                    <p className="ipd-kicker ipd-mono ipd-results-label ipd-results-label--spaced">
-                        Leaderboard
-                    </p>
-                    <LeaderboardTable
-                        report={report}
-                        highlightedId={highlightedId}
-                        onHighlight={setHighlightedId}
-                    />
-                    <p className="ipd-footnote">
-                        Ranked by mean score per turn. Nearest classic is
-                        Euclidean distance across the five fingerprint
-                        dimensions.
-                    </p>
-
-                    <p className="ipd-kicker ipd-mono ipd-results-label ipd-results-label--spaced">
-                        Persona knob
-                    </p>
-                    <PersonaSlope
-                        report={report}
-                        highlightedId={highlightedId}
-                        onHighlight={setHighlightedId}
-                    />
-                    <p className="ipd-footnote">
-                        Four system prompts, same models, temperature 0. Switch
-                        metrics to see which fingerprint traits the disposition
-                        moves; overlay the curves to compare swings directly.
-                    </p>
-                </section>
-
-                <ProseSection id="discussion" {...DISCUSSION} />
+                <SlottedSection
+                    id="discussion"
+                    {...DISCUSSION}
+                    slots={{
+                        "the-persona-knob": (
+                            <PersonaSlope
+                                report={report}
+                                highlightedId={highlightedId}
+                                onHighlight={setHighlightedId}
+                            />
+                        ),
+                    }}
+                />
                 <ProseSection id="limitations" {...LIMITATIONS} />
                 <ProseSection id="conclusion" {...CONCLUSION} />
                 <AppendixSection

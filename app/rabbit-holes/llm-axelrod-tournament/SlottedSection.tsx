@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
-import type { MethodologyCopy } from "./content";
+import type { SlottedCopy } from "./content";
 import { isDraft, renderInline } from "./ProseSection";
 
-type Props = MethodologyCopy & {
+type Props = SlottedCopy & {
     id?: string;
     /** Full-width content keyed by subsection id, inserted after `slotAfterParagraph`. */
     slots?: Record<string, ReactNode>;
@@ -24,7 +24,7 @@ function renderList(items: string[], keyPrefix: string) {
     );
 }
 
-export default function MethodologySection({
+export default function SlottedSection({
     id,
     title,
     dek,
@@ -60,7 +60,7 @@ export default function MethodologySection({
                 return (
                     <div className="ipd-subsection" id={sub.id} key={sub.id}>
                         <div className="ipd-prose">
-                            <h3>{sub.heading}</h3>
+                            {sub.heading && <h3>{sub.heading}</h3>}
                             {before.map((text, i) =>
                                 isDraft(text) ? (
                                     <p
