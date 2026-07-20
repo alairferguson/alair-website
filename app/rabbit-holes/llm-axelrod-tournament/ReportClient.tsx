@@ -87,22 +87,6 @@ export default function ReportClient({ report }: Props) {
                 <header className="ipd-hero">
                     <h1>{report.title}</h1>
                     <p>{report.subtitle}</p>
-                    <div className="ipd-meta ipd-mono">
-                        <span>{report.meta.players} players</span>
-                        <span>
-                            {report.meta.llms} LLM × persona
-                            {report.meta.llms === 1 ? "" : "s"}
-                        </span>
-                        <span>{report.meta.classics} classic strategies</span>
-                        {report.meta.turns != null && (
-                            <span>{report.meta.turns} turns / match</span>
-                        )}
-                        {report.meta.matchesPerPlayer != null && (
-                            <span>
-                                {report.meta.matchesPerPlayer} matches / player
-                            </span>
-                        )}
-                    </div>
                 </header>
 
                 <ProseSection id="introduction" {...INTRODUCTION} />
@@ -112,6 +96,21 @@ export default function ReportClient({ report }: Props) {
                     {...METHODOLOGY}
                     slots={{
                         "the-tournament": <PayoffMatrix />,
+                        "llm-persona-players": (
+                            <div className="ipd-prompt-grid">
+                                {PERSONA_PROMPTS.map((persona) => (
+                                    <article
+                                        key={persona.id}
+                                        className="ipd-prompt-card"
+                                    >
+                                        <h3>{persona.label}</h3>
+                                        <pre className="ipd-mono">
+                                            {persona.systemPrompt}
+                                        </pre>
+                                    </article>
+                                ))}
+                            </div>
+                        ),
                         "llms-nearest-classic-strategy": (
                             <div className="ipd-dims-wrap">
                                 <p className="ipd-kicker ipd-mono ipd-results-label">
@@ -208,7 +207,6 @@ export default function ReportClient({ report }: Props) {
                 <AppendixSection
                     id="appendix"
                     {...APPENDIX}
-                    personaPrompts={PERSONA_PROMPTS}
                     userPromptExamples={USER_PROMPT_EXAMPLES}
                 />
 

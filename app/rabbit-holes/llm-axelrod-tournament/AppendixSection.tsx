@@ -1,9 +1,8 @@
-import type { PersonaPrompt, ProseCopy } from "./content";
+import type { ProseCopy } from "./content";
 import { isDraft, renderInline } from "./ProseSection";
 
 type Props = ProseCopy & {
     id?: string;
-    personaPrompts: PersonaPrompt[];
     userPromptExamples: Array<{ id: string; label: string; body: string }>;
 };
 
@@ -12,7 +11,6 @@ export default function AppendixSection({
     title,
     dek,
     paragraphs,
-    personaPrompts,
     userPromptExamples,
 }: Props) {
     return (
@@ -41,21 +39,9 @@ export default function AppendixSection({
             </div>
 
             <p
-                id="appendix-system-prompts"
+                id="appendix-user-prompts"
                 className="ipd-kicker ipd-mono ipd-results-label ipd-results-label--spaced"
             >
-                System prompts
-            </p>
-            <div className="ipd-prompt-grid">
-                {personaPrompts.map((persona) => (
-                    <article key={persona.id} className="ipd-prompt-card">
-                        <h3>{persona.label}</h3>
-                        <pre className="ipd-mono">{persona.systemPrompt}</pre>
-                    </article>
-                ))}
-            </div>
-
-            <p className="ipd-kicker ipd-mono ipd-results-label ipd-results-label--spaced">
                 User prompt (per turn)
             </p>
             <div className="ipd-prompt-grid">

@@ -80,8 +80,10 @@ export const METHODOLOGY: SlottedCopy = {
             id: "llm-persona-players",
             heading: "LLM × Persona Players",
             paragraphs: [
-              "I used five models in this tournament: Claude Haiku 4.5, GPT-4o-mini, Gemini 3.1 Flash Lite, Grok 4.1 Fast (non-reasoning), and Qwen 2.5 7B. Each was presented the game through four system-prompt personas: selfish, cooperative, payoff-only, and neutral. See the [Appendix](#appendix-system-prompts) for how each prompt was phrased. Crossing five models with four personas produced the 20 LLM × persona players in the tournament:",
+                "I used five models in this tournament: Claude Haiku 4.5, GPT-4o-mini, Gemini 3.1 Flash Lite, Grok 4.1 Fast (non-reasoning), and Qwen 2.5 7B. Each was presented the game through four system-prompt personas — selfish, cooperative, payoff-only, and neutral — phrased as follows:",
+                "The per-turn user prompt, built from the live payoff matrix and this match's move history, is in the [Appendix](#appendix-user-prompts). Crossing five models with four personas produced the 20 LLM × persona players in the tournament:",
             ],
+            slotAfterParagraph: 0,
             list: [
                 "**Claude Haiku 4.5 × selfish**",
                 "**Claude Haiku 4.5 × cooperative**",
@@ -217,8 +219,10 @@ export const LIMITATIONS: ProseCopy = {
 export const CONCLUSION: ProseCopy = {
     title: "Conclusion",
     paragraphs: [
-        "[Restate the core finding in one or two sentences — what is this model's behavioral profile, in plain terms?]",
-        "[Point to the natural next step: the (T, S) sweep, more models, or a repulsion layout for the figure.]",
+        "Twenty-seven players, five models, four personas, and one seventy-year-old dilemma later, the finding that survives every cut is satisfyingly simple: what you tell a model to be matters more than which model you're talking to. Cooperation is cheap to install; say \"be cooperative\" and cooperation rises across every model tested. Forgiveness is not. Ask the same five models to forgive and you get five different answers, from near-full forgiveness (GPT-4o-mini) to barely any at all (Grok, Qwen). If this tournament earns one sentence, it's that persona is a powerful but not supreme lever. Where prompt cannot move behavior, the model's defaults substitute.",
+        "The best evidence that these models were actually playing, rather than reciting something they'd read about Axelrod, is the one player nobody assigned: neutral. Told nothing about punishment or forgiveness, all five models converged on the same disposition anyway. It wasn't Tit For Tat, the tournament's famous historical winner, which is the answer a model reciting trivia would have reached for. It was Grudger: harsher, less forgiving, and only the stronger strategy here because this particular field never tests it. A blank instruction produced a specific, earned personality rather than a remembered fact, and that was impressive.",
+        "None of this is a clean story, and it shouldn't be treated as one. Grok and Qwen's cooperative personas never move off Grudger at all. The instruction to trust was ignored, silently, which is a more unsettling result than any number that did move.",
+        "The game theory nerd in me was ecstatic to first read that Grudger had beat Tit For Tat and, after digging into the data, to discover that the nature of the field being fundamentally different to the 1980 Axelrod tournament favored certain strategies over others. But what was truly incredible about this project was that a Cold War-era thought experiment about human cooperation, designed by a political scientist and later borrowed by evolutionary biologists, still had enough teeth to pull real, distinct personalities out of five language models that have never met each other and never will.",
     ],
 };
 
@@ -236,9 +240,9 @@ export type PersonaPrompt = {
 
 export const APPENDIX: ProseCopy = {
     title: "Appendix",
-    dek: "Full prompt text for each persona.",
+    dek: "Full text of the per-turn user prompt.",
     paragraphs: [
-        "Each LLM player receives a system prompt that sets its disposition (below) and, every turn, a user prompt built from the live payoff matrix and this match's move history only — the same information a classic strategy can see, and nothing about who the opponent is (see Fairness Safeguards). Three of the four personas share an identical output format around a different disposition paragraph; payoff-only goes further and strips the Cooperate/Defect framing entirely, presenting the same game as a bare choice between A and B.",
+        "Every turn, each LLM player receives a user prompt built from the live payoff matrix and this match's move history only — the same information a classic strategy can see, and nothing about who the opponent is (see Fairness Safeguards). The persona system prompts are shown in [LLM × Persona Players](#llm-persona-players) in the Methodology. Payoff-only goes further and strips the Cooperate/Defect framing entirely, presenting the same game as a bare choice between A and B.",
     ],
 };
 
