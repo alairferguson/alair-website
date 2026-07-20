@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import SeriesLegend from "./SeriesLegend";
 import type { MetricId, Player, Report, Series } from "./types";
 
@@ -96,6 +96,23 @@ export default function PersonaSlope({
     const [hoverPersona, setHoverPersona] = useState<string | null>(null);
     const [focusPersona, setFocusPersona] = useState<string | null>(null);
     const [hoverPlayerId, setHoverPlayerId] = useState<string | null>(null);
+
+    useEffect(() => {
+        function onFigureAction(event: Event) {
+            const { target, action } = (
+                event as CustomEvent<{ target: string; action: string }>
+            ).detail;
+            if (target !== "persona-slope") return;
+            if (FINGERPRINT_METRICS.includes(action as MetricId)) {
+                setMetric(action as MetricId);
+            }
+        }
+
+        window.addEventListener("ipd:figure-action", onFigureAction);
+        return () => {
+            window.removeEventListener("ipd:figure-action", onFigureAction);
+        };
+    }, []);
 
     const metricMeta = report.metrics.find((m) => m.id === metric)!;
     const activePersona = focusPersona ?? hoverPersona;
