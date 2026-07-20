@@ -178,7 +178,7 @@ export default function ReportClient({ report }: Props) {
                                     onHighlight={setHighlightedId}
                                 />
                                 <p className="ipd-footnote">
-                                    Ranked by median score per turn across
+                                    Ranked by mean score per turn across
                                     repetitions. Nearest classic is Euclidean
                                     distance across the five fingerprint
                                     dimensions.

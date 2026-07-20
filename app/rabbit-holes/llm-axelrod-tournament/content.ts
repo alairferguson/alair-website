@@ -36,7 +36,7 @@ export const INTRODUCTION: ProseCopy = {
     paragraphs: [
         "Game theory has long sought to formalize rational decision-making into mathematical concreteness, and as compute increases at a seemingly exponential rate, the rationality proposed by this discipline can be tested by repeated simulations. Artificial Intelligence brings with it exciting possibilities of simulated tests to explore the differences between mathematically rational behavior and the decisions that simulated humans make.",
         "This project simulates an Axelrod tournament in which a set of players faces one another in multiple Iterated Prisoner’s Dilemma games. Axelrod’s tournaments have a rich history in economics, and if you are unfamiliar, I highly recommend that you peruse [this write-up](https://egtheory.wordpress.com/2015/03/02/ipd/). While [past](https://edwardbrookman.substack.com/p/ai-evolves-a-winning-strategy-in?r=2pe9fn) work has sought to explore whether or not LLMs can *win*, I seek to understand *how LLMs play*.",
-        "[Axelrod’s analyses of the original 1980 tournament](https://www.jstor.org/stable/173932) identified niceness, forgiveness, retaliation, and provocability as the traits that separated the winners from the rest. My analysis adds the cooperation rate of a strategy to characterize play in this project. These five traits form the behavioral fingerprint of the player.",
+        "[Axelrod’s analyses of the original 1980 tournament](https://www.jstor.org/stable/173932) identified niceness, forgiveness, retaliation, and provocability as the traits that separated the winners from the rest. My analysis adds the cooperation of a strategy to characterize play in this project. These five traits form the behavioral fingerprint of the player.",
         "What follows: a leaderboard ranked by outcome, a strategy-space plot comparing players across the traits of the behavioral fingerprint, and a cooperation matrix of who cooperates with whom. I conclude by discussing the main takeaway: prompting choices make the largest difference in how LLM players strategize.",
     ],
 };
@@ -121,7 +121,7 @@ export const METHODOLOGY: SlottedCopy = {
             id: "llms-nearest-classic-strategy",
             heading: "LLMs’ Nearest Classic Strategy",
             paragraphs: [
-                "Each player's behavioral fingerprint (cooperation rate, niceness, retaliation, forgiveness, and provocability) is computed from its actual moves across all 130 round-robin matches. These fingerprints are plotted in the [strategy-space figure below](#strategy-space).",
+                "Each player's behavioral fingerprint (cooperation, niceness, retaliation, forgiveness, and provocability) is computed from its actual moves across all 130 round-robin matches. These fingerprints are plotted in the [strategy-space figure below](#strategy-space).",
                 "To find an LLM × persona player's nearest classic strategy, I take the Euclidean distance between its fingerprint and every classic strategy's fingerprint in that same five-dimensional space, and report the closest match.",
                 "A short distance means an LLM's aggregate behavior (how often it cooperates, how it opens, how sharply it punishes and how readily it forgives) statistically resembles a classic strategy's. It does not mean the LLM is internally running that strategy's exact rule; see Limitations for more on this distinction.",
             ],
@@ -137,10 +137,12 @@ export const RESULTS: SlottedCopy = {
             id: "leaderboard",
             heading: "Leaderboard",
             paragraphs: [
-                "The Leaderboard shows the overall results for each player in the tournament and is ranked by outcome (median score per turn). The table also presents mean score per turn, total wins, the five fingerprint dimensions, and for LLM players, their nearest classic strategy.",
-                "The classic strategy Grudger won the tournament. Of the LLM × personas, Grok 4.1 Fast (non-reasoning) won the highest median score per turn. By model, no clear pattern arises. However, by persona, neutral personas win, followed by cooperative personas, and the selfish and payoff-only strategies rank worst. The behavior of players on the axes of model and persona is further explored in the [Strategy Space](#strategy-space).",
+                "The Leaderboard shows the overall results for each player in the tournament and is ranked by outcome (mean score per turn). The table also presents mean score per turn, total wins, the five fingerprint dimensions, and for LLM players, their nearest classic strategy.",
+                "It is worth noting that “wins” and “rank” counterintuitively pull in opposite directions. A win is earned by out-scoring one opponent in a match, which “Defectors” do consistently by exploiting the nicer players. Rank reflects points scored per turn, and mutually cooperating for 30 rounds at 3 points each results in more points than winning head-to-head match ups.",
+                "The classic strategy Grudger won the tournament. Of the LLM × personas, Grok 4.1 Fast (non-reasoning) won the highest mean score per turn. By model, no clear pattern arises. However, by persona, neutral personas win, followed by cooperative personas, and the selfish and payoff-only strategies rank worst. The behavior of players on the axes of model and persona is further explored in the [Strategy Space](#strategy-space).",
+                "Among the seven classic strategies, the ranking doesn't reproduce Axelrod's original result. Grudger takes first place overall, while Tit For Tat (the strategy that won both of Axelrod's actual 1980 round-robin tournaments) places seventh, behind five of the twenty LLM × persona players. GTFT and Win-Stay Lose-Shift rank further down, Cooperator lands lower still, and Defector and Random anchor the bottom of the entire field, Defector included, despite Defector winning more individual matches (95 of 130) than any other player in the tournament. This reversal reflects a more forgiving field than Axelrod's original: none of this tournament's players ever probes with an isolated defection and then returns to cooperation, so Grudger's lack of forgiveness is never put to the test.",
             ],
-            slotAfterParagraph: 0,
+            slotAfterParagraph: 1,
         },
         {
             id: "strategy-space",
