@@ -174,21 +174,14 @@ export const DISCUSSION: SlottedCopy = {
     title: "Discussion",
     subsections: [
         {
-            id: "strategy-space-reading",
-            heading: "Reading the Strategy Space",
-            paragraphs: [
-                "[Interpret the strategy-space plot: LLM × persona points collapse into three clusters rather than a spectrum — neutral prompts sit near Grudger, selfish/payoff-only prompts sit near Defector, and only the cooperative persona moves off that axis, landing near TFT/GTFT. What does that clustering mean behaviorally?]",
-            ],
-        },
-        {
             id: "the-persona-knob",
             heading: "The Persona Knob",
             paragraphs: [
-                "The Persona Slope figure below plots one fingerprint metric at a time against the four prompt personas, with model shown by color. Toggle through cooperation rate, niceness, retaliation, forgiveness, and provocability to see how each persona affects the behavior of the players.",
-                "[Cooperation rate](#persona-slope:cooperation_rate) and [niceness](#persona-slope:niceness) barely separate the five models. Niceness is close to a binary switch with scores of 1.0 for cooperative and neutral, 0.0 for payoff-only and selfish, in every model but one. Cooperation rate follows the same split, clustering around 0.57–0.6 for cooperative/neutral and near zero for payoff-only/selfish.",
+                "The Persona Slope figure below plots one fingerprint metric at a time against the four prompt personas, with model shown by color. Toggle through cooperation, niceness, retaliation, forgiveness, and provocability to see how each persona affects the behavior of the players.",
+                "Cooperation and niceness barely separate the five models. [Niceness](#persona-slope:niceness) is close to a binary switch with scores of 1.0 for cooperative and neutral and 0.0 for payoff-only and selfish in every model but one. [Cooperation](#persona-slope:cooperation_rate) follows the same split, clustering around 0.57–0.6 for cooperative/neutral and near zero for payoff-only/selfish.",
                 "[Retaliation](#persona-slope:retaliation) is high and stable at or above 0.93 for every persona and every model, with one exception. GPT-4o-mini's cooperative persona drops to 0.57, the one case where a model visibly tempers its punishment when told to value trust.",
                 "[Forgiveness](#persona-slope:forgiveness) is where the models actually separate. For the cooperative personas, forgiveness ranges from 0.05 (Grok) to 1.0 (GPT-4o-mini). Two models, Grok and Qwen, barely change their strategies when prompted to be \"cooperative\" compared with other personas: their forgiveness stays under 0.15, indistinguishable from their own neutral and payoff-only readings. For these two, the persona prompt asks for trust and gets Grudger.",
-                "[Provocability](#persona-slope:provocability) tells a related story with a different outlier. At payoff-only, GPT-4o-mini drops to 0.05 while every other model, including Qwen, stays at or above 0.56. Qwen's payoff-only persona is the standout on cooperation rate, niceness, and forgiveness; GPT-4o-mini's payoff-only persona is the standout on provocability and, less sharply, retaliation. Both models resist the pure-defection collapse that Claude, Gemini, and Grok fall into under payoff-only, just resisting it on different axes.",
+                "[Provocability](#persona-slope:provocability) tells a related story with a different outlier. At payoff-only, GPT-4o-mini drops to 0.05 while every other model, including Qwen, stays at or above 0.56. Qwen's payoff-only persona is the standout on cooperation, niceness, and forgiveness; GPT-4o-mini's payoff-only persona is the standout on provocability and, less sharply, retaliation. Both models resist the pure-defection collapse that Claude, Gemini, and Grok fall into under payoff-only, just resisting it on different axes.",
             ],
             slotAfterParagraph: 0,
         },
