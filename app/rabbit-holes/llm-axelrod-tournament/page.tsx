@@ -27,9 +27,9 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-    title: "LLM IPD Fingerprints | Alair",
+    title: "Do LLMs Hold Grudges? | Alair",
     description:
-        "Interactive behavioral fingerprints of language models in the iterated prisoner's dilemma.",
+        "Evidence from a 27-player Axelrod tournament pitting language models against classic game theory strategies.",
 };
 
 async function loadReport(): Promise<Report> {

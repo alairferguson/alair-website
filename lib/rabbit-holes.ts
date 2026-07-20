@@ -36,7 +36,7 @@ export const RABBIT_HOLES: RabbitHole[] = [
     },
     {
         slug: "llm-axelrod-tournament",
-        title: "LLM Axelrod Tournament",
+        title: "Do LLMs Hold Grudges?",
         position: { top: "56%", right: "10%" },
         images: [
             "/rabbit-holes/llm-axelrod-tournament/cover-gradient-1.svg",

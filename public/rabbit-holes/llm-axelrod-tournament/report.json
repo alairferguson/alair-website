@@ -1,8 +1,8 @@
 {
   "version": 1,
   "generatedAt": "2026-07-18T20:40:33.103742+00:00",
-  "title": "LLM IPD Fingerprints",
-  "subtitle": "Behavioral fingerprints of language models in the iterated prisoner's dilemma, compared against classic Axelrod strategies.",
+  "title": "Do LLMs Hold Grudges?",
+  "subtitle": "Evidence from a 27-player Axelrod tournament pitting language models against classic game theory strategies.",
   "meta": {
     "players": 27,
     "classics": 7,
