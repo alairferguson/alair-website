@@ -9,8 +9,10 @@ type SortKey =
     | "score"
     | "wins"
     | "cooperation_rate"
+    | "niceness"
     | "forgiveness"
     | "retaliation"
+    | "provocability"
     | "nearest";
 
 type Props = {
@@ -31,10 +33,14 @@ function sortValue(player: Player, key: SortKey): string | number {
             return player.outcomes.wins;
         case "cooperation_rate":
             return player.fingerprint.cooperation_rate;
+        case "niceness":
+            return player.fingerprint.niceness;
         case "forgiveness":
             return player.fingerprint.forgiveness;
         case "retaliation":
             return player.fingerprint.retaliation;
+        case "provocability":
+            return player.fingerprint.provocability;
         case "nearest":
             return player.nearestClassic?.label?.toLowerCase() ?? "~~~";
     }
@@ -91,11 +97,13 @@ export default function LeaderboardTable({
                     <tr>
                         {header("rank", "Rank", true)}
                         {header("player", "Player")}
-                        {header("score", "Score / turn", true)}
+                        {header("score", "Mean score / turn", true)}
                         {header("wins", "Wins", true)}
                         {header("cooperation_rate", "Coop.", true)}
+                        {header("niceness", "Nice", true)}
                         {header("forgiveness", "Forgive", true)}
                         {header("retaliation", "Retal.", true)}
+                        {header("provocability", "Prov.", true)}
                         {header("nearest", "Nearest classic")}
                     </tr>
                 </thead>
@@ -131,10 +139,16 @@ export default function LeaderboardTable({
                                 {player.fingerprint.cooperation_rate.toFixed(3)}
                             </td>
                             <td className="num">
+                                {player.fingerprint.niceness.toFixed(3)}
+                            </td>
+                            <td className="num">
                                 {player.fingerprint.forgiveness.toFixed(3)}
                             </td>
                             <td className="num">
                                 {player.fingerprint.retaliation.toFixed(3)}
+                            </td>
+                            <td className="num">
+                                {player.fingerprint.provocability.toFixed(3)}
                             </td>
                             <td>
                                 {player.nearestClassic

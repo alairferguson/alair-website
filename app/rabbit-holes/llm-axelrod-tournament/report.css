@@ -10,7 +10,7 @@
     --ipd-panel: #ffffff;
     --ipd-halo: #f7f7f4;
     --ipd-hover: rgba(20, 18, 11, 0.06);
-    --ipd-link: #7a2e3a;
+    --ipd-link: #910a07;
     /* Series palette — keep in sync with colors.ts */
     --ipd-claude: #c15f3c;
     --ipd-openai: #218bff;
@@ -42,7 +42,8 @@
 
 .ipd-report h1,
 .ipd-report h2,
-.ipd-report h3 {
+.ipd-report h3,
+.ipd-report h4 {
     font-family: var(--ipd-font-serif), ui-serif, Georgia, serif !important;
     font-style: normal !important;
     font-weight: 500;
@@ -133,6 +134,14 @@
     border: 1px solid var(--ipd-border);
     background: var(--ipd-panel);
     overflow: hidden;
+}
+
+/* The cooperation matrix now renders at a compact, fixed natural size, so
+   match its card to the prose column width (.ipd-prose) instead of the
+   full shell width. */
+#cooperation-matrix .ipd-chart-shell {
+    width: min(40rem, 100%);
+    margin: 0 auto;
 }
 
 .ipd-chart-toolbar {
@@ -443,6 +452,8 @@
 
 .ipd-heatmap {
     position: relative;
+    display: flex;
+    justify-content: center;
     width: 100%;
     background: var(--ipd-panel);
     overflow-x: auto;
@@ -450,7 +461,7 @@
 
 .ipd-heatmap svg {
     display: block;
-    width: 100%;
+    max-width: 100%;
     height: auto;
 }
 
@@ -472,10 +483,10 @@
 
 .ipd-heatmap-label {
     fill: var(--ipd-fg);
-    font-size: 11px;
+    font-size: 9.5px;
     paint-order: stroke;
     stroke: var(--ipd-halo);
-    stroke-width: 3px;
+    stroke-width: 2.5px;
     stroke-linejoin: round;
     transition:
         fill 140ms ease,
@@ -489,12 +500,12 @@
 
 .ipd-heatmap-legend-label {
     fill: var(--ipd-muted);
-    font-size: 11px;
+    font-size: 9.5px;
 }
 
 .ipd-heatmap-legend-title {
     fill: var(--ipd-muted);
-    font-size: 11px;
+    font-size: 9.5px;
     letter-spacing: 0.04em;
     text-transform: uppercase;
 }
@@ -559,13 +570,39 @@
 
 .ipd-subsection > .ipd-dims-wrap + .ipd-prose,
 .ipd-subsection > .ipd-dims + .ipd-prose,
-.ipd-subsection > .ipd-chart-shell + .ipd-prose {
+.ipd-subsection > .ipd-chart-shell + .ipd-prose,
+.ipd-subsection > .ipd-footnote + .ipd-prose,
+.ipd-subsection > .ipd-slot + .ipd-prose {
     margin-top: 1.75rem;
+}
+
+.ipd-subsection > .ipd-prose + .ipd-slot {
+    margin-top: 0.25rem;
 }
 
 .ipd-prose h3 {
     font-size: 1.1rem;
     margin: 0 0 0.85rem;
+}
+
+.ipd-prose h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    margin: 1.5rem 0 0.45rem;
+    color: var(--ipd-fg);
+}
+
+.ipd-prose h4:first-child {
+    margin-top: 0;
+}
+
+.ipd-prose h4 + p {
+    margin-top: 0;
+}
+
+.ipd-prose h4 .ipd-prose-link {
+    color: inherit;
 }
 
 .ipd-prose p {
@@ -665,6 +702,19 @@ li.ipd-draft-note {
     border: 1px solid var(--ipd-border);
     background: var(--ipd-panel);
     overflow-x: auto;
+}
+
+/* The leaderboard has ten columns and no longer fits the shell's 64rem
+   prose width; on wide viewports let it grow to its natural width and
+   center it against the page instead of the shell. */
+@media (min-width: 80rem) {
+    #leaderboard .ipd-table-wrap {
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+        width: max-content;
+        max-width: min(78rem, calc(100vw - 3rem));
+    }
 }
 
 .ipd-table {

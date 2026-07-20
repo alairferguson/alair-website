@@ -18,8 +18,11 @@ export type SlottedSubsection = {
     heading?: string;
     paragraphs: string[];
     list?: string[];
-    /** Index of the paragraph after which a full-width slot (chart, card grid) is inserted. */
-    slotAfterParagraph?: number;
+    /**
+     * Paragraph index (or indices) after which a full-width slot is inserted.
+     * Pair with a matching single slot node or array of nodes in SlottedSection.
+     */
+    slotAfterParagraph?: number | number[];
 };
 
 export type SlottedCopy = {
@@ -34,13 +37,12 @@ export const INTRODUCTION: ProseCopy = {
         "Game theory has long sought to formalize rational decision-making into mathematical concreteness, and as compute increases at a seemingly exponential rate, the rationality proposed by this discipline can be tested by repeated simulations. Artificial Intelligence brings with it exciting possibilities of simulated tests to explore the differences between mathematically rational behavior and the decisions that simulated humans make.",
         "This project simulates an Axelrod tournament in which a set of players faces one another in multiple Iterated Prisoner’s Dilemma games. Axelrod’s tournaments have a rich history in economics, and if you are unfamiliar, I highly recommend that you peruse [this write-up](https://egtheory.wordpress.com/2015/03/02/ipd/). While [past](https://edwardbrookman.substack.com/p/ai-evolves-a-winning-strategy-in?r=2pe9fn) work has sought to explore whether or not LLMs can *win*, I seek to understand *how LLMs play*.",
         "[Axelrod’s analyses of the original 1980 tournament](https://www.jstor.org/stable/173932) identified niceness, forgiveness, retaliation, and provocability as the traits that separated the winners from the rest. My analysis adds the cooperation rate of a strategy to characterize play in this project. These five traits form the behavioral fingerprint of the player.",
-        "What follows: overview of how the tournament was run, a strategy-space plot comparing players across the traits of the behavioral fingerprint, a cooperation matrix of who cooperates with whom, a leaderboard ranked by outcome, and each LLM player’s nearest classic strategy. I conclude by discussing the main takeaway: prompting choices make the largest difference in how LLM players strategize.",
+        "What follows: a leaderboard ranked by outcome, a strategy-space plot comparing players across the traits of the behavioral fingerprint, and a cooperation matrix of who cooperates with whom. I conclude by discussing the main takeaway: prompting choices make the largest difference in how LLM players strategize.",
     ],
 };
 
 export const METHODOLOGY: SlottedCopy = {
     title: "Methodology",
-    dek: "How the tournament was run, and how fairness was enforced by construction.",
     subsections: [
         {
             id: "the-game",
@@ -130,13 +132,28 @@ export const METHODOLOGY: SlottedCopy = {
 
 export const RESULTS: SlottedCopy = {
     title: "Results",
-    dek: "Every player placed in strategy space, matched by who they cooperate with, ranked by outcome, then read through the persona knob.",
     subsections: [
+        {
+            id: "leaderboard",
+            heading: "Leaderboard",
+            paragraphs: [
+                "The Leaderboard shows the overall results for each player in the tournament and is ranked by outcome (median score per turn). The table also presents mean score per turn, total wins, the five fingerprint dimensions, and for LLM players, their nearest classic strategy.",
+                "The classic strategy Grudger won the tournament. Of the LLM × personas, Grok 4.1 Fast (non-reasoning) won the highest median score per turn. By model, no clear pattern arises. However, by persona, neutral personas win, followed by cooperative personas, and the selfish and payoff-only strategies rank worst. The behavior of players on the axes of model and persona is further explored in the [Strategy Space](#strategy-space).",
+            ],
+            slotAfterParagraph: 0,
+        },
         {
             id: "strategy-space",
             heading: "Strategy Space",
             paragraphs: [
-                "[Lead-in: what to look for in the scatter before the reader sees it — clustering by persona, and how classics (circles) sit relative to LLM × persona variants (stars).]",
+                "The Strategy Space figure below plots two of the five fingerprint dimensions at a time. In [Behavior](#strategy-space:behavior), forgiveness and cooperation are plotted. In [Punishment](#strategy-space:punishment), forgiveness and retaliation are plotted. In [Outcome](#strategy-space:outcome), score per turn and cooperation are plotted. To play around with the data, see the [Custom axes](#strategy-space:custom) below.",
+                "## [Behavior](#:behavior)",
+                "The first noteworthy takeaway is that, similar to the rankings, the LLM × persona points are not scattered: **they cluster together by persona**. The neutral personas group near Grudger, the selfish/payoff-only group near Defector, and Cooperative groups near Tit for Tat and GTFT.",
+                "## [Punishment](#:punishment)",
+                "Only the cooperative persona forgives. Payoff-only, neutral, and selfish personas all punish defection severely.",
+                "## [Outcome](#:outcome)",
+                "The neutral personas play best, then the cooperative personas, then payoff-only, and selfish plays the worst.",
+                "Considering the Leaderboard's rankings and the three Strategy Space plots together, the pattern becomes clear: personas (prompting) affect behavior far more than model differences do. Exploration of this finding continues with the [Persona Slope figure](#persona-slope) in the Discussion section.",
             ],
             slotAfterParagraph: 0,
         },
@@ -144,23 +161,9 @@ export const RESULTS: SlottedCopy = {
             id: "cooperation-matrix",
             heading: "Cooperation Matrix",
             paragraphs: [
-                "[Lead-in: what the heatmap shows before the reader sees it — row-vs-column asymmetry, and what switching to LLMs × LLMs isolates.]",
-            ],
-            slotAfterParagraph: 0,
-        },
-        {
-            id: "leaderboard",
-            heading: "Leaderboard",
-            paragraphs: [
-                "[Lead-in: how to read the ranking — mean score per turn, and what the nearest-classic column is doing.]",
-            ],
-            slotAfterParagraph: 0,
-        },
-        {
-            id: "persona-knob",
-            heading: "Persona Knob",
-            paragraphs: [
-                "[Lead-in: what the slope chart isolates — same two models, four dispositions, which fingerprint metrics move most.]",
+                "We turn our attention now to the responsiveness of players' strategies to their opponent, to investigate whether players adapt to their simulated environment or if their play is fixed. I focus on the LLMs × Classics matrix, but there are interesting patterns to explore in the LLMs × LLMs and Full matrix tabs as well. Each cell below is how often the row player cooperated with the column player. If LLM × persona players had fixed strategies, there would be no within-row variation.",
+                "We begin with the map sorted by model. Though the strategies are consistent, they are not fixed. For example, in the first row, GPT-4o-mini · neutral reaches near 100% cooperation with Tit for Tat, Grudger, Win-Stay Lose-Shift, GTFT, and Cooperator, but cooperates just 3.3% of the time with Defector and 34.7% of the time with Random.",
+                "Once again, when we instead view this table sorted [by persona](#cooperation-matrix:persona), it becomes clear that the model personas are a far better predictor of play than models themselves. There is one notable exception: Qwen 2.5 7B–payoff-only. The anomaly is discussed in [Cross-Model Differences and Surprises](#cross-model-surprises).",
             ],
             slotAfterParagraph: 0,
         },

@@ -40,13 +40,33 @@ export function renderInline(text: string, keyPrefix = "n"): ReactNode[] {
                 onClick={
                     isAnchor
                         ? (e) => {
-                              const scrollTarget = document.querySelector(href);
-                              if (!scrollTarget) return;
                               e.preventDefault();
-                              scrollTarget.scrollIntoView({
-                                  behavior: "smooth",
-                                  block: "start",
-                              });
+                              const raw = href.slice(1);
+                              const colon = raw.indexOf(":");
+                              const id =
+                                  colon === -1 ? raw : raw.slice(0, colon);
+                              const action =
+                                  colon === -1 ? null : raw.slice(colon + 1);
+                              if (id) {
+                                  const scrollTarget =
+                                      document.getElementById(id);
+                                  if (scrollTarget) {
+                                      scrollTarget.scrollIntoView({
+                                          behavior: "smooth",
+                                          block: "start",
+                                      });
+                                  }
+                              }
+                              if (action) {
+                                  window.dispatchEvent(
+                                      new CustomEvent("ipd:figure-action", {
+                                          detail: {
+                                              target: id || "strategy-space",
+                                              action,
+                                          },
+                                      }),
+                                  );
+                              }
                           }
                         : undefined
                 }

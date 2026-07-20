@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     APPENDIX,
     CONCLUSION,
@@ -16,7 +16,7 @@ import {
 } from "./content";
 import AppendixSection from "./AppendixSection";
 import CooperationHeatmap from "./CooperationHeatmap";
-import FingerprintScatter from "./FingerprintScatter";
+import FingerprintScatter, { PROJECTIONS } from "./FingerprintScatter";
 import LeaderboardTable from "./LeaderboardTable";
 import PayoffMatrix from "./PayoffMatrix";
 import PersonaSlope from "./PersonaSlope";
@@ -29,6 +29,11 @@ type Props = {
     report: Report;
 };
 
+type FigureActionDetail = {
+    target: string;
+    action: string;
+};
+
 export default function ReportClient({ report }: Props) {
     const [xMetric, setXMetric] = useState<MetricId>(
         report.meta.defaultAxes.x,
@@ -36,8 +41,33 @@ export default function ReportClient({ report }: Props) {
     const [yMetric, setYMetric] = useState<MetricId>(
         report.meta.defaultAxes.y,
     );
+    const [customAxesOpen, setCustomAxesOpen] = useState(false);
     const [filter, setFilter] = useState<"all" | "llm" | "classic">("all");
     const [highlightedId, setHighlightedId] = useState<string | null>(null);
+
+    useEffect(() => {
+        function onFigureAction(event: Event) {
+            const { target, action } = (event as CustomEvent<FigureActionDetail>)
+                .detail;
+            if (target !== "strategy-space") return;
+
+            if (action === "custom") {
+                setCustomAxesOpen(true);
+                return;
+            }
+
+            const projection = PROJECTIONS.find((p) => p.id === action);
+            if (!projection) return;
+            setXMetric(projection.x);
+            setYMetric(projection.y);
+            setCustomAxesOpen(false);
+        }
+
+        window.addEventListener("ipd:figure-action", onFigureAction);
+        return () => {
+            window.removeEventListener("ipd:figure-action", onFigureAction);
+        };
+    }, []);
 
     const dimCards = useMemo(
         () => report.metrics.filter((m) => m.id !== "mean_score_per_turn"),
@@ -119,6 +149,8 @@ export default function ReportClient({ report }: Props) {
                                     onFilterChange={setFilter}
                                     highlightedId={highlightedId}
                                     onHighlight={setHighlightedId}
+                                    customOpen={customAxesOpen}
+                                    onCustomOpenChange={setCustomAxesOpen}
                                 />
                                 <p className="ipd-footnote">
                                     Classics are circles; LLM × persona
@@ -132,23 +164,11 @@ export default function ReportClient({ report }: Props) {
                             </>
                         ),
                         "cooperation-matrix": (
-                            <>
-                                <CooperationHeatmap
-                                    report={report}
-                                    highlightedId={highlightedId}
-                                    onHighlight={setHighlightedId}
-                                />
-                                <p className="ipd-footnote">
-                                    Each cell is how often the row player
-                                    cooperated against the column player.
-                                    Row/column labels show persona only and
-                                    are colored by model (see the key above).
-                                    Switch to LLMs × LLMs for model-to-model
-                                    play; Full matrix includes every pairing.
-                                    Hover shows both directions when the
-                                    matchup is asymmetric.
-                                </p>
-                            </>
+                            <CooperationHeatmap
+                                report={report}
+                                highlightedId={highlightedId}
+                                onHighlight={setHighlightedId}
+                            />
                         ),
                         leaderboard: (
                             <>
@@ -158,26 +178,10 @@ export default function ReportClient({ report }: Props) {
                                     onHighlight={setHighlightedId}
                                 />
                                 <p className="ipd-footnote">
-                                    Ranked by mean score per turn. Nearest
-                                    classic is Euclidean distance across the
-                                    five fingerprint dimensions.
-                                </p>
-                            </>
-                        ),
-                        "persona-knob": (
-                            <>
-                                <PersonaSlope
-                                    report={report}
-                                    highlightedId={highlightedId}
-                                    onHighlight={setHighlightedId}
-                                />
-                                <p className="ipd-footnote">
-                                    Four system prompts, same models,
-                                    temperature 0. Curves are colored by model
-                                    (see the key above). Switch metrics to see
-                                    which fingerprint traits the disposition
-                                    moves; overlaid curves make the shared
-                                    swing obvious.
+                                    Ranked by median score per turn across
+                                    repetitions. Nearest classic is Euclidean
+                                    distance across the five fingerprint
+                                    dimensions.
                                 </p>
                             </>
                         ),
@@ -189,11 +193,13 @@ export default function ReportClient({ report }: Props) {
                     {...DISCUSSION}
                     slots={{
                         "the-persona-knob": (
-                            <PersonaSlope
-                                report={report}
-                                highlightedId={highlightedId}
-                                onHighlight={setHighlightedId}
-                            />
+                            <div id="persona-slope">
+                                <PersonaSlope
+                                    report={report}
+                                    highlightedId={highlightedId}
+                                    onHighlight={setHighlightedId}
+                                />
+                            </div>
                         ),
                     }}
                 />

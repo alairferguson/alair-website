@@ -1,10 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import SeriesLegend from "./SeriesLegend";
 import type { Player, Report } from "./types";
 
 type ViewMode = "llm-classic" | "llm-llm" | "full";
+type SortMode = "model" | "persona";
+
+/** Fixed persona grouping order when sorting "by persona". */
+const PERSONA_ORDER = ["cooperative", "neutral", "payoff_only", "selfish"];
 
 type Props = {
     report: Report;
@@ -18,21 +22,31 @@ type HoverCell = {
     value: number;
 };
 
-const CELL = 34;
-const LABEL_W = 92;
-const LABEL_H = 88;
-const LEGEND_W = 14;
-const LEGEND_GAP = 20;
-const PAD = { top: 10, right: 14, bottom: 12, left: 10 };
+/** Hovered cell's box, relative to the `.ipd-heatmap` container. */
+type CellRect = {
+    left: number;
+    top: number;
+    right: number;
+    bottom: number;
+};
 
-/** Sequential ink → burgundy scale matching the report accent. */
+const CELL = 17.5;
+const LABEL_W = 80;
+const LABEL_H = 78;
+const LEGEND_W = 12;
+const LEGEND_GAP = 14;
+const PAD = { top: 8, right: 10, bottom: 10, left: 8 };
+
+/** Sequential scale ending at the site primary red (`--primary` / `--ipd-link`). */
+const COOP_LOW = { r: 247, g: 240, b: 240 };
+const COOP_HIGH = { r: 0x91, g: 0x0a, b: 0x07 };
+
 function coopFill(v: number): string {
     const t = Math.max(0, Math.min(1, v));
-    // Keep the low end a touch darker than pure white so empty cells still read.
-    const l = 92 - t * 58;
-    const c = 4 + t * 46;
-    const h = 350 - t * 8;
-    return `oklch(${l.toFixed(1)}% ${c.toFixed(1)}% ${h.toFixed(0)})`;
+    const r = Math.round(COOP_LOW.r + (COOP_HIGH.r - COOP_LOW.r) * t);
+    const g = Math.round(COOP_LOW.g + (COOP_HIGH.g - COOP_LOW.g) * t);
+    const b = Math.round(COOP_LOW.b + (COOP_HIGH.b - COOP_LOW.b) * t);
+    return `rgb(${r} ${g} ${b})`;
 }
 
 function compactPersona(persona: string | null): string {
@@ -78,7 +92,29 @@ export default function CooperationHeatmap({
     onHighlight,
 }: Props) {
     const [view, setView] = useState<ViewMode>("llm-classic");
+    const [sortMode, setSortMode] = useState<SortMode>("model");
     const [hover, setHover] = useState<HoverCell | null>(null);
+    const [cellRect, setCellRect] = useState<CellRect | null>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const cardRef = useRef<HTMLDivElement>(null);
+
+    /** Lets prose links (`[by persona](#cooperation-matrix:persona)`) drive the sort/view toggles above, same mechanism as the Strategy Space projections. */
+    useEffect(() => {
+        function onFigureAction(event: Event) {
+            const { target, action } = (
+                event as CustomEvent<{ target: string; action: string }>
+            ).detail;
+            if (target !== "cooperation-matrix") return;
+            if (action === "persona" || action === "model") {
+                setSortMode(action);
+                setView("llm-classic");
+            }
+        }
+
+        window.addEventListener("ipd:figure-action", onFigureAction);
+        return () =>
+            window.removeEventListener("ipd:figure-action", onFigureAction);
+    }, []);
 
     const byId = useMemo(() => {
         const map = new Map<string, Player>();
@@ -90,8 +126,19 @@ export default function CooperationHeatmap({
         const order = report.cooperationMatrix.players.filter((id) =>
             byId.has(id),
         );
-        const llms = order.filter((id) => byId.get(id)?.kind === "llm");
+        let llms = order.filter((id) => byId.get(id)?.kind === "llm");
         const classics = order.filter((id) => byId.get(id)?.kind === "classic");
+
+        if (sortMode === "persona") {
+            // `llms` starts model-grouped (report.json order); stable-sort by
+            // persona so each model's relative position is preserved within
+            // a persona group, keeping the model legend order recognizable.
+            llms = [...llms].sort((a, b) => {
+                const pa = byId.get(a)?.persona ?? "";
+                const pb = byId.get(b)?.persona ?? "";
+                return PERSONA_ORDER.indexOf(pa) - PERSONA_ORDER.indexOf(pb);
+            });
+        }
 
         if (view === "llm-classic") {
             return { rowIds: llms, colIds: classics };
@@ -99,8 +146,8 @@ export default function CooperationHeatmap({
         if (view === "llm-llm") {
             return { rowIds: llms, colIds: llms };
         }
-        return { rowIds: order, colIds: order };
-    }, [report.cooperationMatrix.players, byId, view]);
+        return { rowIds: [...classics, ...llms], colIds: [...classics, ...llms] };
+    }, [report.cooperationMatrix.players, byId, view, sortMode]);
 
     const width =
         PAD.left +
@@ -113,6 +160,14 @@ export default function CooperationHeatmap({
     const height = PAD.top + LABEL_H + rowIds.length * CELL + PAD.bottom;
 
     const values = report.cooperationMatrix.values;
+
+    function cellValue(rowId: string, colId: string): number {
+        return values[rowId]?.[colId] ?? 0;
+    }
+
+    function cellReverse(rowId: string, colId: string): number | null {
+        return values[colId]?.[rowId] ?? null;
+    }
 
     const hoveredRow = hover?.rowId ?? null;
     const hoveredCol = hover?.colId ?? null;
@@ -139,12 +194,64 @@ export default function CooperationHeatmap({
 
     function clearHover() {
         setHover(null);
+        setCellRect(null);
     }
+
+    /** Record the hovered/focused cell's box, relative to the container, so the tooltip can be placed around it. */
+    function trackCell(el: SVGRectElement) {
+        const container = containerRef.current;
+        if (!container) return;
+        const cellBox = el.getBoundingClientRect();
+        const containerBox = container.getBoundingClientRect();
+        setCellRect({
+            left: cellBox.left - containerBox.left,
+            top: cellBox.top - containerBox.top,
+            right: cellBox.right - containerBox.left,
+            bottom: cellBox.bottom - containerBox.top,
+        });
+    }
+
+    /**
+     * Places the tooltip beside the hovered cell — right/below by default,
+     * flipping to left/above when that would spill past the container —
+     * so it never sits on top of the cell (and the cursor on it) or the
+     * axis labels, which only live above/left of the grid.
+     */
+    useLayoutEffect(() => {
+        const container = containerRef.current;
+        const card = cardRef.current;
+        if (!hover || !cellRect || !container || !card) return;
+
+        const GAP = 10;
+        const EDGE = 4;
+        const containerW = container.clientWidth;
+        const containerH = container.clientHeight;
+        const cardW = card.offsetWidth;
+        const cardH = card.offsetHeight;
+
+        let left = cellRect.right + GAP;
+        let top = cellRect.bottom + GAP;
+
+        if (left + cardW > containerW - EDGE) {
+            left = cellRect.left - GAP - cardW;
+        }
+        if (top + cardH > containerH - EDGE) {
+            top = cellRect.top - GAP - cardH;
+        }
+
+        left = Math.max(EDGE, Math.min(left, containerW - cardW - EDGE));
+        top = Math.max(EDGE, Math.min(top, containerH - cardH - EDGE));
+
+        card.style.left = `${left}px`;
+        card.style.top = `${top}px`;
+    }, [hover, cellRect]);
 
     const hoverRowPlayer = hover ? byId.get(hover.rowId) : null;
     const hoverColPlayer = hover ? byId.get(hover.colId) : null;
     const reverseValue =
-        hover != null ? (values[hover.colId]?.[hover.rowId] ?? null) : null;
+        hover != null ? cellReverse(hover.rowId, hover.colId) : null;
+    const primaryFrom = hoverRowPlayer;
+    const primaryTo = hoverColPlayer;
 
     return (
         <div className="ipd-chart-shell">
@@ -177,6 +284,31 @@ export default function CooperationHeatmap({
                             Full matrix
                         </button>
                     </div>
+                    <div className="ipd-axis-group">
+                        <span className="ipd-axis-label ipd-mono">
+                            Sort LLMs
+                        </span>
+                        <div
+                            className="ipd-toggle"
+                            role="group"
+                            aria-label="LLM sort order"
+                        >
+                            <button
+                                type="button"
+                                data-active={sortMode === "model"}
+                                onClick={() => setSortMode("model")}
+                            >
+                                By model
+                            </button>
+                            <button
+                                type="button"
+                                data-active={sortMode === "persona"}
+                                onClick={() => setSortMode("persona")}
+                            >
+                                By persona
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div className="ipd-toolbar-custom">
                     <SeriesLegend
@@ -187,6 +319,7 @@ export default function CooperationHeatmap({
             </div>
 
             <div
+                ref={containerRef}
                 className="ipd-heatmap"
                 onMouseLeave={() => {
                     clearHover();
@@ -195,7 +328,8 @@ export default function CooperationHeatmap({
             >
                 <svg
                     viewBox={`0 0 ${width} ${height}`}
-                    style={{ minWidth: width }}
+                    width={width}
+                    height={height}
                     role="img"
                     aria-label="Cooperation rate between players"
                 >
@@ -254,9 +388,12 @@ export default function CooperationHeatmap({
 
                         {rowIds.map((rowId, ri) =>
                             colIds.map((colId, ci) => {
-                                const value = values[rowId]?.[colId] ?? 0;
+                                const value = cellValue(rowId, colId);
                                 const dimmed = cellDimmed(rowId, colId);
                                 const isSelf = rowId === colId;
+                                const actorId = rowId;
+                                const actor = byId.get(actorId)!;
+                                const target = byId.get(colId)!;
                                 return (
                                     <rect
                                         key={`${rowId}__${colId}`}
@@ -268,21 +405,23 @@ export default function CooperationHeatmap({
                                         width={CELL - 1}
                                         height={CELL - 1}
                                         fill={coopFill(value)}
-                                        onMouseEnter={() => {
+                                        onMouseEnter={(e) => {
                                             setHover({ rowId, colId, value });
-                                            onHighlight(rowId);
+                                            trackCell(e.currentTarget);
+                                            onHighlight(actorId);
                                         }}
-                                        onFocus={() => {
+                                        onFocus={(e) => {
                                             setHover({ rowId, colId, value });
-                                            onHighlight(rowId);
+                                            trackCell(e.currentTarget);
+                                            onHighlight(actorId);
                                         }}
                                         onBlur={clearHover}
                                         tabIndex={0}
                                         role="gridcell"
                                         aria-label={`${axisLabel(
-                                            byId.get(rowId)!,
+                                            actor,
                                         )} vs ${axisLabel(
-                                            byId.get(colId)!,
+                                            target,
                                         )}: ${value.toFixed(3)}`}
                                     />
                                 );
@@ -351,20 +490,33 @@ export default function CooperationHeatmap({
                     </g>
                 </svg>
 
-                {hover && hoverRowPlayer && hoverColPlayer && (
-                    <div className="ipd-hover-card ipd-mono ipd-heatmap-card">
+                {hover &&
+                    hoverRowPlayer &&
+                    hoverColPlayer &&
+                    primaryFrom &&
+                    primaryTo && (
+                    <div
+                        ref={cardRef}
+                        className="ipd-hover-card ipd-mono ipd-heatmap-card"
+                    >
                         <strong>
-                            {hoverRowPlayer.label}
+                            {primaryFrom.label}
                             <span className="ipd-heatmap-card-vs"> vs </span>
-                            {hoverColPlayer.label}
+                            {primaryTo.label}
                         </strong>
                         <dl>
-                            <dt>Row → col</dt>
+                            <dt>
+                                {axisLabel(primaryFrom)} →{" "}
+                                {axisLabel(primaryTo)}
+                            </dt>
                             <dd>{hover.value.toFixed(3)}</dd>
                             {reverseValue != null &&
                                 hover.rowId !== hover.colId && (
                                     <>
-                                        <dt>Col → row</dt>
+                                        <dt>
+                                            {axisLabel(primaryTo)} →{" "}
+                                            {axisLabel(primaryFrom)}
+                                        </dt>
                                         <dd>{reverseValue.toFixed(3)}</dd>
                                     </>
                                 )}

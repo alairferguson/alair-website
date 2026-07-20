@@ -15,7 +15,7 @@ type Projection = {
     y: MetricId;
 };
 
-const PROJECTIONS: Projection[] = [
+export const PROJECTIONS: Projection[] = [
     {
         id: "behavior",
         label: "Behavior",
@@ -50,6 +50,8 @@ type Props = {
     onFilterChange: (filter: Filter) => void;
     highlightedId: string | null;
     onHighlight: (id: string | null) => void;
+    customOpen: boolean;
+    onCustomOpenChange: (open: boolean) => void;
 };
 
 type PlacedPoint = {
@@ -599,9 +601,10 @@ export default function FingerprintScatter({
     onFilterChange,
     highlightedId,
     onHighlight,
+    customOpen,
+    onCustomOpenChange,
 }: Props) {
     const [hoverId, setHoverId] = useState<string | null>(null);
-    const [customOpen, setCustomOpen] = useState(false);
 
     const xMeta = report.metrics.find((m) => m.id === xMetric)!;
     const yMeta = report.metrics.find((m) => m.id === yMetric)!;
@@ -611,25 +614,25 @@ export default function FingerprintScatter({
     function selectProjection(projection: Projection) {
         onXMetricChange(projection.x);
         onYMetricChange(projection.y);
-        setCustomOpen(false);
+        onCustomOpenChange(false);
     }
 
     function setXAxis(id: MetricId) {
         onXMetricChange(id);
         if (matchProjection(id, yMetric) == null) {
-            setCustomOpen(true);
+            onCustomOpenChange(true);
         }
     }
 
     function setYAxis(id: MetricId) {
         onYMetricChange(id);
         if (matchProjection(xMetric, id) == null) {
-            setCustomOpen(true);
+            onCustomOpenChange(true);
         }
     }
 
     function toggleCustomAxes() {
-        setCustomOpen((open) => !open);
+        onCustomOpenChange(!customOpen);
     }
 
     const customSummary = isCustom
