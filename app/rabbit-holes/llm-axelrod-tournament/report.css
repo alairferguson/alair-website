@@ -119,6 +119,25 @@
     text-wrap: balance;
 }
 
+.ipd-hero .ipd-byline {
+    margin-top: 0.15rem;
+    color: var(--ipd-link);
+    font-family: var(--ipd-font-serif), ui-serif, Georgia, serif;
+    font-size: 0.95rem;
+    text-decoration: none;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    background-size: 0% 1px;
+    transition:
+        background-size 220ms var(--ipd-ease),
+        color 140ms ease;
+}
+
+.ipd-hero .ipd-byline:hover {
+    background-size: 100% 1px;
+}
+
 .ipd-meta {
     display: flex;
     flex-wrap: wrap;
@@ -164,7 +183,9 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    justify-content: center;
     gap: 0.55rem 0.9rem;
+    width: 100%;
     color: var(--ipd-faint);
 }
 
@@ -641,6 +662,12 @@
     }
 }
 
+.ipd-report .ipd-prose-hover {
+    color: var(--ipd-link);
+    border-bottom: 1px dotted currentColor;
+    cursor: help;
+}
+
 .ipd-prose ul {
     margin: 0;
     padding-left: 1.1rem;
@@ -942,6 +969,32 @@ li.ipd-draft-note {
 .ipd-slope-xtick[data-active="true"] {
     fill: var(--ipd-fg);
     font-weight: 500;
+}
+
+/* --- Persona score bars ---------------------------------------------------- */
+
+.ipd-score-chart {
+    aspect-ratio: 16 / 8.5;
+}
+
+.ipd-score-bar {
+    fill: var(--ipd-link);
+    opacity: 0.16;
+    transition: opacity 160ms ease;
+}
+
+.ipd-score-bar[data-dimmed="true"] {
+    opacity: 0.06;
+}
+
+.ipd-score-bar-value {
+    fill: var(--ipd-muted);
+    font-size: 11px;
+    transition: opacity 160ms ease;
+}
+
+.ipd-score-bar-value[data-dimmed="true"] {
+    opacity: 0.35;
 }
 
 /* --- Payoff matrix -------------------------------------------------------- */

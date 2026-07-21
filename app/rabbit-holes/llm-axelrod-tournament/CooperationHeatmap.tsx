@@ -52,13 +52,13 @@ function coopFill(v: number): string {
 function compactPersona(persona: string | null): string {
     switch (persona) {
         case "cooperative":
-            return "coop";
+            return "Coop";
         case "payoff_only":
-            return "payoff";
+            return "Payoff";
         case "neutral":
-            return "neutral";
+            return "Neutral";
         case "selfish":
-            return "selfish";
+            return "Selfish";
         default:
             return persona ?? "";
     }
@@ -95,8 +95,12 @@ export default function CooperationHeatmap({
     const [sortMode, setSortMode] = useState<SortMode>("model");
     const [hover, setHover] = useState<HoverCell | null>(null);
     const [cellRect, setCellRect] = useState<CellRect | null>(null);
+    const [pendingHoverKey, setPendingHoverKey] = useState<string | null>(
+        null,
+    );
     const containerRef = useRef<HTMLDivElement>(null);
     const cardRef = useRef<HTMLDivElement>(null);
+    const cellRefs = useRef(new Map<string, SVGRectElement>());
 
     /** Lets prose links (`[by persona](#cooperation-matrix:persona)`) drive the sort/view toggles above, same mechanism as the Strategy Space projections. */
     useEffect(() => {
@@ -114,6 +118,59 @@ export default function CooperationHeatmap({
         window.addEventListener("ipd:figure-action", onFigureAction);
         return () =>
             window.removeEventListener("ipd:figure-action", onFigureAction);
+    }, []);
+
+    /**
+     * Lets prose text (`[3.3%...](#hover:cooperation-matrix:cell:<row>::<col>)`)
+     * simulate hovering the referenced cell — same hover card, same dimming —
+     * without the reader having to find it in the grid themselves.
+     */
+    useEffect(() => {
+        function onFigureHover(event: Event) {
+            const { target, action } = (
+                event as CustomEvent<{ target: string; action: string }>
+            ).detail;
+            if (target !== "cooperation-matrix") return;
+            if (action.startsWith("cell:")) {
+                const rest = action.slice("cell:".length);
+                const sep = rest.indexOf("::");
+                if (sep === -1) return;
+                const rowId = decodeURIComponent(rest.slice(0, sep));
+                const colId = decodeURIComponent(rest.slice(sep + 2));
+                setView("llm-classic");
+                setSortMode("model");
+                setPendingHoverKey(`${rowId}__${colId}`);
+                return;
+            }
+            if (action.startsWith("row:")) {
+                // No specific column, so the hover card (which needs both a
+                // row and column player) stays hidden — only the row dims in.
+                const rowId = decodeURIComponent(action.slice("row:".length));
+                setView("llm-classic");
+                setSortMode("persona");
+                setHover({ rowId, colId: "", value: 0 });
+                onHighlight(rowId);
+            }
+        }
+        function onFigureHoverEnd(event: Event) {
+            const { target } = (event as CustomEvent<{ target: string }>)
+                .detail;
+            if (target !== "cooperation-matrix") return;
+            setPendingHoverKey(null);
+            clearHover();
+            onHighlight(null);
+        }
+
+        window.addEventListener("ipd:figure-hover", onFigureHover);
+        window.addEventListener("ipd:figure-hover-end", onFigureHoverEnd);
+        return () => {
+            window.removeEventListener("ipd:figure-hover", onFigureHover);
+            window.removeEventListener(
+                "ipd:figure-hover-end",
+                onFigureHoverEnd,
+            );
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const byId = useMemo(() => {
@@ -148,6 +205,18 @@ export default function CooperationHeatmap({
         }
         return { rowIds: [...classics, ...llms], colIds: [...classics, ...llms] };
     }, [report.cooperationMatrix.players, byId, view, sortMode]);
+
+    /** Once the grid re-renders in the right view/sort, resolve the pending cell and hover it for real. */
+    useEffect(() => {
+        if (!pendingHoverKey) return;
+        const el = cellRefs.current.get(pendingHoverKey);
+        if (!el) return;
+        const [rowId, colId] = pendingHoverKey.split("__");
+        setHover({ rowId, colId, value: cellValue(rowId, colId) });
+        trackCell(el);
+        onHighlight(rowId);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pendingHoverKey, rowIds, colIds]);
 
     const width =
         PAD.left +
@@ -397,6 +466,19 @@ export default function CooperationHeatmap({
                                 return (
                                     <rect
                                         key={`${rowId}__${colId}`}
+                                        ref={(el) => {
+                                            const cellKey = `${rowId}__${colId}`;
+                                            if (el) {
+                                                cellRefs.current.set(
+                                                    cellKey,
+                                                    el,
+                                                );
+                                            } else {
+                                                cellRefs.current.delete(
+                                                    cellKey,
+                                                );
+                                            }
+                                        }}
                                         className="ipd-heatmap-cell"
                                         data-dimmed={dimmed}
                                         data-self={isSelf}

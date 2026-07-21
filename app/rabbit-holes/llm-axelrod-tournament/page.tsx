@@ -27,9 +27,9 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-    title: "Do LLMs Hold Grudges? | Alair",
+    title: "Strategy is a System Prompt: An LLM Axelrod Tournament | Alair",
     description:
-        "Evidence from a 27-player Axelrod tournament pitting language models against classic game theory strategies.",
+        "What 200 rounds of Prisoner's Dilemma reveal about an LLM's (mutable) disposition.",
 };
 
 async function loadReport(): Promise<Report> {

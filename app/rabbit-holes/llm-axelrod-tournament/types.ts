@@ -37,7 +37,6 @@ export type Player = {
     };
     ranked?: {
         rank: number;
-        meanNormalisedScore: number;
     };
     nearestClassic?: {
         id: string;

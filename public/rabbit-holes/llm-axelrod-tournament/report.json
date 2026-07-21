@@ -1,8 +1,8 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-18T20:40:33.103742+00:00",
-  "title": "Do LLMs Hold Grudges?",
-  "subtitle": "Evidence from a 27-player Axelrod tournament pitting language models against classic game theory strategies.",
+  "generatedAt": "2026-07-21T04:37:56.781499+00:00",
+  "title": "Strategy is a System Prompt: An LLM Axelrod Tournament",
+  "subtitle": "What 200 Rounds of Prisoner's Dilemma Reveal About an LLM's (Mutable) Disposition",
   "meta": {
     "players": 27,
     "classics": 7,
@@ -103,8 +103,7 @@
         "matches": 130
       },
       "ranked": {
-        "rank": 7,
-        "meanNormalisedScore": 1.4044
+        "rank": 7
       }
     },
     {
@@ -129,8 +128,7 @@
         "matches": 130
       },
       "ranked": {
-        "rank": 1,
-        "meanNormalisedScore": 2.1897
+        "rank": 1
       }
     },
     {
@@ -155,8 +153,7 @@
         "matches": 130
       },
       "ranked": {
-        "rank": 14,
-        "meanNormalisedScore": 1.5549
+        "rank": 14
       }
     },
     {
@@ -181,8 +178,7 @@
         "matches": 130
       },
       "ranked": {
-        "rank": 12,
-        "meanNormalisedScore": 2.1833
+        "rank": 12
       }
     },
     {
@@ -207,8 +203,7 @@
         "matches": 130
       },
       "ranked": {
-        "rank": 16,
-        "meanNormalisedScore": 2.2182
+        "rank": 16
       }
     },
     {
@@ -233,8 +228,7 @@
         "matches": 130
       },
       "ranked": {
-        "rank": 26,
-        "meanNormalisedScore": 1.5415
+        "rank": 24
       }
     },
     {
@@ -259,8 +253,7 @@
         "matches": 130
       },
       "ranked": {
-        "rank": 27,
-        "meanNormalisedScore": 1.8385
+        "rank": 27
       }
     },
     {
@@ -268,8 +261,8 @@
       "kind": "llm",
       "model": "gpt-4o-mini",
       "persona": "neutral",
-      "label": "gpt-4o-mini: neutral prompt",
-      "shortLabel": "gpt-4o-mini \u00b7 neutral",
+      "label": "GPT-4o-mini: Neutral prompt",
+      "shortLabel": "GPT-4o-mini · Neutral",
       "color": "#218BFF",
       "fingerprint": {
         "cooperation_rate": 0.5864,
@@ -285,8 +278,7 @@
         "matches": 130
       },
       "ranked": {
-        "rank": 6,
-        "meanNormalisedScore": 1.5354
+        "rank": 6
       },
       "nearestClassic": {
         "id": "Grudger",
@@ -336,8 +328,8 @@
       "kind": "llm",
       "model": "gpt-4o-mini",
       "persona": "cooperative",
-      "label": "gpt-4o-mini: cooperative prompt",
-      "shortLabel": "gpt-4o-mini \u00b7 cooperative",
+      "label": "GPT-4o-mini: Cooperative prompt",
+      "shortLabel": "GPT-4o-mini · Cooperative",
       "color": "#218BFF",
       "fingerprint": {
         "cooperation_rate": 0.7744,
@@ -353,8 +345,7 @@
         "matches": 130
       },
       "ranked": {
-        "rank": 13,
-        "meanNormalisedScore": 2.1636
+        "rank": 13
       },
       "nearestClassic": {
         "id": "Cooperator",
@@ -404,8 +395,8 @@
       "kind": "llm",
       "model": "gpt-4o-mini",
       "persona": "selfish",
-      "label": "gpt-4o-mini: selfish prompt",
-      "shortLabel": "gpt-4o-mini \u00b7 selfish",
+      "label": "GPT-4o-mini: Selfish prompt",
+      "shortLabel": "GPT-4o-mini · Selfish",
       "color": "#218BFF",
       "fingerprint": {
         "cooperation_rate": 0.0,
@@ -421,8 +412,7 @@
         "matches": 130
       },
       "ranked": {
-        "rank": 17,
-        "meanNormalisedScore": 2.221
+        "rank": 19
       },
       "nearestClassic": {
         "id": "Defector",
@@ -472,8 +462,8 @@
       "kind": "llm",
       "model": "gpt-4o-mini",
       "persona": "payoff_only",
-      "label": "gpt-4o-mini: payoff_only prompt",
-      "shortLabel": "gpt-4o-mini \u00b7 payoff_only",
+      "label": "GPT-4o-mini: Payoff-only prompt",
+      "shortLabel": "GPT-4o-mini · Payoff-only",
       "color": "#218BFF",
       "fingerprint": {
         "cooperation_rate": 0.1482,
@@ -489,8 +479,7 @@
         "matches": 130
       },
       "ranked": {
-        "rank": 23,
-        "meanNormalisedScore": 1.5631
+        "rank": 23
       },
       "nearestClassic": {
         "id": "Random: 0.5",
@@ -540,8 +529,8 @@
       "kind": "llm",
       "model": "claude-haiku-4-5",
       "persona": "neutral",
-      "label": "claude-haiku-4-5: neutral prompt",
-      "shortLabel": "claude-haiku-4-5 \u00b7 neutral",
+      "label": "Claude Haiku 4.5: Neutral prompt",
+      "shortLabel": "Claude Haiku 4.5 · Neutral",
       "color": "#A371F7",
       "fingerprint": {
         "cooperation_rate": 0.5733,
@@ -557,8 +546,7 @@
         "matches": 130
       },
       "ranked": {
-        "rank": 9,
-        "meanNormalisedScore": 2.0049
+        "rank": 8
       },
       "nearestClassic": {
         "id": "Grudger",
@@ -608,8 +596,8 @@
       "kind": "llm",
       "model": "claude-haiku-4-5",
       "persona": "cooperative",
-      "label": "claude-haiku-4-5: cooperative prompt",
-      "shortLabel": "claude-haiku-4-5 \u00b7 cooperative",
+      "label": "Claude Haiku 4.5: Cooperative prompt",
+      "shortLabel": "Claude Haiku 4.5 · Cooperative",
       "color": "#A371F7",
       "fingerprint": {
         "cooperation_rate": 0.6064,
@@ -625,8 +613,7 @@
         "matches": 130
       },
       "ranked": {
-        "rank": 11,
-        "meanNormalisedScore": 1.5379
+        "rank": 11
       },
       "nearestClassic": {
         "id": "Tit For Tat",
@@ -676,8 +663,8 @@
       "kind": "llm",
       "model": "claude-haiku-4-5",
       "persona": "selfish",
-      "label": "claude-haiku-4-5: selfish prompt",
-      "shortLabel": "claude-haiku-4-5 \u00b7 selfish",
+      "label": "Claude Haiku 4.5: Selfish prompt",
+      "shortLabel": "Claude Haiku 4.5 · Selfish",
       "color": "#A371F7",
       "fingerprint": {
         "cooperation_rate": 0.0,
@@ -693,8 +680,7 @@
         "matches": 130
       },
       "ranked": {
-        "rank": 19,
-        "meanNormalisedScore": 1.5344
+        "rank": 18
       },
       "nearestClassic": {
         "id": "Defector",
@@ -744,8 +730,8 @@
       "kind": "llm",
       "model": "claude-haiku-4-5",
       "persona": "payoff_only",
-      "label": "claude-haiku-4-5: payoff_only prompt",
-      "shortLabel": "claude-haiku-4-5 \u00b7 payoff_only",
+      "label": "Claude Haiku 4.5: Payoff-only prompt",
+      "shortLabel": "Claude Haiku 4.5 · Payoff-only",
       "color": "#A371F7",
       "fingerprint": {
         "cooperation_rate": 0.0108,
@@ -761,8 +747,7 @@
         "matches": 130
       },
       "ranked": {
-        "rank": 24,
-        "meanNormalisedScore": 2.2003
+        "rank": 26
       },
       "nearestClassic": {
         "id": "Defector",
@@ -812,8 +797,8 @@
       "kind": "llm",
       "model": "grok-4-1-fast-non-reasoning",
       "persona": "neutral",
-      "label": "grok-4-1-fast-non-reasoning: neutral prompt",
-      "shortLabel": "grok-4-1-fast-non-reasoning \u00b7 neutral",
+      "label": "Grok 4.1 Fast (non-reasoning): Neutral prompt",
+      "shortLabel": "Grok 4.1 Fast (non-reasoning) · Neutral",
       "color": "#D29922",
       "fingerprint": {
         "cooperation_rate": 0.571,
@@ -829,8 +814,7 @@
         "matches": 130
       },
       "ranked": {
-        "rank": 3,
-        "meanNormalisedScore": 1.9764
+        "rank": 3
       },
       "nearestClassic": {
         "id": "Grudger",
@@ -880,8 +864,8 @@
       "kind": "llm",
       "model": "grok-4-1-fast-non-reasoning",
       "persona": "cooperative",
-      "label": "grok-4-1-fast-non-reasoning: cooperative prompt",
-      "shortLabel": "grok-4-1-fast-non-reasoning \u00b7 cooperative",
+      "label": "Grok 4.1 Fast (non-reasoning): Cooperative prompt",
+      "shortLabel": "Grok 4.1 Fast (non-reasoning) · Cooperative",
       "color": "#D29922",
       "fingerprint": {
         "cooperation_rate": 0.5774,
@@ -897,8 +881,7 @@
         "matches": 130
       },
       "ranked": {
-        "rank": 2,
-        "meanNormalisedScore": 2.2472
+        "rank": 2
       },
       "nearestClassic": {
         "id": "Grudger",
@@ -948,8 +931,8 @@
       "kind": "llm",
       "model": "grok-4-1-fast-non-reasoning",
       "persona": "selfish",
-      "label": "grok-4-1-fast-non-reasoning: selfish prompt",
-      "shortLabel": "grok-4-1-fast-non-reasoning \u00b7 selfish",
+      "label": "Grok 4.1 Fast (non-reasoning): Selfish prompt",
+      "shortLabel": "Grok 4.1 Fast (non-reasoning) · Selfish",
       "color": "#D29922",
       "fingerprint": {
         "cooperation_rate": 0.0,
@@ -965,8 +948,7 @@
         "matches": 130
       },
       "ranked": {
-        "rank": 20,
-        "meanNormalisedScore": 2.2095
+        "rank": 21
       },
       "nearestClassic": {
         "id": "Defector",
@@ -1016,8 +998,8 @@
       "kind": "llm",
       "model": "grok-4-1-fast-non-reasoning",
       "persona": "payoff_only",
-      "label": "grok-4-1-fast-non-reasoning: payoff_only prompt",
-      "shortLabel": "grok-4-1-fast-non-reasoning \u00b7 payoff_only",
+      "label": "Grok 4.1 Fast (non-reasoning): Payoff-only prompt",
+      "shortLabel": "Grok 4.1 Fast (non-reasoning) · Payoff-only",
       "color": "#D29922",
       "fingerprint": {
         "cooperation_rate": 0.0,
@@ -1033,8 +1015,7 @@
         "matches": 130
       },
       "ranked": {
-        "rank": 25,
-        "meanNormalisedScore": 2.1667
+        "rank": 25
       },
       "nearestClassic": {
         "id": "Defector",
@@ -1084,8 +1065,8 @@
       "kind": "llm",
       "model": "gemini-3.1-flash-lite",
       "persona": "neutral",
-      "label": "gemini-3.1-flash-lite: neutral prompt",
-      "shortLabel": "gemini-3.1-flash-lite \u00b7 neutral",
+      "label": "Gemini 3.1 Flash Lite: Neutral prompt",
+      "shortLabel": "Gemini 3.1 Flash Lite · Neutral",
       "color": "#F778BA",
       "fingerprint": {
         "cooperation_rate": 0.589,
@@ -1101,8 +1082,7 @@
         "matches": 130
       },
       "ranked": {
-        "rank": 4,
-        "meanNormalisedScore": 2.0254
+        "rank": 4
       },
       "nearestClassic": {
         "id": "Grudger",
@@ -1152,8 +1132,8 @@
       "kind": "llm",
       "model": "gemini-3.1-flash-lite",
       "persona": "cooperative",
-      "label": "gemini-3.1-flash-lite: cooperative prompt",
-      "shortLabel": "gemini-3.1-flash-lite \u00b7 cooperative",
+      "label": "Gemini 3.1 Flash Lite: Cooperative prompt",
+      "shortLabel": "Gemini 3.1 Flash Lite · Cooperative",
       "color": "#F778BA",
       "fingerprint": {
         "cooperation_rate": 0.5951,
@@ -1169,8 +1149,7 @@
         "matches": 130
       },
       "ranked": {
-        "rank": 10,
-        "meanNormalisedScore": 1.5549
+        "rank": 10
       },
       "nearestClassic": {
         "id": "Tit For Tat",
@@ -1220,8 +1199,8 @@
       "kind": "llm",
       "model": "gemini-3.1-flash-lite",
       "persona": "selfish",
-      "label": "gemini-3.1-flash-lite: selfish prompt",
-      "shortLabel": "gemini-3.1-flash-lite \u00b7 selfish",
+      "label": "Gemini 3.1 Flash Lite: Selfish prompt",
+      "shortLabel": "Gemini 3.1 Flash Lite · Selfish",
       "color": "#F778BA",
       "fingerprint": {
         "cooperation_rate": 0.0,
@@ -1237,8 +1216,7 @@
         "matches": 130
       },
       "ranked": {
-        "rank": 21,
-        "meanNormalisedScore": 2.1664
+        "rank": 20
       },
       "nearestClassic": {
         "id": "Defector",
@@ -1288,8 +1266,8 @@
       "kind": "llm",
       "model": "gemini-3.1-flash-lite",
       "persona": "payoff_only",
-      "label": "gemini-3.1-flash-lite: payoff_only prompt",
-      "shortLabel": "gemini-3.1-flash-lite \u00b7 payoff_only",
+      "label": "Gemini 3.1 Flash Lite: Payoff-only prompt",
+      "shortLabel": "Gemini 3.1 Flash Lite · Payoff-only",
       "color": "#F778BA",
       "fingerprint": {
         "cooperation_rate": 0.0,
@@ -1305,8 +1283,7 @@
         "matches": 130
       },
       "ranked": {
-        "rank": 18,
-        "meanNormalisedScore": 1.5415
+        "rank": 17
       },
       "nearestClassic": {
         "id": "Defector",
@@ -1356,8 +1333,8 @@
       "kind": "llm",
       "model": "qwen2.5:7b",
       "persona": "neutral",
-      "label": "qwen2.5:7b: neutral prompt",
-      "shortLabel": "qwen2.5:7b \u00b7 neutral",
+      "label": "Qwen 2.5 7B: Neutral prompt",
+      "shortLabel": "Qwen 2.5 7B · Neutral",
       "color": "#79C0FF",
       "fingerprint": {
         "cooperation_rate": 0.5782,
@@ -1373,8 +1350,7 @@
         "matches": 130
       },
       "ranked": {
-        "rank": 5,
-        "meanNormalisedScore": 1.7731
+        "rank": 5
       },
       "nearestClassic": {
         "id": "Grudger",
@@ -1424,8 +1400,8 @@
       "kind": "llm",
       "model": "qwen2.5:7b",
       "persona": "cooperative",
-      "label": "qwen2.5:7b: cooperative prompt",
-      "shortLabel": "qwen2.5:7b \u00b7 cooperative",
+      "label": "Qwen 2.5 7B: Cooperative prompt",
+      "shortLabel": "Qwen 2.5 7B · Cooperative",
       "color": "#79C0FF",
       "fingerprint": {
         "cooperation_rate": 0.5985,
@@ -1441,8 +1417,7 @@
         "matches": 130
       },
       "ranked": {
-        "rank": 8,
-        "meanNormalisedScore": 2.1949
+        "rank": 9
       },
       "nearestClassic": {
         "id": "Grudger",
@@ -1492,8 +1467,8 @@
       "kind": "llm",
       "model": "qwen2.5:7b",
       "persona": "selfish",
-      "label": "qwen2.5:7b: selfish prompt",
-      "shortLabel": "qwen2.5:7b \u00b7 selfish",
+      "label": "Qwen 2.5 7B: Selfish prompt",
+      "shortLabel": "Qwen 2.5 7B · Selfish",
       "color": "#79C0FF",
       "fingerprint": {
         "cooperation_rate": 0.0,
@@ -1509,8 +1484,7 @@
         "matches": 130
       },
       "ranked": {
-        "rank": 22,
-        "meanNormalisedScore": 1.5426
+        "rank": 22
       },
       "nearestClassic": {
         "id": "Defector",
@@ -1560,8 +1534,8 @@
       "kind": "llm",
       "model": "qwen2.5:7b",
       "persona": "payoff_only",
-      "label": "qwen2.5:7b: payoff_only prompt",
-      "shortLabel": "qwen2.5:7b \u00b7 payoff_only",
+      "label": "Qwen 2.5 7B: Payoff-only prompt",
+      "shortLabel": "Qwen 2.5 7B · Payoff-only",
       "color": "#79C0FF",
       "fingerprint": {
         "cooperation_rate": 0.4638,
@@ -1577,8 +1551,7 @@
         "matches": 130
       },
       "ranked": {
-        "rank": 15,
-        "meanNormalisedScore": 1.5295
+        "rank": 15
       },
       "nearestClassic": {
         "id": "Random: 0.5",
@@ -1627,7 +1600,7 @@
   "series": [
     {
       "id": "gpt-4o-mini",
-      "label": "gpt-4o-mini",
+      "label": "GPT-4o-mini",
       "color": "#218BFF",
       "playerIds": [
         "LLM:gpt-4o-mini[cooperative]",
@@ -1638,7 +1611,7 @@
     },
     {
       "id": "claude-haiku-4-5",
-      "label": "claude-haiku-4-5",
+      "label": "Claude Haiku 4.5",
       "color": "#A371F7",
       "playerIds": [
         "LLM:claude-haiku-4-5[cooperative]",
@@ -1649,7 +1622,7 @@
     },
     {
       "id": "grok-4-1-fast-non-reasoning",
-      "label": "grok-4-1-fast-non-reasoning",
+      "label": "Grok 4.1 Fast (non-reasoning)",
       "color": "#D29922",
       "playerIds": [
         "LLM:grok-4-1-fast-non-reasoning[cooperative]",
@@ -1660,7 +1633,7 @@
     },
     {
       "id": "gemini-3.1-flash-lite",
-      "label": "gemini-3.1-flash-lite",
+      "label": "Gemini 3.1 Flash Lite",
       "color": "#F778BA",
       "playerIds": [
         "LLM:gemini-3.1-flash-lite[cooperative]",
@@ -1671,7 +1644,7 @@
     },
     {
       "id": "qwen2.5:7b",
-      "label": "qwen2.5:7b",
+      "label": "Qwen 2.5 7B",
       "color": "#79C0FF",
       "playerIds": [
         "LLM:qwen2.5:7b[cooperative]",

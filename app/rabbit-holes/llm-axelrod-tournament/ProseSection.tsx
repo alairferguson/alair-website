@@ -29,6 +29,40 @@ export function renderInline(text: string, keyPrefix = "n"): ReactNode[] {
             );
         }
         const href = match[2];
+        const isHoverTrigger = href.startsWith("#hover:");
+
+        if (isHoverTrigger) {
+            const raw = href.slice("#hover:".length);
+            const colon = raw.indexOf(":");
+            const target = colon === -1 ? raw : raw.slice(0, colon);
+            const action = colon === -1 ? null : raw.slice(colon + 1);
+            nodes.push(
+                <span
+                    key={`${keyPrefix}-h${key++}`}
+                    className="ipd-prose-hover"
+                    onMouseEnter={() => {
+                        if (!action) return;
+                        window.dispatchEvent(
+                            new CustomEvent("ipd:figure-hover", {
+                                detail: { target, action },
+                            }),
+                        );
+                    }}
+                    onMouseLeave={() => {
+                        window.dispatchEvent(
+                            new CustomEvent("ipd:figure-hover-end", {
+                                detail: { target },
+                            }),
+                        );
+                    }}
+                >
+                    {match[1]}
+                </span>,
+            );
+            last = match.index + match[0].length;
+            continue;
+        }
+
         const isAnchor = href.startsWith("#");
         nodes.push(
             <a

@@ -21,10 +21,14 @@ type Props = {
     onHighlight: (id: string | null) => void;
 };
 
-function sortValue(player: Player, key: SortKey): string | number {
+function sortValue(
+    player: Player,
+    key: SortKey,
+    rankById: Map<string, number>,
+): string | number {
     switch (key) {
         case "rank":
-            return player.ranked?.rank ?? 999;
+            return rankById.get(player.id) ?? 999;
         case "player":
             return player.label.toLowerCase();
         case "score":
@@ -54,11 +58,18 @@ export default function LeaderboardTable({
     const [sortKey, setSortKey] = useState<SortKey>("score");
     const [asc, setAsc] = useState(false);
 
+    const rankById = useMemo(() => {
+        const byScore = [...report.players].sort(
+            (a, b) => b.outcomes.meanScorePerTurn - a.outcomes.meanScorePerTurn,
+        );
+        return new Map(byScore.map((player, index) => [player.id, index + 1]));
+    }, [report.players]);
+
     const rows = useMemo(() => {
         const copy = [...report.players];
         copy.sort((a, b) => {
-            const av = sortValue(a, sortKey);
-            const bv = sortValue(b, sortKey);
+            const av = sortValue(a, sortKey, rankById);
+            const bv = sortValue(b, sortKey, rankById);
             if (typeof av === "number" && typeof bv === "number") {
                 return asc ? av - bv : bv - av;
             }
@@ -67,7 +78,7 @@ export default function LeaderboardTable({
                 : String(bv).localeCompare(String(av));
         });
         return copy;
-    }, [report.players, sortKey, asc]);
+    }, [report.players, sortKey, asc, rankById]);
 
     function toggleSort(key: SortKey) {
         if (sortKey === key) {
@@ -116,7 +127,7 @@ export default function LeaderboardTable({
                             onClick={() => onHighlight(player.id)}
                         >
                             <td className="num">
-                                {player.ranked?.rank ?? index + 1}
+                                {rankById.get(player.id) ?? index + 1}
                             </td>
                             <td>
                                 <span

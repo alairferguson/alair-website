@@ -19,6 +19,7 @@ import CooperationHeatmap from "./CooperationHeatmap";
 import FingerprintScatter, { PROJECTIONS } from "./FingerprintScatter";
 import LeaderboardTable from "./LeaderboardTable";
 import PayoffMatrix from "./PayoffMatrix";
+import PersonaScoreBar from "./PersonaScoreBar";
 import PersonaSlope from "./PersonaSlope";
 import ProseSection from "./ProseSection";
 import SlottedSection from "./SlottedSection";
@@ -87,6 +88,9 @@ export default function ReportClient({ report }: Props) {
                 <header className="ipd-hero">
                     <h1>{report.title}</h1>
                     <p>{report.subtitle}</p>
+                    <Link href="/#about" className="ipd-byline">
+                        Alair Ferguson Hautzinger
+                    </Link>
                 </header>
 
                 <ProseSection id="introduction" {...INTRODUCTION} />
@@ -154,11 +158,7 @@ export default function ReportClient({ report }: Props) {
                                 <p className="ipd-footnote">
                                     Classics are circles; LLM × persona
                                     variants are stars, colored by model (see
-                                    the key above). Lines connect personas of
-                                    the same model. Plot labels show persona
-                                    only — hover a point for the full name.
-                                    Use Behavior, Punishment, or Outcome to
-                                    re-project; Custom axes for any pair.
+                                    the key above).
                                 </p>
                             </>
                         ),
@@ -169,7 +169,7 @@ export default function ReportClient({ report }: Props) {
                                 onHighlight={setHighlightedId}
                             />
                         ),
-                        leaderboard: (
+                        leaderboard: [
                             <>
                                 <LeaderboardTable
                                     report={report}
@@ -182,8 +182,24 @@ export default function ReportClient({ report }: Props) {
                                     distance across the five fingerprint
                                     dimensions.
                                 </p>
-                            </>
-                        ),
+                            </>,
+                            <>
+                                <p className="ipd-kicker ipd-mono ipd-results-label ipd-results-label--spaced">
+                                    Score by Persona
+                                </p>
+                                <PersonaScoreBar
+                                    report={report}
+                                    highlightedId={highlightedId}
+                                    onHighlight={setHighlightedId}
+                                />
+                                <p className="ipd-footnote">
+                                    Bar height is each persona's mean score
+                                    per turn, averaged across its five models;
+                                    diamonds are the individual models,
+                                    colored by model (see the key above).
+                                </p>
+                            </>,
+                        ],
                     }}
                 />
 
@@ -191,7 +207,7 @@ export default function ReportClient({ report }: Props) {
                     id="discussion"
                     {...DISCUSSION}
                     slots={{
-                        "the-persona-knob": (
+                        "the-persona-slope": (
                             <div id="persona-slope">
                                 <PersonaSlope
                                     report={report}

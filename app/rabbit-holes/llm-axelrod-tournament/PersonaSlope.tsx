@@ -16,10 +16,10 @@ type PersonaMeta = {
 };
 
 const PERSONA_META: PersonaMeta[] = [
-    { id: "cooperative", label: "cooperative" },
-    { id: "neutral", label: "neutral" },
-    { id: "payoff_only", label: "payoff-only" },
-    { id: "selfish", label: "selfish" },
+    { id: "cooperative", label: "Cooperative" },
+    { id: "neutral", label: "Neutral" },
+    { id: "payoff_only", label: "Payoff-only" },
+    { id: "selfish", label: "Selfish" },
 ];
 
 const PERSONA_ORDER = PERSONA_META.map((p) => p.id);
@@ -163,7 +163,7 @@ export default function PersonaSlope({
 
     const laidOut = useMemo(() => {
         const panelW = INNER_W;
-        // Inset endpoints so edge labels ("cooperative", "selfish") don't clip.
+        // Inset endpoints so edge labels ("Cooperative", "Selfish") don't clip.
         const xPad = Math.min(28, panelW * 0.08);
         const xOf = (i: number) =>
             xPad +

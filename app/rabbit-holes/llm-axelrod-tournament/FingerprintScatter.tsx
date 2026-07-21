@@ -100,10 +100,10 @@ const CLASSIC_PLOT_LABEL: Record<string, string> = {
 };
 
 const PERSONA_PLOT_LABEL: Record<string, string> = {
-    neutral: "neut",
-    cooperative: "coop",
-    selfish: "self",
-    payoff_only: "payoff",
+    neutral: "Neut",
+    cooperative: "Coop",
+    selfish: "Self",
+    payoff_only: "Payoff",
 };
 
 function metricValue(player: Player, id: MetricId): number {
