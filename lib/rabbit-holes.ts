@@ -30,11 +30,6 @@ export const RABBIT_HOLES: RabbitHole[] = [
         ],
     },
     {
-        slug: "plants",
-        title: "Plants",
-        position: { top: "16%", right: "12%" },
-    },
-    {
         slug: "llm-axelrod-tournament",
         title: "An LLM Axelrod Tournament",
         position: { top: "56%", right: "10%" },
