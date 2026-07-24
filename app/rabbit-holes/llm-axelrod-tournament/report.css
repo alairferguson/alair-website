@@ -932,6 +932,10 @@ li.ipd-draft-note {
 
 .ipd-players-llm-caption {
     grid-column: 2 / -1;
+    /* Cancel the grid's row-gap above this row so it lines up with the
+       Classics caption, which isn't a grid row and only gets the plain
+       margin below. */
+    margin-top: 0.1rem;
     text-align: center;
 }
 

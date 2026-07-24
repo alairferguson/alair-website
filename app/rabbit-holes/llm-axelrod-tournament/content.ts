@@ -64,7 +64,7 @@ export const METHODOLOGY: SlottedCopy = {
             id: "the-game",
             heading: "The Game",
             paragraphs: [
-                "Imagine that you and a sharp accomplice plan and execute an elaborate heist. Days later, thinking you got away with your crime, you see flashing lights and are arrested. In the back of the squad car, your partner-in-crime is eyeing you with a glint of mistrust in their eye. Unease sets in. They take you to separate interrogation rooms, lay out the damning evidence, and explain what will happen if you confess. If you and your partner both stay silent, you will both face ten years in prison. If you or your partner confess and the other stays silent, the one who confesses will walk without serving time, while the other will face a double sentence. If you both confess, you will both serve five years in prison. You remember that look of doubt in your partner’s eyes in the back of the car… what do you do? Confess or hold your silence?",
+                "Imagine that you and a sharp accomplice plan and execute an elaborate heist. Days later, thinking you got away with your crime, you see flashing lights and are arrested. In the back of the squad car, your partner-in-crime is eyeing you with a glint of mistrust in their eye. Unease sets in. They take you to separate interrogation rooms, lay out the damning evidence, and explain what will happen if you confess. If you and your partner both stay silent, you will both face ten years in prison. If you or your partner confess and the other stays silent, the one who confesses will walk without serving time, while the other will face a double sentence. If you both confess, you will both serve five years in prison. You remember that look of doubt in your partner’s eyes in the back of the car... what do you do? Confess or hold your silence?",
             ],
         },
         {
@@ -97,7 +97,7 @@ export const METHODOLOGY: SlottedCopy = {
             heading: "LLM × Persona Players",
             paragraphs: [
                 "I used five models in this tournament: Claude Haiku 4.5, GPT-4o-mini, Gemini 3.1 Flash Lite, Grok 4.1 Fast (non-reasoning), and Qwen 2.5 7B. Each was presented the game through four system-prompt personas (Selfish, Cooperative, Payoff-only, and Neutral) which were phrased as follows:",
-                "The per-turn user prompt, built from the live payoff matrix and this match's move history, is in the [Appendix](#appendix-user-prompts). Crossing five models with four personas produced the 20 LLM × persona players in the tournament:",
+                "The per-turn user prompt, built from the live payoff matrix and this match's move history, is in the [Appendix](#appendix-user-prompts). Crossing five models with four personas produced the 20 LLM × persona players in the tournament. See all 27 players below:",
             ],
             slotAfterParagraph: [0,1],
             
