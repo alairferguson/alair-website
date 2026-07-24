@@ -745,7 +745,10 @@ li.ipd-draft-note {
 }
 
 .ipd-table {
-    width: 100%;
+    /* Hug the (now shorter) player labels instead of stretching columns
+       to fill 100% of the shell. */
+    width: max-content;
+    max-width: 100%;
     border-collapse: collapse;
     font-size: 0.8125rem;
 }

@@ -238,8 +238,8 @@ export const APPENDIX: ProseCopy = {
     title: "Appendix",
   
     paragraphs: [
-        "The tournament engine, prompts, and analysis are open source on [GitHub](https://github.com/alairferguson/llm-ipd-fingerprint).",
-        "Every turn, each LLM player receives a user prompt built from the live payoff matrix and this match's move history only, which isthe same information a classic strategy can see, and nothing about who the opponent is (see [Fairness Safeguards](#fairness-safeguards)). The system prompts for each persona are shown in [LLM × Persona Players](#llm-persona-players) in the Methodology. Payoff-only goes further and strips the Cooperate/Defect framing entirely, presenting the same game as a bare choice between A and B.",
+        "The tournament engine, prompts, and analysis are open source on [GitHub](https://github.com/alairferguson/axelrod-tourn).",
+        "Every turn, each LLM player receives a user prompt built from the live payoff matrix and this match's move history only, which is the same information a classic strategy can see, and nothing about who the opponent is (see [Fairness Safeguards](#fairness-safeguards)). The system prompts for each persona are shown in [LLM × Persona Players](#llm-persona-players) in the Methodology. Payoff-only goes further and strips the Cooperate/Defect framing entirely, presenting the same game as a bare choice between A and B.",
     ],
 };
 
