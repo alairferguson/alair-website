@@ -21,6 +21,7 @@ import LeaderboardTable from "./LeaderboardTable";
 import PayoffMatrix from "./PayoffMatrix";
 import PersonaScoreBar from "./PersonaScoreBar";
 import PersonaSlope from "./PersonaSlope";
+import PlayersGrid from "./PlayersGrid";
 import ProseSection from "./ProseSection";
 import SlottedSection from "./SlottedSection";
 import type { MetricId, Report } from "./types";
@@ -100,8 +101,8 @@ export default function ReportClient({ report }: Props) {
                     {...METHODOLOGY}
                     slots={{
                         "the-tournament": <PayoffMatrix />,
-                        "llm-persona-players": (
-                            <div className="ipd-prompt-grid">
+                        "llm-persona-players": [
+                            <div className="ipd-prompt-grid" key="prompt-cards">
                                 {PERSONA_PROMPTS.map((persona) => (
                                     <article
                                         key={persona.id}
@@ -113,8 +114,9 @@ export default function ReportClient({ report }: Props) {
                                         </pre>
                                     </article>
                                 ))}
-                            </div>
-                        ),
+                            </div>,
+                            <PlayersGrid key="players-grid" />,
+                        ],
                         "llms-nearest-classic-strategy": (
                             <div className="ipd-dims-wrap">
                                 <p className="ipd-kicker ipd-mono ipd-results-label">

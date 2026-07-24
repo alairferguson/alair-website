@@ -50,9 +50,10 @@ export const INTRODUCTION: ProseCopy = {
     paragraphs: [
         
         "This project simulates an Axelrod tournament in which a set of players faces one another in multiple Iterated Prisoner’s Dilemma games. Axelrod’s tournaments have a rich history in economics, and [this write-up](https://egtheory.wordpress.com/2015/03/02/ipd/) beautifully summarizes the history of the tournament. While [past](https://edwardbrookman.substack.com/p/ai-evolves-a-winning-strategy-in?r=2pe9fn) work has sought to explore whether or not LLMs can *win*, I seek to understand *how LLMs play*.",
-        "Game theory has long sought to formalize rational decision-making into mathematical concreteness, and as compute increases at a seemingly exponential rate, the rationality proposed by this discipline can be tested by repeated simulations. Artificial Intelligence brings with it exciting possibilities of simulated tests to explore the differences between mathematically rational behavior and the decisions that simulated humans make.",
+        "Game theory seeks to formalize rational decision-making into concrete mathematics, and as compute increases at a seemingly exponential rate, the rationality proposed by this discipline can be tested by repeated simulations.",
         "[Axelrod’s analyses of the original 1980 tournament](https://www.jstor.org/stable/173932) identified niceness, forgiveness, retaliation, and provocability as the traits that separated the winners from the rest. My analysis adds the cooperation of a strategy to characterize play in this project. These five traits form the behavioral fingerprint of the player.",
-        "I begin by outlining the [Methodology](#methodology), including [the game](#the-game), [the tournament](#the-tournament), the players, and the [fairness safeguards](#fairness-safeguards). Then, I present the [Results](#results) of the analysis through the tournament's [leaderboard](#leaderboard), a [strategy-space plot](#strategy-space) comparing players across the traits of the behavioral fingerprint, and a [cooperation matrix](#cooperation-matrix) of who cooperates with whom. The results are then analyzed in the [Discussion](#discussion) section, and the [Limitations](#limitations) section reviews the project's scope with respect to the Game Theory and AI fields. The [Conclusion](#conclusion) discusses the main takeaway: **prompting choices make the largest difference in how LLM players strategize, but models' defaults still matter**.",
+        "I found that **prompting choices make the largest difference in how LLM players strategize, but models' defaults still matter**.",
+        ,
     ],
 };
 
@@ -63,7 +64,7 @@ export const METHODOLOGY: SlottedCopy = {
             id: "the-game",
             heading: "The Game",
             paragraphs: [
-                "Imagine for a moment that you and a sharp, quick-witted accomplice plan and execute an elaborate heist. A year later, thinking you got away with your crime, you see flashing lights and a smug detective reads you your Miranda Rights as she shoves you into the back of her squad car. Next to you is a face you thought you’d never see again: your partner-in-crime is eyeing you with a glint of mistrust in their eye. Unease sets in. They take you to separate interrogation rooms, lay out the damning evidence, and explain very clearly what will happen if you confess. If you and your partner both stay silent, you will both face ten years in prison. If you or your partner confess and the other stays silent, the one who confesses will walk without serving time, while the other will face a double sentence. If you both confess, you will both serve five years in prison. You remember that look of doubt in your partner’s eyes in the back of the car… what do you do? Confess or hold your silence?",
+                "Imagine that you and a sharp accomplice plan and execute an elaborate heist. Days later, you're both on the run, thinking you got away with your crime. You see flashing lights and are arrested. In the back of the squad car, your partner-in-crime is eyeing you with a glint of mistrust in their eye. Unease sets in. They take you to separate interrogation rooms, lay out the damning evidence, and explain very clearly what will happen if you confess. If you and your partner both stay silent, you will both face ten years in prison. If you or your partner confess and the other stays silent, the one who confesses will walk without serving time, while the other will face a double sentence. If you both confess, you will both serve five years in prison. You remember that look of doubt in your partner’s eyes in the back of the car… what do you do? Confess or hold your silence?",
             ],
         },
         {
@@ -96,31 +97,9 @@ export const METHODOLOGY: SlottedCopy = {
             heading: "LLM × Persona Players",
             paragraphs: [
                 "I used five models in this tournament: Claude Haiku 4.5, GPT-4o-mini, Gemini 3.1 Flash Lite, Grok 4.1 Fast (non-reasoning), and Qwen 2.5 7B. Each was presented the game through four system-prompt personas (Selfish, Cooperative, Payoff-only, and Neutral) which were phrased as follows:",
-                "The per-turn user prompt, built from the live payoff matrix and this match's move history, is in the [Appendix](#appendix-user-prompts). Crossing five models with four personas produced the 20 LLM × persona players in the tournament:",
+                "The per-turn user prompt, built from the live payoff matrix and this match's move history, is in the [Appendix](#appendix-user-prompts). Crossing five models with four personas produced the 20 LLM × persona players in the tournament, shown alongside the seven classic strategies below:",
             ],
-            slotAfterParagraph: 0,
-            list: [
-                "**Claude Haiku 4.5 × Selfish**",
-                "**Claude Haiku 4.5 × Cooperative**",
-                "**Claude Haiku 4.5 × Payoff-only**",
-                "**Claude Haiku 4.5 × Neutral**",
-                "**GPT-4o-mini × Selfish**",
-                "**GPT-4o-mini × Cooperative**",
-                "**GPT-4o-mini × Payoff-only**",
-                "**GPT-4o-mini × Neutral**",
-                "**Gemini 3.1 Flash Lite × Selfish**",
-                "**Gemini 3.1 Flash Lite × Cooperative**",
-                "**Gemini 3.1 Flash Lite × Payoff-only**",
-                "**Gemini 3.1 Flash Lite × Neutral**",
-                "**Grok 4.1 Fast (non-reasoning) × Selfish**",
-                "**Grok 4.1 Fast (non-reasoning) × Cooperative**",
-                "**Grok 4.1 Fast (non-reasoning) × Payoff-only**",
-                "**Grok 4.1 Fast (non-reasoning) × Neutral**",
-                "**Qwen 2.5 7B × Selfish**",
-                "**Qwen 2.5 7B × Cooperative**",
-                "**Qwen 2.5 7B × Payoff-only**",
-                "**Qwen 2.5 7B × Neutral**",
-            ],
+            slotAfterParagraph: [0, 1],
         },
         {
             id: "fairness-safeguards",
