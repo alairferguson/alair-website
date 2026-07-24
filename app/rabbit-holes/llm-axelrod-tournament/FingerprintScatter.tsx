@@ -6,7 +6,7 @@ import type { MetricId, Player, Report, Series } from "./types";
 
 type Filter = "all" | "llm" | "classic";
 
-type ProjectionId = "behavior" | "punishment" | "outcome";
+type ProjectionId = "behavior" | "punishment";
 
 type Projection = {
     id: ProjectionId;
@@ -27,12 +27,6 @@ export const PROJECTIONS: Projection[] = [
         label: "Punishment",
         x: "retaliation",
         y: "forgiveness",
-    },
-    {
-        id: "outcome",
-        label: "Outcome",
-        x: "cooperation_rate",
-        y: "mean_score_per_turn",
     },
 ];
 
@@ -610,6 +604,10 @@ export default function FingerprintScatter({
     const yMeta = report.metrics.find((m) => m.id === yMetric)!;
     const activeProjection = matchProjection(xMetric, yMetric);
     const isCustom = activeProjection == null;
+    /** Score is an outcome, not a fingerprint dimension — not offered as a custom axis. */
+    const axisMetrics = report.metrics.filter(
+        (m) => m.id !== "mean_score_per_turn",
+    );
 
     function selectProjection(projection: Projection) {
         onXMetricChange(projection.x);
@@ -792,7 +790,7 @@ export default function FingerprintScatter({
                                 role="group"
                                 aria-label="X axis metric"
                             >
-                                {report.metrics.map((metric) => (
+                                {axisMetrics.map((metric) => (
                                     <button
                                         key={`x-${metric.id}`}
                                         type="button"
@@ -811,7 +809,7 @@ export default function FingerprintScatter({
                                 role="group"
                                 aria-label="Y axis metric"
                             >
-                                {report.metrics.map((metric) => (
+                                {axisMetrics.map((metric) => (
                                     <button
                                         key={`y-${metric.id}`}
                                         type="button"
