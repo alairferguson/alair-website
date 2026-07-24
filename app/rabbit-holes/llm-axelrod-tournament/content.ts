@@ -50,7 +50,7 @@ export const INTRODUCTION: ProseCopy = {
     paragraphs: [
         
         "This project simulates an Axelrod tournament in which a set of players faces one another in multiple Iterated Prisoner’s Dilemma games. Axelrod’s tournaments have a rich history in economics, and [this write-up](https://egtheory.wordpress.com/2015/03/02/ipd/) beautifully summarizes the history of the tournament. While [past](https://edwardbrookman.substack.com/p/ai-evolves-a-winning-strategy-in?r=2pe9fn) work has sought to explore whether or not LLMs can *win*, I seek to understand *how LLMs play*.",
-        "Game theory seeks to formalize rational decision-making into concrete mathematics, and as compute increases at a seemingly exponential rate, the rationality proposed by this discipline can be tested by repeated simulations.",
+        "Game theory seeks to formalize rational decision-making into concrete mathematics, and as compute increases at a seemingly exponential rate, the rationality proposed by this discipline can be tested by repeated simulations with agents.",
         "[Axelrod’s analyses of the original 1980 tournament](https://www.jstor.org/stable/173932) identified niceness, forgiveness, retaliation, and provocability as the traits that separated the winners from the rest. My analysis adds the cooperation of a strategy to characterize play in this project. These five traits form the behavioral fingerprint of the player.",
         "I found that **prompting choices make the largest difference in how LLM players strategize, but models' defaults still matter**.",
         ,
@@ -64,7 +64,7 @@ export const METHODOLOGY: SlottedCopy = {
             id: "the-game",
             heading: "The Game",
             paragraphs: [
-                "Imagine that you and a sharp accomplice plan and execute an elaborate heist. Days later, you're both on the run, thinking you got away with your crime. You see flashing lights and are arrested. In the back of the squad car, your partner-in-crime is eyeing you with a glint of mistrust in their eye. Unease sets in. They take you to separate interrogation rooms, lay out the damning evidence, and explain very clearly what will happen if you confess. If you and your partner both stay silent, you will both face ten years in prison. If you or your partner confess and the other stays silent, the one who confesses will walk without serving time, while the other will face a double sentence. If you both confess, you will both serve five years in prison. You remember that look of doubt in your partner’s eyes in the back of the car… what do you do? Confess or hold your silence?",
+                "Imagine that you and a sharp accomplice plan and execute an elaborate heist. Days later, thinking you got away with your crime, you see flashing lights and are arrested. In the back of the squad car, your partner-in-crime is eyeing you with a glint of mistrust in their eye. Unease sets in. They take you to separate interrogation rooms, lay out the damning evidence, and explain what will happen if you confess. If you and your partner both stay silent, you will both face ten years in prison. If you or your partner confess and the other stays silent, the one who confesses will walk without serving time, while the other will face a double sentence. If you both confess, you will both serve five years in prison. You remember that look of doubt in your partner’s eyes in the back of the car… what do you do? Confess or hold your silence?",
             ],
         },
         {
