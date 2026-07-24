@@ -839,35 +839,58 @@ li.ipd-draft-note {
 
 .ipd-dims {
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 0.45rem;
+    grid-template-columns: 1fr;
+    gap: 0.55rem;
     width: 100%;
 }
 
 .ipd-dim-card {
-    aspect-ratio: 1;
     min-width: 0;
     border: 1px solid var(--ipd-border);
     background: var(--ipd-panel);
-    padding: 0.55rem 0.6rem;
+    padding: 0.75rem 0.85rem;
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
-    overflow: hidden;
+    gap: 0.35rem;
 }
 
 .ipd-dim-card h3 {
-    font-size: clamp(0.7rem, 1.7vw, 0.95rem);
-    line-height: 1.2;
+    font-size: 0.95rem;
+    line-height: 1.25;
     margin: 0;
 }
 
 .ipd-dim-card p {
     margin: 0;
     color: var(--ipd-muted);
-    font-size: clamp(0.6rem, 1.35vw, 0.75rem);
-    line-height: 1.35;
-    overflow: hidden;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+}
+
+/* Five-up squares only when each card is wide enough to stay legible. */
+@media (min-width: 720px) {
+    .ipd-dims {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 0.45rem;
+    }
+
+    .ipd-dim-card {
+        aspect-ratio: 1;
+        padding: 0.55rem 0.6rem;
+        gap: 0.3rem;
+        overflow: hidden;
+    }
+
+    .ipd-dim-card h3 {
+        font-size: clamp(0.75rem, 1.5vw, 0.95rem);
+        line-height: 1.2;
+    }
+
+    .ipd-dim-card p {
+        font-size: clamp(0.68rem, 1.2vw, 0.75rem);
+        line-height: 1.35;
+        overflow: hidden;
+    }
 }
 
 .ipd-prompt-grid {
