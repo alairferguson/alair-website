@@ -17,9 +17,9 @@ const PERSONA_LABEL: Record<string, string> = {
     selfish: "Selfish",
 };
 
-const WIDTH = 960;
+const WIDTH = 640;
 const HEIGHT = 380;
-const MARGIN = { top: 30, right: 24, bottom: 44, left: 54 };
+const MARGIN = { top: 30, right: 16, bottom: 44, left: 72 };
 const INNER_W = WIDTH - MARGIN.left - MARGIN.right;
 const INNER_H = HEIGHT - MARGIN.top - MARGIN.bottom;
 
@@ -86,7 +86,7 @@ export default function PersonaScoreBar({
     const yTicks = ticks(domain, 4);
 
     const laneW = INNER_W / personaStats.length;
-    const barW = Math.min(70, laneW * 0.4);
+    const barW = Math.min(56, laneW * 0.55);
 
     const activePlayer = highlightedId ? byId.get(highlightedId) ?? null : null;
 
@@ -96,7 +96,7 @@ export default function PersonaScoreBar({
     }
 
     return (
-        <div className="ipd-chart-shell">
+        <div className="ipd-chart-shell ipd-score-shell">
             <div className="ipd-chart-toolbar">
                 <div className="ipd-toolbar-custom">
                     <SeriesLegend
@@ -226,7 +226,7 @@ export default function PersonaScoreBar({
                                     </text>
 
                                     <text
-                                        className="ipd-slope-xtick ipd-mono"
+                                        className="ipd-score-xtick ipd-mono"
                                         data-active={laneActive}
                                         x={cx}
                                         y={INNER_H + 22}
@@ -253,7 +253,7 @@ export default function PersonaScoreBar({
 
                         <text
                             className="ipd-axis-title"
-                            transform={`translate(-42, ${
+                            transform={`translate(-52, ${
                                 INNER_H / 2
                             }) rotate(-90)`}
                             textAnchor="middle"

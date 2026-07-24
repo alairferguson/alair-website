@@ -1119,8 +1119,32 @@ li.ipd-draft-note {
 
 /* --- Persona score bars ---------------------------------------------------- */
 
+/* Four persona lanes — keep the figure compact so bars sit close together
+   instead of stretching across the full results column. Title, chart, and
+   caption share one width so the block reads as a single unit. */
+.ipd-score-wrap {
+    width: min(34rem, 100%);
+    margin: 0 auto;
+}
+
+.ipd-score-shell {
+    width: 100%;
+}
+
 .ipd-score-chart {
-    aspect-ratio: 16 / 8.5;
+    aspect-ratio: 14 / 9.5;
+}
+
+.ipd-score-xtick {
+    fill: var(--ipd-faint);
+    font-size: 10px;
+    cursor: pointer;
+    transition: fill 140ms ease;
+}
+
+.ipd-score-xtick[data-active="true"] {
+    fill: var(--ipd-fg);
+    font-weight: 500;
 }
 
 .ipd-score-bar {

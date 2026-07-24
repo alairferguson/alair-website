@@ -185,7 +185,7 @@ export default function ReportClient({ report }: Props) {
                                     dimensions.
                                 </p>
                             </>,
-                            <>
+                            <div className="ipd-score-wrap">
                                 <p className="ipd-kicker ipd-mono ipd-results-label ipd-results-label--spaced">
                                     Score by Persona
                                 </p>
@@ -200,7 +200,7 @@ export default function ReportClient({ report }: Props) {
                                     circles are the individual models,
                                     colored by model (see the key above).
                                 </p>
-                            </>,
+                            </div>,
                         ],
                     }}
                 />
