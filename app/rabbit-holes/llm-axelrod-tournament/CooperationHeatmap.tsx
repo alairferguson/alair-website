@@ -4,7 +4,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import SeriesLegend from "./SeriesLegend";
 import type { Player, Report } from "./types";
 
-type ViewMode = "llm-classic" | "llm-llm" | "full";
+type ViewMode = "llm-classic" | "full";
 type SortMode = "model" | "persona";
 
 /** Fixed persona grouping order when sorting "by persona". */
@@ -33,8 +33,11 @@ type CellRect = {
 const CELL = 17.5;
 const LABEL_W = 80;
 const LABEL_H = 78;
-const LEGEND_W = 12;
-const LEGEND_GAP = 14;
+/** Horizontal color-scale bar below the matrix: thickness, and the total
+ * block height (bar + tick labels + title) reserved beneath it. */
+const LEGEND_BAR = 10;
+const LEGEND_BLOCK_H = 26;
+const LEGEND_GAP = 16;
 const PAD = { top: 8, right: 10, bottom: 10, left: 8 };
 
 /** Sequential scale ending at the site primary red (`--primary` / `--ipd-link`). */
@@ -200,9 +203,6 @@ export default function CooperationHeatmap({
         if (view === "llm-classic") {
             return { rowIds: llms, colIds: classics };
         }
-        if (view === "llm-llm") {
-            return { rowIds: llms, colIds: llms };
-        }
         return { rowIds: [...classics, ...llms], colIds: [...classics, ...llms] };
     }, [report.cooperationMatrix.players, byId, view, sortMode]);
 
@@ -218,15 +218,14 @@ export default function CooperationHeatmap({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pendingHoverKey, rowIds, colIds]);
 
-    const width =
-        PAD.left +
-        LABEL_W +
-        colIds.length * CELL +
+    const width = PAD.left + LABEL_W + colIds.length * CELL + PAD.right;
+    const height =
+        PAD.top +
+        LABEL_H +
+        rowIds.length * CELL +
         LEGEND_GAP +
-        LEGEND_W +
-        40 +
-        PAD.right;
-    const height = PAD.top + LABEL_H + rowIds.length * CELL + PAD.bottom;
+        LEGEND_BLOCK_H +
+        PAD.bottom;
 
     const values = report.cooperationMatrix.values;
 
@@ -337,13 +336,6 @@ export default function CooperationHeatmap({
                             onClick={() => setView("llm-classic")}
                         >
                             LLMs × Classics
-                        </button>
-                        <button
-                            type="button"
-                            data-active={view === "llm-llm"}
-                            onClick={() => setView("llm-llm")}
-                        >
-                            LLMs × LLMs
                         </button>
                         <button
                             type="button"
@@ -511,16 +503,16 @@ export default function CooperationHeatmap({
                         )}
 
                         <g
-                            transform={`translate(${
-                                colIds.length * CELL + LEGEND_GAP
-                            }, 0)`}
+                            transform={`translate(0, ${
+                                rowIds.length * CELL + LEGEND_GAP
+                            })`}
                         >
                             <defs>
                                 <linearGradient
                                     id="ipd-coop-legend"
                                     x1="0"
-                                    y1="1"
-                                    x2="0"
+                                    y1="0"
+                                    x2="1"
                                     y2="0"
                                 >
                                     <stop
@@ -540,30 +532,30 @@ export default function CooperationHeatmap({
                             <rect
                                 x={0}
                                 y={0}
-                                width={LEGEND_W}
-                                height={rowIds.length * CELL}
+                                width={colIds.length * CELL}
+                                height={LEGEND_BAR}
                                 fill="url(#ipd-coop-legend)"
                                 stroke="rgba(20, 18, 11, 0.12)"
                             />
                             <text
                                 className="ipd-heatmap-legend-label ipd-mono"
-                                x={LEGEND_W + 6}
-                                y={4}
-                            >
-                                1
-                            </text>
-                            <text
-                                className="ipd-heatmap-legend-label ipd-mono"
-                                x={LEGEND_W + 6}
-                                y={rowIds.length * CELL - 2}
+                                x={0}
+                                y={LEGEND_BAR + 12}
                             >
                                 0
                             </text>
                             <text
+                                className="ipd-heatmap-legend-label ipd-mono"
+                                x={colIds.length * CELL}
+                                y={LEGEND_BAR + 12}
+                                textAnchor="end"
+                            >
+                                1
+                            </text>
+                            <text
                                 className="ipd-heatmap-legend-title ipd-mono"
-                                transform={`translate(${
-                                    LEGEND_W + 28
-                                }, ${(rowIds.length * CELL) / 2}) rotate(90)`}
+                                x={(colIds.length * CELL) / 2}
+                                y={LEGEND_BAR + 12}
                                 textAnchor="middle"
                             >
                                 Cooperation
