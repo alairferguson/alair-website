@@ -1,11 +1,11 @@
-import { CLASSIC_COLOR, LLM_MODEL_COLORS } from "./colors";
+import { CLASSIC_COLOR, LLM_MODEL_COLORS, MODEL_SHORT_NAMES } from "./colors";
 
-const MODELS: Array<{ id: string; label: string; full: string }> = [
-    { id: "claude-haiku-4-5", label: "Claude", full: "Claude Haiku 4.5" },
-    { id: "gpt-4o-mini", label: "GPT-4o-mini", full: "GPT-4o-mini" },
-    { id: "gemini-3.1-flash-lite", label: "Gemini", full: "Gemini 3.1 Flash Lite" },
-    { id: "grok-4-1-fast-non-reasoning", label: "Grok", full: "Grok 4.1 Fast (non-reasoning)" },
-    { id: "qwen2.5:7b", label: "Qwen", full: "Qwen 2.5 7B" },
+const MODELS: Array<{ id: string; full: string }> = [
+    { id: "claude-haiku-4-5", full: "Claude Haiku 4.5" },
+    { id: "gpt-4o-mini", full: "GPT-4o-mini" },
+    { id: "gemini-3.1-flash-lite", full: "Gemini 3.1 Flash Lite" },
+    { id: "grok-4-1-fast-non-reasoning", full: "Grok 4.1 Fast (non-reasoning)" },
+    { id: "qwen2.5:7b", full: "Qwen 2.5 7B" },
 ];
 
 const PERSONAS: Array<{ short: string; full: string }> = [
@@ -60,7 +60,7 @@ export default function PlayersGrid() {
                         {MODELS.map((model) => (
                             <div className="ipd-players-row" key={model.id}>
                                 <div className="ipd-players-rowhead ipd-mono">
-                                    {model.label}
+                                    {MODEL_SHORT_NAMES[model.id]}
                                 </div>
                                 {PERSONAS.map((persona) => (
                                     <div

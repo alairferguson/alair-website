@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { IBM_Plex_Mono, IBM_Plex_Sans, Source_Serif_4 } from "next/font/google";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { withCanonicalColors } from "./colors";
+import { withCanonicalColors, withShortModelNames } from "./colors";
 import ReportClient from "./ReportClient";
 import type { Report } from "./types";
 
@@ -38,7 +38,7 @@ async function loadReport(): Promise<Report> {
         "public/rabbit-holes/llm-axelrod-tournament/report.json",
     );
     const raw = await readFile(filePath, "utf8");
-    return withCanonicalColors(JSON.parse(raw) as Report);
+    return withShortModelNames(withCanonicalColors(JSON.parse(raw) as Report));
 }
 
 export default async function LlmAxelrodTournamentPage() {

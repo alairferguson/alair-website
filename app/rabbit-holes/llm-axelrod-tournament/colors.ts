@@ -63,6 +63,54 @@ function assignFallbackColors(modelIds: Iterable<string>): Map<string, string> {
     return map;
 }
 
+/**
+ * Short display names for prose and graphs — the intro paragraph spells the
+ * full model names out once, then every label after that (leaderboard,
+ * hover cards, legends) uses these instead.
+ */
+export const MODEL_SHORT_NAMES: Record<string, string> = {
+    "claude-haiku-4-5": "Claude",
+    "gpt-4o-mini": "GPT",
+    "gemini-3.1-flash-lite": "Gemini",
+    "grok-4-1-fast-non-reasoning": "Grok",
+    "qwen2.5:7b": "Qwen",
+};
+
+const PERSONA_DISPLAY_LABELS: Record<string, string> = {
+    neutral: "Neutral",
+    selfish: "Selfish",
+    cooperative: "Cooperative",
+    payoff_only: "Payoff-only",
+};
+
+/** Rewrite player + series labels to use the short model names above. */
+export function withShortModelNames(report: Report): Report {
+    function relabelPlayer(player: Player): Player {
+        if (player.kind !== "llm") return player;
+        const short = player.model ? MODEL_SHORT_NAMES[player.model] : null;
+        if (!short) return player;
+        const personaLabel = player.persona
+            ? (PERSONA_DISPLAY_LABELS[player.persona] ?? player.persona)
+            : "";
+        return {
+            ...player,
+            label: `${short}: ${personaLabel} prompt`,
+            shortLabel: `${short} · ${personaLabel}`,
+        };
+    }
+
+    function relabelSeries(series: Series): Series {
+        const short = MODEL_SHORT_NAMES[series.id];
+        return short ? { ...series, label: short } : series;
+    }
+
+    return {
+        ...report,
+        players: report.players.map(relabelPlayer),
+        series: report.series.map(relabelSeries),
+    };
+}
+
 /** Remap player + series colors to the site palette. */
 export function withCanonicalColors(report: Report): Report {
     const modelIds = report.players
