@@ -71,7 +71,7 @@ export const METHODOLOGY: SlottedCopy = {
             id: "the-tournament",
             heading: "The Tournament",
             paragraphs: [
-                "In an Axelrod tournament, we play an iterated version of the above Prisoner’s Dilemma. In one game of the tournament, Player A and Player B are presented with the following payoff matrix:",
+                "In an Axelrod tournament, one plays an iterated version of the above Prisoner’s Dilemma. In one game of the tournament, Player A and Player B are presented with the following payoff matrix:",
                 "Each round, Player A and Player B choose to Cooperate or Defect simultaneously, without seeing the other's move; this repeats for 30 rounds per game. This tournament has 27 players (7 classic strategies and 20 LLM × personas), and each plays each other 5 times, for a total of 130 games.",
             ],
             slotAfterParagraph: 0,
@@ -97,9 +97,10 @@ export const METHODOLOGY: SlottedCopy = {
             heading: "LLM × Persona Players",
             paragraphs: [
                 "I used five models in this tournament: Claude Haiku 4.5, GPT-4o-mini, Gemini 3.1 Flash Lite, Grok 4.1 Fast (non-reasoning), and Qwen 2.5 7B. Each was presented the game through four system-prompt personas (Selfish, Cooperative, Payoff-only, and Neutral) which were phrased as follows:",
-                "The per-turn user prompt, built from the live payoff matrix and this match's move history, is in the [Appendix](#appendix-user-prompts). Crossing five models with four personas produced the 20 LLM × persona players in the tournament, shown alongside the seven classic strategies below:",
+                "The per-turn user prompt, built from the live payoff matrix and this match's move history, is in the [Appendix](#appendix-user-prompts). Crossing five models with four personas produced the 20 LLM × persona players in the tournament:",
             ],
-            slotAfterParagraph: [0, 1],
+            slotAfterParagraph: [0,1],
+            
         },
         {
             id: "fairness-safeguards",
@@ -108,9 +109,9 @@ export const METHODOLOGY: SlottedCopy = {
                 "Three constraints keep the comparison between LLM players and classic strategies fair by construction, rather than by adjustment after the fact:",
             ],
             list: [
-                "**Per-match statelessness:** every match starts with no memory of any other match. A player's move in one game can't be informed by what happened in a previous game against a different opponent, so each match tests the fresh strategy, as Axelrod's original tournament format assumes.",
-                "**Moves-only prompts:** LLM players are never told who they're playing. Each turn's prompt shows only the payoff matrix and the sequence of C/D moves exchanged so far: no model name, no persona label, no reputation. This rules out an LLM shifting its play because it recognizes its opponent, rather than because of what that opponent has actually done.",
-                "**Temperature = 0:** for the main runs, LLM players sample at temperature 0, so a given match history always produces the same next move. This makes the comparison to a classic strategy meaningful. Both are treated as deterministic functions from history to move rather than as a distribution over moves.",
+                "**Per-match statelessness:** every match starts with no memory of any other match. ",
+                "**Moves-only prompts:** LLM players are never told who they're playing. Each turn's prompt shows only the payoff matrix and the sequence of C/D moves exchanged so far.",
+                "**Temperature = 0:** for the main runs, LLM players sample at temperature 0, so a given match history always produces the same next move.",
             ],
         },
         {
@@ -160,7 +161,7 @@ export const RESULTS: SlottedCopy = {
             id: "cooperation-matrix",
             heading: "Cooperation Matrix",
             paragraphs: [
-                "We turn our attention now to the responsiveness of players' strategies to their opponent, to investigate whether players adapt to their simulated environment or if their play is fixed. I focus on the LLMs × Classics matrix, but there are interesting patterns to explore in the LLMs × LLMs and Full matrix tabs as well. Each cell below is shaded to indicate how often the row player cooperated with the column player. If LLM × persona players had fixed strategies, there would be no within-row variation.",
+                "To investigate whether players adapt to their simulated environment, I looked at the responsiveness of players' strategies to their opponent. I focus on the LLMs × Classics matrix, but there are interesting patterns to explore in the LLMs × LLMs and Full matrix tabs as well. Each cell below is shaded to indicate how often the row player cooperated with the column player. If LLM × persona players had fixed strategies, there would be no within-row variation.",
                 `We begin with the map [sorted by model](#cooperation-matrix:model). Though the strategies are consistent, they are not fixed. For example, in the first row, GPT-4o-mini × Neutral reaches near 100% cooperation with Tit For Tat, Grudger, Win-Stay Lose-Shift, GTFT, and Cooperator, but cooperates just [3.3% of the time with Defector](${heatmapCellHoverHref("LLM:gpt-4o-mini[neutral]", "Defector")}) and [34.7% of the time with Random](${heatmapCellHoverHref("LLM:gpt-4o-mini[neutral]", "Random: 0.5")}).`,
                 `Once again, when we instead view this table sorted [by persona](#cooperation-matrix:persona), it becomes clear that the **model personas are a far better predictor of play than models themselves**. There is one notable exception: [Qwen 2.5 7B × Payoff-only](${heatmapRowHoverHref("LLM:qwen2.5:7b[payoff_only]")}). The anomaly is discussed in [Cross-Model Differences and Surprises](#cross-model-surprises).`,
             ],
