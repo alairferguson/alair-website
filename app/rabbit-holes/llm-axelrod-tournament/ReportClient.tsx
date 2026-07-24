@@ -197,7 +197,7 @@ export default function ReportClient({ report }: Props) {
                                 <p className="ipd-footnote">
                                     Bar height is each persona's mean score
                                     per turn, averaged across its five models;
-                                    diamonds are the individual models,
+                                    circles are the individual models,
                                     colored by model (see the key above).
                                 </p>
                             </>,

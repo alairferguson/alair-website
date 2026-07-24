@@ -23,10 +23,6 @@ const MARGIN = { top: 30, right: 24, bottom: 44, left: 54 };
 const INNER_W = WIDTH - MARGIN.left - MARGIN.right;
 const INNER_H = HEIGHT - MARGIN.top - MARGIN.bottom;
 
-function diamondPath(size = 6.5): string {
-    return `M0,${-size} L${size},0 L0,${size} L${-size},0 Z`;
-}
-
 function formatVal(v: number): string {
     return v.toFixed(2);
 }
@@ -131,6 +127,15 @@ export default function PersonaScoreBar({
                         {personaStats.map((persona: PersonaStat, i) => {
                             const cx = laneW * i + laneW / 2;
                             const barTop = yOf(persona.mean);
+                            /** Topmost point in this lane (bar or any model
+                             * dot) so the value label always clears every
+                             * dot instead of just the bar top. */
+                            const topY = Math.min(
+                                barTop,
+                                ...persona.players.map((p) =>
+                                    yOf(p.outcomes.meanScorePerTurn),
+                                ),
+                            );
                             const laneActive = hoverPersona === persona.id;
                             const dimmed =
                                 hoverPersona != null &&
@@ -159,16 +164,6 @@ export default function PersonaScoreBar({
                                         width={barW}
                                         height={Math.max(INNER_H - barTop, 0)}
                                     />
-                                    <text
-                                        className="ipd-score-bar-value ipd-mono"
-                                        data-dimmed={dimmed}
-                                        x={cx}
-                                        y={barTop - 10}
-                                        textAnchor="middle"
-                                    >
-                                        {formatVal(persona.mean)}
-                                    </text>
-
                                     {persona.players.map((player) => {
                                         const isActive =
                                             activePlayer?.id === player.id;
@@ -202,11 +197,9 @@ export default function PersonaScoreBar({
                                                     fill="transparent"
                                                     className="ipd-point-hit"
                                                 />
-                                                <path
+                                                <circle
                                                     className="ipd-slope-marker"
-                                                    d={diamondPath(
-                                                        isActive ? 7.5 : 6,
-                                                    )}
+                                                    r={isActive ? 7.5 : 6}
                                                     fill={player.color}
                                                     stroke="#fff"
                                                     strokeWidth={1.4}
@@ -221,6 +214,16 @@ export default function PersonaScoreBar({
                                             </g>
                                         );
                                     })}
+
+                                    <text
+                                        className="ipd-score-bar-value ipd-mono"
+                                        data-dimmed={dimmed}
+                                        x={cx}
+                                        y={topY - 14}
+                                        textAnchor="middle"
+                                    >
+                                        {formatVal(persona.mean)}
+                                    </text>
 
                                     <text
                                         className="ipd-slope-xtick ipd-mono"

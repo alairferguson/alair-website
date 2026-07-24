@@ -597,8 +597,12 @@
     margin-top: 1.75rem;
 }
 
+/* Single source of truth for prose→figure spacing: every figure's own
+   wrapper (ipd-chart-shell, ipd-table-wrap, ipd-payoff-shell, ipd-players-wrap,
+   ipd-dims-wrap, ipd-prompt-grid, ...) must rely on this instead of setting
+   its own top margin, so the gap is identical before every figure. */
 .ipd-subsection > .ipd-prose + .ipd-slot {
-    margin-top: 0.25rem;
+    margin-top: 2rem;
 }
 
 .ipd-prose h3 {
@@ -827,7 +831,6 @@ li.ipd-draft-note {
     width: 100%;
     max-width: 40rem;
     margin-inline: auto;
-    margin-top: 2rem;
 }
 
 .ipd-dims-wrap .ipd-results-label {
@@ -868,7 +871,6 @@ li.ipd-draft-note {
 }
 
 .ipd-prompt-grid {
-    margin-top: 2.5rem;
     display: grid;
     gap: 0.85rem;
     grid-template-columns: 1fr;
@@ -903,7 +905,6 @@ li.ipd-draft-note {
 /* --- Players grid ----------------------------------------------------------- */
 
 .ipd-players-wrap {
-    margin-top: 2.5rem;
     text-align: center;
 }
 
@@ -1135,6 +1136,11 @@ li.ipd-draft-note {
 .ipd-score-bar-value {
     fill: var(--ipd-muted);
     font-size: 11px;
+    font-weight: 500;
+    paint-order: stroke;
+    stroke: var(--ipd-halo);
+    stroke-width: 3.5px;
+    stroke-linejoin: round;
     transition: opacity 160ms ease;
 }
 
@@ -1151,7 +1157,6 @@ li.ipd-draft-note {
     width: 100%;
     max-width: 26.5rem;
     margin-inline: auto;
-    margin-top: 2rem;
 }
 
 .ipd-payoff-stage {
