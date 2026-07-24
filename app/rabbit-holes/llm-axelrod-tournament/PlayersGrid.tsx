@@ -15,15 +15,18 @@ const PERSONAS: Array<{ short: string; full: string }> = [
     { short: "Payoff", full: "Payoff-only" },
 ];
 
-/** Row-major into a 4-row × 2-col grid; the 8th cell is left empty. */
-const CLASSICS = [
-    "Tit For Tat",
-    "GTFT",
-    "Win-Stay Lose-Shift",
-    "Grudger",
-    "Cooperator",
-    "Defector",
-    "Random",
+/**
+ * Explicit 5-row × 2-col placement (row-major, left to right, top to
+ * bottom). `null` marks an empty cell. Defector sits alone in column 1's
+ * last row so column 1 fills completely instead of leaving a dangling
+ * empty row.
+ */
+const CLASSIC_SLOTS: Array<string | null> = [
+    "Tit For Tat", "GTFT",
+    "Win-Stay Lose-Shift", "Grudger",
+    "Cooperator", null,
+    "Random", null,
+    "Defector", null,
 ];
 
 function PersonIcon({ color }: { color: string }) {
@@ -42,7 +45,6 @@ function PersonIcon({ color }: { color: string }) {
 export default function PlayersGrid() {
     return (
         <div className="ipd-players-wrap">
-            <h4 className="ipd-players-title">The Players</h4>
             <div className="ipd-players-groups">
                 <div className="ipd-players-llm">
                     <div className="ipd-players-llm-grid">
@@ -73,10 +75,10 @@ export default function PlayersGrid() {
                                 ))}
                             </div>
                         ))}
+                        <p className="ipd-players-caption ipd-players-llm-caption ipd-mono">
+                            LLM × Personas
+                        </p>
                     </div>
-                    <p className="ipd-players-caption ipd-mono">
-                        LLM × Personas
-                    </p>
                 </div>
 
                 <div className="ipd-players-classic">
@@ -87,21 +89,25 @@ export default function PlayersGrid() {
                         &nbsp;
                     </div>
                     <div className="ipd-players-classic-grid">
-                        {CLASSICS.map((name) => (
-                            <div
-                                className="ipd-players-cell ipd-players-cell--hoverable"
-                                key={name}
-                            >
-                                <PersonIcon color={CLASSIC_COLOR} />
-                                <span className="ipd-players-tooltip">
-                                    {name}
-                                </span>
-                            </div>
-                        ))}
-                        <div
-                            className="ipd-players-cell ipd-players-classic-empty"
-                            aria-hidden="true"
-                        />
+                        {CLASSIC_SLOTS.map((name, i) =>
+                            name ? (
+                                <div
+                                    className="ipd-players-cell ipd-players-cell--hoverable"
+                                    key={name}
+                                >
+                                    <PersonIcon color={CLASSIC_COLOR} />
+                                    <span className="ipd-players-tooltip ipd-mono">
+                                        {name}
+                                    </span>
+                                </div>
+                            ) : (
+                                <div
+                                    className="ipd-players-cell ipd-players-classic-empty"
+                                    key={`empty-${i}`}
+                                    aria-hidden="true"
+                                />
+                            ),
+                        )}
                     </div>
                     <p className="ipd-players-caption ipd-mono">Classics</p>
                 </div>
