@@ -12,7 +12,6 @@
   --color-primary: var(--primary);
   --font-heading: var(--font-heading);
   --font-body: var(--font-body);
-  --font-spine: var(--font-spine);
 }
 
 @media (prefers-color-scheme: dark) {
