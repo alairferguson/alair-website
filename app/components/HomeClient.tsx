@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect } from "react";
 import Paper from "./Paper";
+import Tape from "./Tape";
 import { Email } from "./Email";
 import RabbitHolesContent from "./RabbitHolesContent";
 import Bookshelf from "./bookshelf/Bookshelf";
@@ -76,17 +77,22 @@ export default function HomeClient({ writingPosts, spines }: HomeClientProps) {
 
                         <div className="flex-1 flex flex-col justify-center min-h-0 pb-12">
                             <div className="w-full flex flex-col gap-4">
-                                <div className="w-full overflow-hidden">
-                                    <Image
-                                        src="/alair.jpg"
-                                        alt="Alair"
-                                        width={487}
-                                        height={487}
-                                        quality={100}
-                                        unoptimized
-                                        className="select-none pointer-events-none float-left mr-5 mb-3 sm:mr-6 sm:mb-4 w-32 h-32 sm:w-40 sm:h-40 object-cover corner-bevel"
-                                        style={{ imageRendering: "crisp-edges" }}
-                                    />
+                                <div className="w-full">
+                                    <div className="relative float-left mr-5 mb-3 sm:mr-6 sm:mb-4 py-2.5">
+                                        <div className="relative w-32 h-32 sm:w-40 sm:h-40">
+                                            <Image
+                                                src="/alair.jpg"
+                                                alt="Alair"
+                                                width={487}
+                                                height={487}
+                                                quality={90}
+                                                sizes="160px"
+                                                className="select-none pointer-events-none w-full h-full object-cover corner-bevel"
+                                            />
+                                            <Tape position="top" size="2.75rem" />
+                                            <Tape position="bottom" size="2.75rem" />
+                                        </div>
+                                    </div>
 
                                     <div className="space-y-4 text-xl sm:text-base leading-relaxed text-[rgba(0,0,0,0.85)] mix-blend-multiply">
                                         <p>
