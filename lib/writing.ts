@@ -8,6 +8,8 @@ export type WritingPost = {
     title: string;
     date: string;
     section?: string;
+    /** When set, the Writing list links here instead of `/writing/${slug}`. */
+    href?: string;
 };
 
 export async function getWritingPosts(): Promise<WritingPost[]> {

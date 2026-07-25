@@ -127,7 +127,7 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                                 if (sectionPosts.length === 0) return null;
                                 const [firstPost, ...restPosts] = sectionPosts;
                                 const renderPost = (post: (typeof writingPosts)[0], showLabel: boolean) => {
-                                    const href = `/writing/${post.slug}`;
+                                    const href = post.href ?? `/writing/${post.slug}`;
                                     const dateStr = post.date ? formatDateDDMMYYYY(post.date) : null;
                                     return (
                                         <div key={post.slug} className="w-full">
@@ -186,15 +186,6 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                                     </div>
                                 );
                             })}
-                        </div>
-
-                        <div className="mt-auto w-full text-left self-start flex flex-col gap-1.5">
-                            <h3 className="text-base sm:text-sm uppercase tracking-widest text-[rgba(0,0,0,0.75)] mix-blend-multiply">
-                                AI-Use Statement
-                            </h3>
-                            <p className="text-xs sm:text-[0.7rem] leading-relaxed text-[rgba(0,0,0,0.8)] mix-blend-multiply not-italic">
-                                In creating this personal website, I collaborated with Cursor and Claude to assist with web development and technical expertise. No written prose on the website or linked from the website was generated with AI.
-                            </p>
                         </div>
                     </div>
                 </Paper>

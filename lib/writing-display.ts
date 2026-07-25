@@ -9,12 +9,29 @@ export function formatDateDDMMYYYY(dateStr: string): string {
 }
 
 const SECTIONS: { id: string; label: string; order: number }[] = [
-    { id: "thought-pieces", label: "01 Thought Pieces", order: 1 },
-    { id: "undergraduate-research", label: "02 Undergraduate Research", order: 2 },
+    { id: "projects", label: "01 Projects", order: 1 },
+    { id: "thought-pieces", label: "02 Thought Pieces", order: 2 },
+    { id: "undergraduate-research", label: "03 Undergraduate Research", order: 3 },
 ];
 
-/** PDF pieces (not MDX) - served from public/writing/ */
-export const PDF_PIECES: { slug: string; title: string; date: string; section: string }[] = [
+/**
+ * Writing-list entries that live outside content/writing (PDFs, rabbit-hole
+ * projects). Optional `href` overrides the default `/writing/${slug}` link.
+ */
+export const LINKED_PIECES: {
+    slug: string;
+    title: string;
+    date: string;
+    section: string;
+    href?: string;
+}[] = [
+    {
+        slug: "llm-axelrod-tournament",
+        title: "Is Strategy a System Prompt? An LLM Axelrod Tournament",
+        date: "7/20/2026",
+        section: "projects",
+        href: "/rabbit-holes/llm-axelrod-tournament",
+    },
     {
         slug: "ECN_378.pdf",
         title: "Impact of the Food Modernization Act on Market Structure: Evidence from the Corn Industry",
