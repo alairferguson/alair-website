@@ -81,16 +81,9 @@ export function renderInline(text: string, keyPrefix = "n"): ReactNode[] {
                                   colon === -1 ? raw : raw.slice(0, colon);
                               const action =
                                   colon === -1 ? null : raw.slice(colon + 1);
-                              if (id) {
-                                  const scrollTarget =
-                                      document.getElementById(id);
-                                  if (scrollTarget) {
-                                      scrollTarget.scrollIntoView({
-                                          behavior: "smooth",
-                                          block: "start",
-                                      });
-                                  }
-                              }
+                              // Fire the figure action before scrolling so
+                              // toggles (e.g. Full matrix) apply even if the
+                              // scroll triggers layout work.
                               if (action) {
                                   window.dispatchEvent(
                                       new CustomEvent("ipd:figure-action", {
@@ -100,6 +93,16 @@ export function renderInline(text: string, keyPrefix = "n"): ReactNode[] {
                                           },
                                       }),
                                   );
+                              }
+                              if (id) {
+                                  const scrollTarget =
+                                      document.getElementById(id);
+                                  if (scrollTarget) {
+                                      scrollTarget.scrollIntoView({
+                                          behavior: "smooth",
+                                          block: "start",
+                                      });
+                                  }
                               }
                           }
                         : undefined

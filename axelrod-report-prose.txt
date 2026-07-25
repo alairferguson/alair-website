@@ -42,7 +42,7 @@ HOW TO EDIT THIS FILE
      [link text](https://example.com)
      [link text](#anchor-on-this-page)
 
-6. {{LINK1}}–{{LINK4}} are placeholders for live JavaScript calls that build
+6. {{LINK1}}–{{LINK5}} are placeholders for live JavaScript calls that build
    interactive hover links. Rewrite the link TEXT freely; do not touch the
    {{LINKn}} token itself. Legend is at the bottom of this file.
 
@@ -61,7 +61,7 @@ HERO  (lives in report.json, not content.ts)
 ================================================================================
 
 [[HERO.TITLE]]
-Strategy is a System Prompt: An LLM Axelrod Tournament
+Is Strategy a System Prompt? An LLM Axelrod Tournament
 
 [[HERO.SUBTITLE]]
 What 52,650 Rounds of Prisoner's Dilemma Reveal About an LLM's (Mutable) Disposition
@@ -198,14 +198,17 @@ Ranked by mean score per turn across repetitions. Nearest classic is Euclidean d
 [[HOW.LEADERBOARD.P3]]
 Among the seven classic strategies, the ranking doesn't reproduce Axelrod's original result. Grudger takes first place overall, while Tit For Tat (the strategy that won both of Axelrod's actual 1980 round-robin tournaments) places seventh, behind five of the twenty LLM × persona players. GTFT and Win-Stay Lose-Shift rank further down, Cooperator lands lower still, and Defector and Random anchor the bottom of the entire field, Defector included, despite Defector winning more individual matches (95 of 130) than any other player in the tournament. This reversal reflects a more forgiving field than Axelrod's original: none of this tournament's players ever probes with an isolated defection and then returns to cooperation, so Grudger's lack of forgiveness is never punished.
 
-[[HOW.LEADERBOARD.P4]]
-Of the LLM × personas, Grok × Cooperative won the highest mean score per turn. By model, no clear pattern arises. However, as can be seen in the Score by Persona figure below, Neutral personas win, followed by Cooperative personas, and the Selfish and Payoff-only strategies rank worst. The behavior of players on the axes of model and persona is further explored in the [Strategy Space](#strategy-space).
+--------------------------------------------------------------------------------
+
+[[HOW.SCORE-BY-PERSONA.HEADING]]
+Score by Persona
+
+[[HOW.SCORE-BY-PERSONA.P1]]
+Of the LLM × personas, Grok × Cooperative won the highest mean score per turn. By model, no clear pattern arises. However, as can be seen in the [Score by Persona](#score-by-persona) figure below, Neutral personas win, followed by Cooperative personas, and the Selfish and Payoff-only strategies rank worst. The behavior of players on the axes of model and persona is further explored in the [Strategy Space](#strategy-space).
 
 [[FIGURE]] Score by Persona bar chart
-[[CAPTION.SCORE-BY-PERSONA-LABEL]]
-Score by Persona
 [[CAPTION.SCORE-BY-PERSONA-FOOTNOTE]]
-Bar height is each persona's mean score per turn, averaged across its five models; circles are the individual models, colored by model (see the key above).
+Bar height is each persona's mean score per turn, averaged across its five models; circles are the individual models, colored by model.
 
 --------------------------------------------------------------------------------
 
@@ -229,7 +232,7 @@ The first noteworthy takeaway is that, similar to the rankings, the LLM × perso
 ## [Punishment](#:punishment)
 
 [[HOW.STRATEGY-SPACE.P5]]
-We would expect Cooperative personas to forgive at a high rate. GPT, Gemini, and Claude Cooperative personas forgive more than any Neutral, Payoff-Only, or Selfish personas do. However, Grok and Qwen Cooperative personas have forgiveness scores similar to the Neutral, Payoff-Only, and Selfish personas. **When specifically prompted to play cooperatively, Grok and Qwen surprisingly do not change anything about their play.**
+We would expect Cooperative personas to forgive at a high rate. GPT, Gemini, and Claude Cooperative personas forgive more than any Neutral, Payoff-Only, or Selfish personas do. However, [Grok and Qwen Cooperative personas]({{LINK5}}) have forgiveness scores similar to the Neutral, Payoff-Only, and Selfish personas. **When specifically prompted to play cooperatively, Grok and Qwen surprisingly do not change anything about their play.**
 
 [[HOW.STRATEGY-SPACE.P6]]
 Despite Grok and Qwen’s Cooperative personas playing almost identically to their other personas, considering the Leaderboard's rankings and the two Strategy Space plots together, the aggregate pattern becomes clear: **personas (prompting) affect behavior far more than model differences do.** Exploration of this finding continues with the [Persona Slope figure](#persona-slope) below.
@@ -343,6 +346,9 @@ The game theory nerd in me was ecstatic to first read that Grudger had beat Tit 
 [[APPENDIX.TITLE]]
 Appendix
 
+[[APPENDIX.PROMPTS.HEADING]]
+The Prompts
+
 [[APPENDIX.PROMPTS.P1]]
 The persona prompts can be seen below.
 
@@ -375,6 +381,9 @@ Three constraints keep the comparison between LLM players and classic strategies
 
 --------------------------------------------------------------------------------
 
+[[APPENDIX.NEAREST-CLASSIC-STRATEGY-DETAIL.HEADING]]
+Nearest Classical Strategy Details
+
 [[APPENDIX.NEAREST-CLASSIC-STRATEGY-DETAIL.P1]]
 When taking the Euclidean distance to determine the nearest classic strategy of an LLM × persona player, a short distance means an LLM's aggregate behavior (how often it cooperates, how it opens, how sharply it punishes and how readily it forgives) statistically resembles a classic strategy's. It does not mean the LLM is internally running that strategy's exact rule; see [What This Doesn't Show](#limitations) for more on this distinction.
 
@@ -392,7 +401,7 @@ BROWSER TAB / SEARCH RESULT  (lives in page.tsx)
 ================================================================================
 
 [[META.TITLE]]
-Strategy is a System Prompt: An LLM Axelrod Tournament | Alair
+Is Strategy a System Prompt? An LLM Axelrod Tournament | Alair
 
 [[META.DESCRIPTION]]
 What 52,650 rounds of Prisoner's Dilemma reveal about an LLM's (mutable) disposition.
@@ -406,6 +415,8 @@ What 52,650 rounds of Prisoner's Dilemma reveal about an LLM's (mutable) disposi
 {{LINK2}}  Hovering shows the heatmap cell for GPT × Neutral vs Random (0.5).
 {{LINK3}}  Hovering highlights the whole Qwen × Payoff-only row.
 {{LINK4}}  Hovering highlights the whole GPT × Payoff-only row.
+{{LINK5}}  Hovering keeps only Grok × Cooperative and Qwen × Cooperative lit,
+           and only while Strategy Space is already on Punishment.
 
 
 ================================================================================
