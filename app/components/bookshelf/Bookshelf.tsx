@@ -258,12 +258,16 @@ function UprightCluster({ spines }: { spines: Spine[] }) {
     );
 }
 
+/** Pile thickness: summed spine widths (each book's contribution when lying flat) plus gaps. */
+function stackThicknessOf(spines: Spine[]): number {
+    return spines.reduce((acc, s) => acc + s.widthPx, 0) + Math.max(0, spines.length - 1);
+}
+
 function StackCluster({ spines, align }: { spines: Spine[]; align: StackAlign }) {
     // Already trimmed at pack time; keep tallest → shortest, bottom → top.
     const byHeight = [...spines].sort((a, b) => b.heightPx - a.heightPx);
     const stackLength = Math.max(...byHeight.map((s) => s.heightPx), SPINE_HEIGHT_PX);
-    const stackThickness =
-        byHeight.reduce((acc, s) => acc + s.widthPx, 0) + Math.max(0, byHeight.length - 1);
+    const stackThickness = stackThicknessOf(byHeight);
     const itemsClass =
         align === "start" ? "items-start" : align === "end" ? "items-end" : "items-center";
 
@@ -295,7 +299,7 @@ function ShelfRow({ clusters }: { clusters: Cluster[] }) {
     const rowHeight = Math.max(
         SPINE_HEIGHT_PX,
         ...clusters.flatMap((c) =>
-            c.kind === "upright" ? c.spines.map((s) => s.heightPx) : [SPINE_HEIGHT_PX]
+            c.kind === "upright" ? c.spines.map((s) => s.heightPx) : [stackThicknessOf(c.spines)]
         )
     );
 
