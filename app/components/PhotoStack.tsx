@@ -9,6 +9,8 @@ type PhotoStackProps = {
     title: string;
     /** Ordered back-to-front; the last image is the top, clicked-into cover. */
     images?: string[];
+    /** Desktop scale relative to the default stack size. */
+    scale?: number;
     className?: string;
     style?: CSSProperties;
 };
@@ -40,18 +42,32 @@ function tiltForSlug(slug: string) {
     return (hash / 1000) * 5 - 2.5;
 }
 
-export default function PhotoStack({ slug, title, images, className, style }: PhotoStackProps) {
+export default function PhotoStack({ slug, title, images, scale, className, style }: PhotoStackProps) {
     const hasPhotos = images && images.length > 0;
     const layers = hasPhotos
         ? PHOTO_LAYERS.slice(-images.length).map((layer) => ({ ...layer, opacity: 1 }))
         : BLANK_LAYERS;
     const tilt = tiltForSlug(slug);
+    const centered = style?.left === "50%";
 
     return (
         <Link
             href={`/rabbit-holes/${slug}`}
             className={`group block ${className ?? ""}`}
-            style={style}
+            style={{
+                ...style,
+                ...(scale != null || centered
+                    ? {
+                          transform: [
+                              centered ? "translateX(-50%)" : null,
+                              scale != null ? `scale(${scale})` : null,
+                          ]
+                              .filter(Boolean)
+                              .join(" "),
+                          transformOrigin: "top center",
+                      }
+                    : null),
+            }}
             aria-label={`Open ${title} rabbit hole`}
         >
             <div
@@ -91,7 +107,7 @@ export default function PhotoStack({ slug, title, images, className, style }: Ph
                                         src={images[i]}
                                         alt={title}
                                         fill
-                                        sizes="88px"
+                                        sizes={scale != null && scale > 1 ? "128px" : "88px"}
                                         className="object-cover"
                                     />
                                 )}

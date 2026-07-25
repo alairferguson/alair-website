@@ -49,6 +49,7 @@ export default function RabbitHolesContent() {
                                 slug={hole.slug}
                                 title={hole.title}
                                 images={hole.images}
+                                scale={hole.scale}
                                 className="absolute"
                                 style={hole.position}
                             />

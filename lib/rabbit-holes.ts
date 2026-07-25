@@ -9,6 +9,8 @@ export type RabbitHole = {
         right?: string;
         bottom?: string;
     };
+    /** Desktop scale relative to the default PhotoStack size. */
+    scale?: number;
     /** Ordered back-to-front; the last image is the top, clicked-into cover. */
     images?: string[];
 };
@@ -22,7 +24,7 @@ export const RABBIT_HOLES: RabbitHole[] = [
     {
         slug: "health",
         title: "75 Hard Tracker",
-        position: { top: "28%", left: "10%" },
+        position: { bottom: "10%", right: "8%" },
         images: [
             "/rabbit-holes/health-gradient-1.svg",
             "/rabbit-holes/health-gradient-2.svg",
@@ -32,11 +34,13 @@ export const RABBIT_HOLES: RabbitHole[] = [
     {
         slug: "llm-axelrod-tournament",
         title: "An LLM Axelrod Tournament",
-        position: { top: "56%", right: "10%" },
+        position: { top: "18%", left: "50%" },
+        scale: 1.35,
         images: [
             "/rabbit-holes/llm-axelrod-tournament/cover-gradient-1.svg",
             "/rabbit-holes/llm-axelrod-tournament/cover-gradient-2.svg",
             "/rabbit-holes/llm-axelrod-tournament/cover.svg",
+            "/rabbit-holes/llm-axelrod-tournament/cover-payoff.svg",
         ],
     },
     {
