@@ -93,7 +93,7 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
 
                                     <div className="space-y-4 text-xl sm:text-base leading-relaxed text-[rgba(0,0,0,0.85)] mix-blend-multiply">
                                         <p>
-                                            I&apos;m an economics, mathematics, and French graduate from Grinnell College currently working in labor and employment consulting. In the past, I focused on growth and retention during my time at Chipper Cash, Inc. where I was a Product Analytics intern, and honed my quantitative analytical skills through academic economics research at Grinnell.
+                                            I&apos;m an economics, mathematics, and French graduate from Grinnell College currently working in labor and employment consulting. In the past, I focused on growth and retention during my time at Chipper Cash, Inc. where I was a product analytics intern, and honed my quantitative analytical skills through academic economics research at Grinnell.
                                         </p>
                                         <p>
                                             My professional strengths blend technical skills and people-focused work; I like working on complex problems that involve both systems and humans. I&apos;m drawn to fast-paced, mission-driven, humanity-first environments. My paramount passion is sustainability (favorite eco-literature is <em>The Overstory</em> by Richard Powers, <em>The Ministry for the Future</em> by Kim Stanley Robinson, and <em>Braiding Sweetgrass</em> by Robin Wall Kimmerer). Outside of work, I spend my time distance running, backpacking, rock climbing, and creating projects that solve problems and look beautiful.
