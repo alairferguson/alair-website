@@ -39,6 +39,22 @@ function heatmapRowHoverHref(rowId: string): string {
     return `#hover:cooperation-matrix:row:${encodeURIComponent(rowId)}`;
 }
 
+/**
+ * Builds a `#hover:` link that, while hovered, switches Strategy Space to the
+ * given projection and keeps only the listed player markers lit — as if the
+ * reader were pointing at those points.
+ */
+function strategySpaceHoverHref(
+    projection: "behavior" | "punishment",
+    playerIds: string[],
+): string {
+    const encoded = playerIds.map(encodeURIComponent).join("::");
+    return `#hover:strategy-space:highlight:${projection}:${encoded}`;
+}
+
+const GROK_COOPERATIVE = "LLM:grok-4-1-fast-non-reasoning[cooperative]";
+const QWEN_COOPERATIVE = "LLM:qwen2.5:7b[cooperative]";
+
 export type SlottedCopy = {
     title: string;
     dek?: string;
@@ -139,7 +155,7 @@ export const HOW_THEY_PLAYED: SlottedCopy = {
                 "## [Behavior](#:behavior)",
                 "The first noteworthy takeaway is that, similar to the rankings, the LLM × persona points are not scattered: **they cluster together by persona**. The Neutral personas group near Grudger, the Selfish/Payoff-only group near Defector, and Cooperative groups near Tit For Tat and GTFT.",
                 "## [Punishment](#:punishment)",
-                "We would expect Cooperative personas to forgive at a high rate. GPT, Gemini, and Claude Cooperative personas forgive more than any Neutral, Payoff-Only, or Selfish personas do. However, Grok and Qwen Cooperative personas have forgiveness scores similar to the Neutral, Payoff-Only, and Selfish personas. **When specifically prompted to play cooperatively, Grok and Qwen surprisingly do not change anything about their play.**",
+                `We would expect Cooperative personas to forgive at a high rate. GPT, Gemini, and Claude Cooperative personas forgive more than any Neutral, Payoff-Only, or Selfish personas do. However, [Grok and Qwen Cooperative personas](${strategySpaceHoverHref("punishment", [GROK_COOPERATIVE, QWEN_COOPERATIVE])}) have forgiveness scores similar to the Neutral, Payoff-Only, and Selfish personas. **When specifically prompted to play cooperatively, Grok and Qwen surprisingly do not change anything about their play.**`,
                 "Despite Grok and Qwen’s Cooperative personas playing almost identically to their other personas, considering the Leaderboard's rankings and the two Strategy Space plots together, the aggregate pattern becomes clear: **personas (prompting) affect behavior far more than model differences do.** Exploration of this finding continues with the [Persona Slope figure](#persona-slope) below.",
             ],
             slotAfterParagraph: 0,

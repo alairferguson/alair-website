@@ -42,7 +42,7 @@ HOW TO EDIT THIS FILE
      [link text](https://example.com)
      [link text](#anchor-on-this-page)
 
-6. {{LINK1}}–{{LINK4}} are placeholders for live JavaScript calls that build
+6. {{LINK1}}–{{LINK5}} are placeholders for live JavaScript calls that build
    interactive hover links. Rewrite the link TEXT freely; do not touch the
    {{LINKn}} token itself. Legend is at the bottom of this file.
 
@@ -232,7 +232,7 @@ The first noteworthy takeaway is that, similar to the rankings, the LLM × perso
 ## [Punishment](#:punishment)
 
 [[HOW.STRATEGY-SPACE.P5]]
-We would expect Cooperative personas to forgive at a high rate. GPT, Gemini, and Claude Cooperative personas forgive more than any Neutral, Payoff-Only, or Selfish personas do. However, Grok and Qwen Cooperative personas have forgiveness scores similar to the Neutral, Payoff-Only, and Selfish personas. **When specifically prompted to play cooperatively, Grok and Qwen surprisingly do not change anything about their play.**
+We would expect Cooperative personas to forgive at a high rate. GPT, Gemini, and Claude Cooperative personas forgive more than any Neutral, Payoff-Only, or Selfish personas do. However, [Grok and Qwen Cooperative personas]({{LINK5}}) have forgiveness scores similar to the Neutral, Payoff-Only, and Selfish personas. **When specifically prompted to play cooperatively, Grok and Qwen surprisingly do not change anything about their play.**
 
 [[HOW.STRATEGY-SPACE.P6]]
 Despite Grok and Qwen’s Cooperative personas playing almost identically to their other personas, considering the Leaderboard's rankings and the two Strategy Space plots together, the aggregate pattern becomes clear: **personas (prompting) affect behavior far more than model differences do.** Exploration of this finding continues with the [Persona Slope figure](#persona-slope) below.
@@ -415,6 +415,8 @@ What 52,650 rounds of Prisoner's Dilemma reveal about an LLM's (mutable) disposi
 {{LINK2}}  Hovering shows the heatmap cell for GPT × Neutral vs Random (0.5).
 {{LINK3}}  Hovering highlights the whole Qwen × Payoff-only row.
 {{LINK4}}  Hovering highlights the whole GPT × Payoff-only row.
+{{LINK5}}  Hovering switches Strategy Space to Punishment and keeps only
+           Grok × Cooperative and Qwen × Cooperative lit.
 
 
 ================================================================================
