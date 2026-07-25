@@ -6,16 +6,17 @@ import {
     APPENDIX,
     CONCLUSION,
     CREDITS,
-    DISCUSSION,
+    HOW_THEY_PLAYED,
     INTRODUCTION,
     LIMITATIONS,
     METHODOLOGY,
     PERSONA_PROMPTS,
-    RESULTS,
     USER_PROMPT_EXAMPLES,
 } from "./content";
-import AppendixSection from "./AppendixSection";
-import CooperationHeatmap from "./CooperationHeatmap";
+import CooperationHeatmap, {
+    type HeatmapSortMode,
+    type HeatmapViewMode,
+} from "./CooperationHeatmap";
 import FingerprintScatter, { PROJECTIONS } from "./FingerprintScatter";
 import LeaderboardTable from "./LeaderboardTable";
 import PayoffMatrix from "./PayoffMatrix";
@@ -23,6 +24,7 @@ import PersonaScoreBar from "./PersonaScoreBar";
 import PersonaSlope from "./PersonaSlope";
 import PlayersGrid from "./PlayersGrid";
 import ProseSection from "./ProseSection";
+import SectionNav, { type NavItem } from "./SectionNav";
 import SlottedSection from "./SlottedSection";
 import type { MetricId, Report } from "./types";
 import "./report.css";
@@ -36,6 +38,19 @@ type FigureActionDetail = {
     action: string;
 };
 
+/**
+ * Built from the same copy the page renders, and in the same order, so the
+ * rail's numbering stays in step with the CSS section counter.
+ */
+const NAV_ITEMS: NavItem[] = [
+    { id: "introduction", label: INTRODUCTION.title },
+    { id: "methodology", label: METHODOLOGY.title },
+    { id: "how-they-played", label: HOW_THEY_PLAYED.title },
+    { id: "limitations", label: LIMITATIONS.title },
+    { id: "conclusion", label: CONCLUSION.title },
+    { id: "appendix", label: APPENDIX.title },
+];
+
 export default function ReportClient({ report }: Props) {
     const [xMetric, setXMetric] = useState<MetricId>(
         report.meta.defaultAxes.x,
@@ -46,23 +61,44 @@ export default function ReportClient({ report }: Props) {
     const [customAxesOpen, setCustomAxesOpen] = useState(false);
     const [filter, setFilter] = useState<"all" | "llm" | "classic">("all");
     const [highlightedId, setHighlightedId] = useState<string | null>(null);
+    const [heatmapView, setHeatmapView] =
+        useState<HeatmapViewMode>("llm-classic");
+    const [heatmapSort, setHeatmapSort] =
+        useState<HeatmapSortMode>("model");
 
     useEffect(() => {
         function onFigureAction(event: Event) {
             const { target, action } = (event as CustomEvent<FigureActionDetail>)
                 .detail;
-            if (target !== "strategy-space") return;
 
-            if (action === "custom") {
-                setCustomAxesOpen(true);
+            if (target === "strategy-space") {
+                if (action === "custom") {
+                    setCustomAxesOpen(true);
+                    return;
+                }
+
+                const projection = PROJECTIONS.find((p) => p.id === action);
+                if (!projection) return;
+                setXMetric(projection.x);
+                setYMetric(projection.y);
+                setCustomAxesOpen(false);
                 return;
             }
 
-            const projection = PROJECTIONS.find((p) => p.id === action);
-            if (!projection) return;
-            setXMetric(projection.x);
-            setYMetric(projection.y);
-            setCustomAxesOpen(false);
+            if (target === "cooperation-matrix") {
+                if (action === "full") {
+                    setHeatmapView("full");
+                    return;
+                }
+                if (action === "llms-classics" || action === "llm-classic") {
+                    setHeatmapView("llm-classic");
+                    return;
+                }
+                if (action === "persona" || action === "model") {
+                    setHeatmapSort(action);
+                    setHeatmapView("llm-classic");
+                }
+            }
         }
 
         window.addEventListener("ipd:figure-action", onFigureAction);
@@ -78,20 +114,31 @@ export default function ReportClient({ report }: Props) {
 
     return (
         <div className="ipd-report">
+            <SectionNav items={NAV_ITEMS} />
             <div className="ipd-shell">
                 <div className="ipd-topbar">
                     <Link href="/#rabbit-holes" className="ipd-back ipd-mono">
                         ← Rabbit holes
                     </Link>
-                    <span className="ipd-kicker ipd-mono">Research report</span>
                 </div>
 
                 <header className="ipd-hero">
                     <h1>{report.title}</h1>
                     <p>{report.subtitle}</p>
-                    <Link href="/#about" className="ipd-byline">
-                        Alair Ferguson Hautzinger
-                    </Link>
+                    <div className="ipd-hero-links">
+                        <Link href="/#about" className="ipd-byline">
+                            Alair Ferguson Hautzinger
+                        </Link>
+                        <span aria-hidden="true">·</span>
+                        <a
+                            href="https://github.com/alairferguson/axelrod-tourn"
+                            className="ipd-byline"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            GitHub Repo
+                        </a>
+                    </div>
                 </header>
 
                 <ProseSection id="introduction" {...INTRODUCTION} />
@@ -101,22 +148,7 @@ export default function ReportClient({ report }: Props) {
                     {...METHODOLOGY}
                     slots={{
                         "the-tournament": <PayoffMatrix />,
-                        "llm-persona-players": [
-                            <div className="ipd-prompt-grid" key="prompt-cards">
-                                {PERSONA_PROMPTS.map((persona) => (
-                                    <article
-                                        key={persona.id}
-                                        className="ipd-prompt-card"
-                                    >
-                                        <h3>{persona.label}</h3>
-                                        <pre className="ipd-mono">
-                                            {persona.systemPrompt}
-                                        </pre>
-                                    </article>
-                                ))}
-                            </div>,
-                            <PlayersGrid key="players-grid" />,
-                        ],
+                        "llm-persona-players": <PlayersGrid />,
                         "llms-nearest-classic-strategy": (
                             <div className="ipd-dims-wrap">
                                 <p className="ipd-kicker ipd-mono ipd-results-label">
@@ -139,8 +171,8 @@ export default function ReportClient({ report }: Props) {
                 />
 
                 <SlottedSection
-                    id="results"
-                    {...RESULTS}
+                    id="how-they-played"
+                    {...HOW_THEY_PLAYED}
                     slots={{
                         "strategy-space": (
                             <>
@@ -169,9 +201,13 @@ export default function ReportClient({ report }: Props) {
                                 report={report}
                                 highlightedId={highlightedId}
                                 onHighlight={setHighlightedId}
+                                view={heatmapView}
+                                onViewChange={setHeatmapView}
+                                sortMode={heatmapSort}
+                                onSortModeChange={setHeatmapSort}
                             />
                         ),
-                        leaderboard: [
+                        leaderboard: (
                             <>
                                 <LeaderboardTable
                                     report={report}
@@ -184,11 +220,10 @@ export default function ReportClient({ report }: Props) {
                                     distance across the five fingerprint
                                     dimensions.
                                 </p>
-                            </>,
+                            </>
+                        ),
+                        "score-by-persona": (
                             <div className="ipd-score-wrap">
-                                <p className="ipd-kicker ipd-mono ipd-results-label ipd-results-label--spaced">
-                                    Score by Persona
-                                </p>
                                 <PersonaScoreBar
                                     report={report}
                                     highlightedId={highlightedId}
@@ -198,17 +233,10 @@ export default function ReportClient({ report }: Props) {
                                     Bar height is each persona's mean score
                                     per turn, averaged across its five models;
                                     circles are the individual models,
-                                    colored by model (see the key above).
+                                    colored by model.
                                 </p>
-                            </div>,
-                        ],
-                    }}
-                />
-
-                <SlottedSection
-                    id="discussion"
-                    {...DISCUSSION}
-                    slots={{
+                            </div>
+                        ),
                         "the-persona-slope": (
                             <div id="persona-slope">
                                 <PersonaSlope
@@ -220,12 +248,53 @@ export default function ReportClient({ report }: Props) {
                         ),
                     }}
                 />
+
                 <ProseSection id="limitations" {...LIMITATIONS} />
                 <ProseSection id="conclusion" {...CONCLUSION} />
-                <AppendixSection
+                <SlottedSection
                     id="appendix"
                     {...APPENDIX}
-                    userPromptExamples={USER_PROMPT_EXAMPLES}
+                    slots={{
+                        "appendix-prompts": [
+                            <div
+                                className="ipd-prompt-grid"
+                                key="persona-prompt-cards"
+                            >
+                                {PERSONA_PROMPTS.map((persona) => (
+                                    <article
+                                        key={persona.id}
+                                        className="ipd-prompt-card"
+                                    >
+                                        <h3>{persona.label}</h3>
+                                        <pre className="ipd-mono">
+                                            {persona.systemPrompt}
+                                        </pre>
+                                    </article>
+                                ))}
+                            </div>,
+                            <div key="user-prompt-cards">
+                                <p
+                                    id="appendix-user-prompts"
+                                    className="ipd-kicker ipd-mono ipd-results-label"
+                                >
+                                    User prompt (per turn)
+                                </p>
+                                <div className="ipd-prompt-grid">
+                                    {USER_PROMPT_EXAMPLES.map((example) => (
+                                        <article
+                                            key={example.id}
+                                            className="ipd-prompt-card"
+                                        >
+                                            <h3>{example.label}</h3>
+                                            <pre className="ipd-mono">
+                                                {example.body}
+                                            </pre>
+                                        </article>
+                                    ))}
+                                </div>
+                            </div>,
+                        ],
+                    }}
                 />
 
                 <footer className="ipd-footer ipd-mono">

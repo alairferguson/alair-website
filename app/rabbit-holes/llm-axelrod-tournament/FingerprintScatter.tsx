@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import SeriesLegend from "./SeriesLegend";
 import type { MetricId, Player, Report, Series } from "./types";
 
@@ -599,6 +599,8 @@ export default function FingerprintScatter({
     onCustomOpenChange,
 }: Props) {
     const [hoverId, setHoverId] = useState<string | null>(null);
+    /** Prose-driven multi-point focus; when set, only these ids stay lit. */
+    const [proseFocusIds, setProseFocusIds] = useState<string[] | null>(null);
 
     const xMeta = report.metrics.find((m) => m.id === xMetric)!;
     const yMeta = report.metrics.find((m) => m.id === yMetric)!;
@@ -614,6 +616,54 @@ export default function FingerprintScatter({
         onYMetricChange(projection.y);
         onCustomOpenChange(false);
     }
+
+    /**
+     * Lets prose (`[Grok and Qwen…](#hover:strategy-space:highlight:punishment:…)`)
+     * keep only the named markers lit — but only while that projection is
+     * already open. Does not switch axes; Behavior / Custom stay untouched.
+     */
+    useEffect(() => {
+        function onFigureHover(event: Event) {
+            const { target, action } = (
+                event as CustomEvent<{ target: string; action: string }>
+            ).detail;
+            if (target !== "strategy-space") return;
+            if (!action.startsWith("highlight:")) return;
+            const rest = action.slice("highlight:".length);
+            const colon = rest.indexOf(":");
+            if (colon === -1) return;
+            const projectionId = rest.slice(0, colon) as ProjectionId;
+            if (!PROJECTIONS.some((p) => p.id === projectionId)) return;
+            // Require the named view to already be showing; otherwise ignore.
+            if (matchProjection(xMetric, yMetric) !== projectionId) return;
+            const ids = rest
+                .slice(colon + 1)
+                .split("::")
+                .map((id) => decodeURIComponent(id))
+                .filter(Boolean);
+            if (!ids.length) return;
+            setHoverId(null);
+            setProseFocusIds(ids);
+            onHighlight(null);
+        }
+        function onFigureHoverEnd(event: Event) {
+            const { target } = (event as CustomEvent<{ target: string }>)
+                .detail;
+            if (target !== "strategy-space") return;
+            setProseFocusIds(null);
+        }
+
+        window.addEventListener("ipd:figure-hover", onFigureHover);
+        window.addEventListener("ipd:figure-hover-end", onFigureHoverEnd);
+        return () => {
+            window.removeEventListener("ipd:figure-hover", onFigureHover);
+            window.removeEventListener(
+                "ipd:figure-hover-end",
+                onFigureHoverEnd,
+            );
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [xMetric, yMetric]);
 
     function setXAxis(id: MetricId) {
         onXMetricChange(id);
@@ -703,12 +753,27 @@ export default function FingerprintScatter({
     const active = activeId
         ? report.players.find((p) => p.id === activeId) ?? null
         : null;
+    const proseFocus =
+        proseFocusIds != null ? new Set(proseFocusIds) : null;
+
+    function isDimmed(playerId: string, player?: Player): boolean {
+        if (proseFocus) return !proseFocus.has(playerId);
+        if (activeId == null) return false;
+        if (playerId === activeId) return false;
+        const p = player ?? report.players.find((x) => x.id === playerId);
+        return !(
+            p?.kind === "llm" &&
+            active?.kind === "llm" &&
+            p.model === active.model
+        );
+    }
 
     const xTicks = ticks(xDomain, 5);
     const yTicks = ticks(yDomain, 5);
 
     function clearHover() {
         setHoverId(null);
+        setProseFocusIds(null);
         onHighlight(null);
     }
 
@@ -905,60 +970,39 @@ export default function FingerprintScatter({
                         {/* Leader lines for stacked / displaced labels */}
                         {points
                             .filter((point) => point.showLeader)
-                            .map((point) => {
-                                const dimmed =
-                                    activeId != null &&
-                                    point.player.id !== activeId &&
-                                    !(
-                                        point.player.kind === "llm" &&
-                                        active?.kind === "llm" &&
-                                        point.player.model === active.model
-                                    );
-                                return (
+                            .map((point) => (
                                     <path
                                         key={`leader-${point.player.id}`}
                                         className="ipd-leader"
-                                        data-dimmed={dimmed}
+                                        data-dimmed={isDimmed(
+                                            point.player.id,
+                                            point.player,
+                                        )}
                                         d={leaderPath(point)}
                                     />
-                                );
-                            })}
+                                ))}
 
                         {/* Labels under markers so markers stay clickable on top */}
-                        {points.map((point) => {
-                            const dimmed =
-                                activeId != null &&
-                                point.player.id !== activeId &&
-                                !(
-                                    point.player.kind === "llm" &&
-                                    active?.kind === "llm" &&
-                                    point.player.model === active.model
-                                );
-                            return (
+                        {points.map((point) => (
                                 <text
                                     key={`label-${point.player.id}`}
                                     className="ipd-point-label ipd-mono"
                                     data-muted={point.player.kind === "classic"}
-                                    data-dimmed={dimmed}
+                                    data-dimmed={isDimmed(
+                                        point.player.id,
+                                        point.player,
+                                    )}
                                     x={point.labelX}
                                     y={point.labelY}
                                     textAnchor={point.labelAnchor}
                                 >
                                     {plotLabel(point.player)}
                                 </text>
-                            );
-                        })}
+                            ))}
 
                         {points.map((point) => {
                             const { player, px, py } = point;
-                            const dimmed =
-                                activeId != null &&
-                                player.id !== activeId &&
-                                !(
-                                    player.kind === "llm" &&
-                                    active?.kind === "llm" &&
-                                    player.model === active.model
-                                );
+                            const dimmed = isDimmed(player.id, player);
                             return (
                                 <g
                                     key={player.id}

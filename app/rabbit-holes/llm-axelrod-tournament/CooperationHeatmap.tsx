@@ -4,8 +4,8 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import SeriesLegend from "./SeriesLegend";
 import type { Player, Report } from "./types";
 
-type ViewMode = "llm-classic" | "full";
-type SortMode = "model" | "persona";
+export type HeatmapViewMode = "llm-classic" | "full";
+export type HeatmapSortMode = "model" | "persona";
 
 /** Fixed persona grouping order when sorting "by persona". */
 const PERSONA_ORDER = ["cooperative", "neutral", "payoff_only", "selfish"];
@@ -14,6 +14,10 @@ type Props = {
     report: Report;
     highlightedId: string | null;
     onHighlight: (id: string | null) => void;
+    view: HeatmapViewMode;
+    onViewChange: (view: HeatmapViewMode) => void;
+    sortMode: HeatmapSortMode;
+    onSortModeChange: (sort: HeatmapSortMode) => void;
 };
 
 type HoverCell = {
@@ -93,9 +97,11 @@ export default function CooperationHeatmap({
     report,
     highlightedId,
     onHighlight,
+    view,
+    onViewChange,
+    sortMode,
+    onSortModeChange,
 }: Props) {
-    const [view, setView] = useState<ViewMode>("llm-classic");
-    const [sortMode, setSortMode] = useState<SortMode>("model");
     const [hover, setHover] = useState<HoverCell | null>(null);
     const [cellRect, setCellRect] = useState<CellRect | null>(null);
     const [pendingHoverKey, setPendingHoverKey] = useState<string | null>(
@@ -104,24 +110,6 @@ export default function CooperationHeatmap({
     const containerRef = useRef<HTMLDivElement>(null);
     const cardRef = useRef<HTMLDivElement>(null);
     const cellRefs = useRef(new Map<string, SVGRectElement>());
-
-    /** Lets prose links (`[by persona](#cooperation-matrix:persona)`) drive the sort/view toggles above, same mechanism as the Strategy Space projections. */
-    useEffect(() => {
-        function onFigureAction(event: Event) {
-            const { target, action } = (
-                event as CustomEvent<{ target: string; action: string }>
-            ).detail;
-            if (target !== "cooperation-matrix") return;
-            if (action === "persona" || action === "model") {
-                setSortMode(action);
-                setView("llm-classic");
-            }
-        }
-
-        window.addEventListener("ipd:figure-action", onFigureAction);
-        return () =>
-            window.removeEventListener("ipd:figure-action", onFigureAction);
-    }, []);
 
     /**
      * Lets prose text (`[3.3%...](#hover:cooperation-matrix:cell:<row>::<col>)`)
@@ -140,8 +128,8 @@ export default function CooperationHeatmap({
                 if (sep === -1) return;
                 const rowId = decodeURIComponent(rest.slice(0, sep));
                 const colId = decodeURIComponent(rest.slice(sep + 2));
-                setView("llm-classic");
-                setSortMode("model");
+                onViewChange("llm-classic");
+                onSortModeChange("model");
                 setPendingHoverKey(`${rowId}__${colId}`);
                 return;
             }
@@ -149,8 +137,8 @@ export default function CooperationHeatmap({
                 // No specific column, so the hover card (which needs both a
                 // row and column player) stays hidden — only the row dims in.
                 const rowId = decodeURIComponent(action.slice("row:".length));
-                setView("llm-classic");
-                setSortMode("persona");
+                onViewChange("llm-classic");
+                onSortModeChange("persona");
                 setHover({ rowId, colId: "", value: 0 });
                 onHighlight(rowId);
             }
@@ -333,14 +321,14 @@ export default function CooperationHeatmap({
                         <button
                             type="button"
                             data-active={view === "llm-classic"}
-                            onClick={() => setView("llm-classic")}
+                            onClick={() => onViewChange("llm-classic")}
                         >
                             LLMs × Classics
                         </button>
                         <button
                             type="button"
                             data-active={view === "full"}
-                            onClick={() => setView("full")}
+                            onClick={() => onViewChange("full")}
                         >
                             Full matrix
                         </button>
@@ -357,14 +345,14 @@ export default function CooperationHeatmap({
                             <button
                                 type="button"
                                 data-active={sortMode === "model"}
-                                onClick={() => setSortMode("model")}
+                                onClick={() => onSortModeChange("model")}
                             >
                                 By model
                             </button>
                             <button
                                 type="button"
                                 data-active={sortMode === "persona"}
-                                onClick={() => setSortMode("persona")}
+                                onClick={() => onSortModeChange("persona")}
                             >
                                 By persona
                             </button>
