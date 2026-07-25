@@ -64,13 +64,15 @@ export default function PlayersGrid() {
                                 </div>
                                 {PERSONAS.map((persona) => (
                                     <div
-                                        className="ipd-players-cell"
+                                        className="ipd-players-cell ipd-players-cell--hoverable"
                                         key={persona.short}
-                                        title={`${model.full} × ${persona.full}`}
                                     >
                                         <PersonIcon
                                             color={LLM_MODEL_COLORS[model.id]}
                                         />
+                                        <span className="ipd-players-tooltip ipd-mono">
+                                            {model.full} × {persona.full}
+                                        </span>
                                     </div>
                                 ))}
                             </div>
