@@ -16,6 +16,9 @@
     --ipd-openai: #218bff;
     --ipd-classic: #8b949e;
     --ipd-ease: cubic-bezier(0.4, 0, 0.2, 1);
+    /* Rail width, and the gutter it needs to stay clear of page-centred content. */
+    --ipd-rail-width: 10rem;
+    --ipd-rail-space: 12.5rem;
 
     min-height: 100dvh;
     background: var(--ipd-bg);
@@ -117,6 +120,18 @@
     font-size: 1rem;
     line-height: 1.55;
     text-wrap: balance;
+}
+
+/* Byline and repo link share one row directly under the dek. The code link is
+   deliberately top-of-page rather than in the appendix: a working engine is the
+   most concrete thing this page has to show. */
+.ipd-hero-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0 0.6rem;
+    color: var(--ipd-faint);
 }
 
 .ipd-hero .ipd-byline {
@@ -1304,6 +1319,87 @@ li.ipd-draft-note {
     .ipd-series,
     .ipd-gridline,
     .ipd-slope-line {
+        transition: none;
+    }
+}
+
+/* Section rail — a fixed table of contents parked in the left gutter. It is
+   hidden until the viewport is wide enough to hold it clear of the 64rem
+   shell, so narrow layouts read exactly as they did before. */
+.ipd-rail {
+    display: none;
+}
+
+.ipd-rail-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Mirrors the section headings: serif label, mono counter. */
+.ipd-rail-link {
+    display: flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    /* Pulled a pixel left so the active marker sits on the rail's own line
+       rather than beside it. */
+    margin-left: -1px;
+    border-left: 1px solid transparent;
+    padding: 0.4rem 0.4rem 0.4rem 0.75rem;
+    color: var(--ipd-faint);
+    font-family: var(--ipd-font-serif), ui-serif, Georgia, serif;
+    font-size: 0.8125rem;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    text-wrap: pretty;
+    transition:
+        color 140ms ease,
+        border-color 140ms ease;
+}
+
+.ipd-rail-num {
+    flex: none;
+    font-size: 0.65em;
+}
+
+.ipd-report .ipd-rail-link:hover {
+    color: var(--ipd-fg);
+}
+
+.ipd-report .ipd-rail-link.is-active {
+    color: var(--ipd-fg);
+    border-left-color: var(--ipd-fg);
+}
+
+@media (min-width: 90rem) {
+    .ipd-rail {
+        display: block;
+        position: fixed;
+        top: 50%;
+        left: 1rem;
+        transform: translateY(-50%);
+        /* Below the chart tooltips, which also sit at 5. */
+        z-index: 4;
+        width: var(--ipd-rail-width);
+        max-height: calc(100dvh - 3rem);
+        overflow-y: auto;
+        border-left: 1px solid var(--ipd-border);
+        scrollbar-width: none;
+    }
+
+    .ipd-rail::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* The wide leaderboard is centred on the page rather than the shell, so it
+       is the one element that can slide under the rail. Cap it accordingly. */
+    #leaderboard .ipd-table-wrap {
+        max-width: min(78rem, calc(100vw - 2 * var(--ipd-rail-space)));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ipd-rail-link {
         transition: none;
     }
 }

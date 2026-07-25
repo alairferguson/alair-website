@@ -29,7 +29,7 @@ const plexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
     title: "Strategy is a System Prompt: An LLM Axelrod Tournament | Alair",
     description:
-        "What 200 rounds of Prisoner's Dilemma reveal about an LLM's (mutable) disposition.",
+        "What 52,650 rounds of Prisoner's Dilemma reveal about an LLM's (mutable) disposition.",
 };
 
 async function loadReport(): Promise<Report> {
