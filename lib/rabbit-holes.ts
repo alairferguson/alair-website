@@ -24,16 +24,6 @@ const dailySongsImages = [
 
 export const RABBIT_HOLES: RabbitHole[] = [
     {
-        slug: "health",
-        title: "75 Hard Tracker",
-        position: { bottom: "10%", right: "8%" },
-        images: [
-            "/rabbit-holes/health-gradient-1.svg",
-            "/rabbit-holes/health-gradient-2.svg",
-            "/rabbit-holes/health-cover-v2.svg",
-        ],
-    },
-    {
         slug: "llm-axelrod-tournament",
         title: "An LLM Axelrod Tournament",
         position: { top: "18%", left: "50%" },
@@ -51,6 +41,16 @@ export const RABBIT_HOLES: RabbitHole[] = [
         title: "My Daily Songs",
         position: { top: "56%", left: "12%" },
         images: dailySongsImages,
+    },
+    {
+        slug: "health",
+        title: "75 Hard Tracker",
+        position: { bottom: "10%", right: "8%" },
+        images: [
+            "/rabbit-holes/health-gradient-1.svg",
+            "/rabbit-holes/health-gradient-2.svg",
+            "/rabbit-holes/health-cover-v2.svg",
+        ],
     },
 ];
 
