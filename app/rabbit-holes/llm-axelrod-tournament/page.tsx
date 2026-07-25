@@ -30,6 +30,18 @@ export const metadata: Metadata = {
     title: "Is Strategy a System Prompt? An LLM Axelrod Tournament | Alair",
     description:
         "What 52,650 rounds of Prisoner's Dilemma reveal about an LLM's (mutable) disposition.",
+    openGraph: {
+        title: "Is Strategy a System Prompt? An LLM Axelrod Tournament",
+        description:
+            "What 52,650 rounds of Prisoner's Dilemma reveal about an LLM's (mutable) disposition.",
+        type: "article",
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "Is Strategy a System Prompt? An LLM Axelrod Tournament",
+        description:
+            "What 52,650 rounds of Prisoner's Dilemma reveal about an LLM's (mutable) disposition.",
+    },
 };
 
 async function loadReport(): Promise<Report> {
