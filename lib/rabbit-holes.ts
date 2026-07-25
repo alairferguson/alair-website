@@ -11,6 +11,8 @@ export type RabbitHole = {
     };
     /** Desktop scale relative to the default PhotoStack size. */
     scale?: number;
+    /** Override the scrapbook lean in degrees. */
+    tilt?: number;
     /** Ordered back-to-front; the last image is the top, clicked-into cover. */
     images?: string[];
 };
@@ -36,6 +38,7 @@ export const RABBIT_HOLES: RabbitHole[] = [
         title: "An LLM Axelrod Tournament",
         position: { top: "18%", left: "50%" },
         scale: 1.35,
+        tilt: -3,
         images: [
             "/rabbit-holes/llm-axelrod-tournament/cover-gradient-1.svg",
             "/rabbit-holes/llm-axelrod-tournament/cover-gradient-2.svg",

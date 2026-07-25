@@ -26,6 +26,7 @@ export default function RabbitHolesContent() {
                             slug={hole.slug}
                             title={hole.title}
                             images={hole.images}
+                            tilt={hole.tilt}
                         />
                     ))}
                 </div>
@@ -50,6 +51,7 @@ export default function RabbitHolesContent() {
                                 title={hole.title}
                                 images={hole.images}
                                 scale={hole.scale}
+                                tilt={hole.tilt}
                                 className="absolute"
                                 style={hole.position}
                             />

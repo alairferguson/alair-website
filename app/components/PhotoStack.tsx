@@ -11,6 +11,8 @@ type PhotoStackProps = {
     images?: string[];
     /** Desktop scale relative to the default stack size. */
     scale?: number;
+    /** Override the scrapbook lean in degrees. */
+    tilt?: number;
     className?: string;
     style?: CSSProperties;
 };
@@ -42,12 +44,12 @@ function tiltForSlug(slug: string) {
     return (hash / 1000) * 5 - 2.5;
 }
 
-export default function PhotoStack({ slug, title, images, scale, className, style }: PhotoStackProps) {
+export default function PhotoStack({ slug, title, images, scale, tilt: tiltOverride, className, style }: PhotoStackProps) {
     const hasPhotos = images && images.length > 0;
     const layers = hasPhotos
         ? PHOTO_LAYERS.slice(-images.length).map((layer) => ({ ...layer, opacity: 1 }))
         : BLANK_LAYERS;
-    const tilt = tiltForSlug(slug);
+    const tilt = tiltOverride ?? tiltForSlug(slug);
     const centered = style?.left === "50%";
 
     return (
