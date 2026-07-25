@@ -415,8 +415,8 @@ What 52,650 rounds of Prisoner's Dilemma reveal about an LLM's (mutable) disposi
 {{LINK2}}  Hovering shows the heatmap cell for GPT × Neutral vs Random (0.5).
 {{LINK3}}  Hovering highlights the whole Qwen × Payoff-only row.
 {{LINK4}}  Hovering highlights the whole GPT × Payoff-only row.
-{{LINK5}}  Hovering switches Strategy Space to Punishment and keeps only
-           Grok × Cooperative and Qwen × Cooperative lit.
+{{LINK5}}  Hovering keeps only Grok × Cooperative and Qwen × Cooperative lit,
+           and only while Strategy Space is already on Punishment.
 
 
 ================================================================================

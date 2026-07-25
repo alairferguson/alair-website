@@ -13,7 +13,10 @@ import {
     PERSONA_PROMPTS,
     USER_PROMPT_EXAMPLES,
 } from "./content";
-import CooperationHeatmap from "./CooperationHeatmap";
+import CooperationHeatmap, {
+    type HeatmapSortMode,
+    type HeatmapViewMode,
+} from "./CooperationHeatmap";
 import FingerprintScatter, { PROJECTIONS } from "./FingerprintScatter";
 import LeaderboardTable from "./LeaderboardTable";
 import PayoffMatrix from "./PayoffMatrix";
@@ -58,23 +61,44 @@ export default function ReportClient({ report }: Props) {
     const [customAxesOpen, setCustomAxesOpen] = useState(false);
     const [filter, setFilter] = useState<"all" | "llm" | "classic">("all");
     const [highlightedId, setHighlightedId] = useState<string | null>(null);
+    const [heatmapView, setHeatmapView] =
+        useState<HeatmapViewMode>("llm-classic");
+    const [heatmapSort, setHeatmapSort] =
+        useState<HeatmapSortMode>("model");
 
     useEffect(() => {
         function onFigureAction(event: Event) {
             const { target, action } = (event as CustomEvent<FigureActionDetail>)
                 .detail;
-            if (target !== "strategy-space") return;
 
-            if (action === "custom") {
-                setCustomAxesOpen(true);
+            if (target === "strategy-space") {
+                if (action === "custom") {
+                    setCustomAxesOpen(true);
+                    return;
+                }
+
+                const projection = PROJECTIONS.find((p) => p.id === action);
+                if (!projection) return;
+                setXMetric(projection.x);
+                setYMetric(projection.y);
+                setCustomAxesOpen(false);
                 return;
             }
 
-            const projection = PROJECTIONS.find((p) => p.id === action);
-            if (!projection) return;
-            setXMetric(projection.x);
-            setYMetric(projection.y);
-            setCustomAxesOpen(false);
+            if (target === "cooperation-matrix") {
+                if (action === "full") {
+                    setHeatmapView("full");
+                    return;
+                }
+                if (action === "llms-classics" || action === "llm-classic") {
+                    setHeatmapView("llm-classic");
+                    return;
+                }
+                if (action === "persona" || action === "model") {
+                    setHeatmapSort(action);
+                    setHeatmapView("llm-classic");
+                }
+            }
         }
 
         window.addEventListener("ipd:figure-action", onFigureAction);
@@ -177,6 +201,10 @@ export default function ReportClient({ report }: Props) {
                                 report={report}
                                 highlightedId={highlightedId}
                                 onHighlight={setHighlightedId}
+                                view={heatmapView}
+                                onViewChange={setHeatmapView}
+                                sortMode={heatmapSort}
+                                onSortModeChange={setHeatmapSort}
                             />
                         ),
                         leaderboard: (

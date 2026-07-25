@@ -619,7 +619,8 @@ export default function FingerprintScatter({
 
     /**
      * Lets prose (`[Grok and Qwen…](#hover:strategy-space:highlight:punishment:…)`)
-     * switch the projection and keep only the named markers lit.
+     * keep only the named markers lit — but only while that projection is
+     * already open. Does not switch axes; Behavior / Custom stay untouched.
      */
     useEffect(() => {
         function onFigureHover(event: Event) {
@@ -632,15 +633,15 @@ export default function FingerprintScatter({
             const colon = rest.indexOf(":");
             if (colon === -1) return;
             const projectionId = rest.slice(0, colon) as ProjectionId;
-            const projection = PROJECTIONS.find((p) => p.id === projectionId);
-            if (!projection) return;
+            if (!PROJECTIONS.some((p) => p.id === projectionId)) return;
+            // Require the named view to already be showing; otherwise ignore.
+            if (matchProjection(xMetric, yMetric) !== projectionId) return;
             const ids = rest
                 .slice(colon + 1)
                 .split("::")
                 .map((id) => decodeURIComponent(id))
                 .filter(Boolean);
             if (!ids.length) return;
-            selectProjection(projection);
             setHoverId(null);
             setProseFocusIds(ids);
             onHighlight(null);
@@ -662,7 +663,7 @@ export default function FingerprintScatter({
             );
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [xMetric, yMetric]);
 
     function setXAxis(id: MetricId) {
         onXMetricChange(id);
