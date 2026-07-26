@@ -10,6 +10,7 @@ export default async function Home() {
         date: p.date,
         section: p.section,
         href: p.href,
+        credit: p.credit,
     }));
     const writingPosts = [...mdxPosts, ...linkedPosts].sort((a, b) =>
         b.date.localeCompare(a.date)

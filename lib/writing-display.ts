@@ -25,6 +25,7 @@ export const LINKED_PIECES: {
     date: string;
     section: string;
     href?: string;
+    credit?: string;
 }[] = [
     {
         slug: "llm-axelrod-tournament",
@@ -32,6 +33,14 @@ export const LINKED_PIECES: {
         date: "7/20/2026",
         section: "projects",
         href: "/rabbit-holes/llm-axelrod-tournament",
+    },
+    {
+        slug: "mcgavock-novak-fgc-weather-shocks",
+        credit: "Acknowledged research assistant — Tamara McGavock & Lindsey Novak:",
+        title: "Now, Later, or Never? Evidence of the Effect of Weather Shocks on Female Genital Cutting in Sub-Saharan Africa",
+        date: "10/1/2023",
+        section: "undergraduate-research",
+        href: "https://www.sciencedirect.com/science/article/abs/pii/S0304387823001244",
     },
     {
         slug: "ECN_378.pdf",

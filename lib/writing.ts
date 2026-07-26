@@ -10,6 +10,8 @@ export type WritingPost = {
     section?: string;
     /** When set, the Writing list links here instead of `/writing/${slug}`. */
     href?: string;
+    /** Optional italicized credit prefix shown before the title. */
+    credit?: string;
 };
 
 export async function getWritingPosts(): Promise<WritingPost[]> {

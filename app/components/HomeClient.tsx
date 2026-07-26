@@ -133,6 +133,13 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                                         ? { target: "_blank" as const, rel: "noopener noreferrer" }
                                         : {};
                                     const dateStr = post.date ? formatDateDDMMYYYY(post.date) : null;
+                                    const titleNode = post.credit ? (
+                                        <>
+                                            <em>{post.credit}</em> {post.title}
+                                        </>
+                                    ) : (
+                                        post.title
+                                    );
                                     return (
                                         <div key={post.slug} className="w-full">
                                             {/* Mobile: stacked entry */}
@@ -146,7 +153,7 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                                                         {section.label}
                                                     </span>
                                                 )}
-                                                <span className="min-w-0">{post.title}</span>
+                                                <span className="min-w-0">{titleNode}</span>
                                                 {dateStr && (
                                                     <span className="tabular-nums text-sm text-[rgba(0,0,0,0.55)]">
                                                         {dateStr}
@@ -171,7 +178,7 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                                                         {dateStr ?? "\u00A0"}
                                                     </span>
                                                     <span className="text-right min-w-0 group-hover:decoration-wavy group-hover:underline decoration-1">
-                                                        {post.title}
+                                                        {titleNode}
                                                     </span>
                                                 </Link>
                                             </div>
