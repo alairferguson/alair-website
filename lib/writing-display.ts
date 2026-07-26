@@ -12,6 +12,7 @@ const SECTIONS: { id: string; label: string; order: number }[] = [
     { id: "projects", label: "01 Projects", order: 1 },
     { id: "thought-pieces", label: "02 Thought Pieces", order: 2 },
     { id: "undergraduate-research", label: "03 Undergraduate Research", order: 3 },
+    { id: "profile", label: "04 Profile", order: 4 },
 ];
 
 /**
@@ -49,6 +50,13 @@ export const LINKED_PIECES: {
         title: "Brexit as a Bargaining Game: Static and Dynamic Models of UK–EU Trade Negotiations",
         date: "5/1/2024",
         section: "undergraduate-research",
+    },
+    {
+        slug: "scarlet-and-black-senior-profile",
+        title: "The Scarlet and Black: Alair Ferguson Hautzinger",
+        date: "5/4/2025",
+        section: "profile",
+        href: "https://thesandb.com/51567/senior-issue-2025/alair-ferguson-hautzinger/",
     },
 ];
 

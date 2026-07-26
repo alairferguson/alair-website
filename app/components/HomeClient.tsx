@@ -128,12 +128,17 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                                 const [firstPost, ...restPosts] = sectionPosts;
                                 const renderPost = (post: (typeof writingPosts)[0], showLabel: boolean) => {
                                     const href = post.href ?? `/writing/${post.slug}`;
+                                    const isExternal = href.startsWith("http");
+                                    const externalProps = isExternal
+                                        ? { target: "_blank" as const, rel: "noopener noreferrer" }
+                                        : {};
                                     const dateStr = post.date ? formatDateDDMMYYYY(post.date) : null;
                                     return (
                                         <div key={post.slug} className="w-full">
                                             {/* Mobile: stacked entry */}
                                             <Link
                                                 href={href}
+                                                {...externalProps}
                                                 className={`flex flex-col gap-0.5 py-2 lg:hidden ${linkHoverClass}`}
                                             >
                                                 {showLabel && (
@@ -159,6 +164,7 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                                                 </span>
                                                 <Link
                                                     href={href}
+                                                    {...externalProps}
                                                     className="contents hover:text-primary group hover:decoration-wavy hover:underline decoration-1"
                                                 >
                                                     <span className="text-center shrink-0 tabular-nums min-w-0 group-hover:decoration-wavy group-hover:underline decoration-1">
