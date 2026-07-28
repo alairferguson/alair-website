@@ -1362,8 +1362,21 @@ li.ipd-draft-note {
     font-size: 0.65em;
 }
 
+/* Animated underline lives on the label only so the mono counter stays clean. */
+.ipd-rail-link > span:last-child {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    background-size: 0% 1px;
+    transition: background-size 220ms var(--ipd-ease);
+}
+
 .ipd-report .ipd-rail-link:hover {
-    color: var(--ipd-fg);
+    color: var(--ipd-link);
+}
+
+.ipd-report .ipd-rail-link:hover > span:last-child {
+    background-size: 100% 1px;
 }
 
 .ipd-report .ipd-rail-link.is-active {
@@ -1401,5 +1414,15 @@ li.ipd-draft-note {
 @media (prefers-reduced-motion: reduce) {
     .ipd-rail-link {
         transition: none;
+    }
+
+    .ipd-rail-link > span:last-child {
+        transition: none;
+        background-image: none;
+    }
+
+    .ipd-report .ipd-rail-link:hover > span:last-child {
+        text-decoration: underline;
+        text-underline-offset: 0.18em;
     }
 }
