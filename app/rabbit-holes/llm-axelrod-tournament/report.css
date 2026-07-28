@@ -1,5 +1,13 @@
 /* Scoped report chrome — intentionally independent of the scrapbook site. */
 
+/* Overscroll paints html/body behind the report. Force the same canvas color
+   (and a light color-scheme) so dark-mode site chrome doesn't flash black. */
+html:has(.ipd-report),
+html:has(.ipd-report) body {
+    background: #f7f7f4;
+    color-scheme: light;
+}
+
 .ipd-report {
     --ipd-bg: #f7f7f4;
     --ipd-fg: #14120b;
