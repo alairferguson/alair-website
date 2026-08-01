@@ -148,7 +148,22 @@ export default function ReportClient({ report }: Props) {
                     {...METHODOLOGY}
                     slots={{
                         "the-tournament": <PayoffMatrix />,
-                        "llm-persona-players": <PlayersGrid />,
+                        "llm-persona-players": [
+                            <div className="ipd-prompt-grid" key="prompt-cards">
+                                {PERSONA_PROMPTS.map((persona) => (
+                                    <article
+                                        key={persona.id}
+                                        className="ipd-prompt-card"
+                                    >
+                                        <h3>{persona.label}</h3>
+                                        <pre className="ipd-mono">
+                                            {persona.systemPrompt}
+                                        </pre>
+                                    </article>
+                                ))}
+                            </div>,
+                            <PlayersGrid key="players-grid" />,
+                        ],
                         "llms-nearest-classic-strategy": (
                             <div className="ipd-dims-wrap">
                                 <p className="ipd-kicker ipd-mono ipd-results-label">
@@ -255,23 +270,7 @@ export default function ReportClient({ report }: Props) {
                     id="appendix"
                     {...APPENDIX}
                     slots={{
-                        "appendix-prompts": [
-                            <div
-                                className="ipd-prompt-grid"
-                                key="persona-prompt-cards"
-                            >
-                                {PERSONA_PROMPTS.map((persona) => (
-                                    <article
-                                        key={persona.id}
-                                        className="ipd-prompt-card"
-                                    >
-                                        <h3>{persona.label}</h3>
-                                        <pre className="ipd-mono">
-                                            {persona.systemPrompt}
-                                        </pre>
-                                    </article>
-                                ))}
-                            </div>,
+                        "appendix-prompts": (
                             <div key="user-prompt-cards">
                                 <p
                                     id="appendix-user-prompts"
@@ -292,8 +291,8 @@ export default function ReportClient({ report }: Props) {
                                         </article>
                                     ))}
                                 </div>
-                            </div>,
-                        ],
+                            </div>
+                        ),
                     }}
                 />
 

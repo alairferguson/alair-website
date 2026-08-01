@@ -66,8 +66,8 @@ export const INTRODUCTION: ProseCopy = {
     paragraphs: [
         "This project simulates an Axelrod tournament: a competition in which a set of strategies competes with one another in many rounds of Prisoner’s Dilemma games. The Prisoner's Dilemma is a game theory problem in which two players simultaneously choose to cooperate with or defect from one another with varied payoffs based on the both players' choices. Axelrod’s tournaments have a rich history in many disciplines, and have become abundant objects of study in economics. [This write-up](https://egtheory.wordpress.com/2015/03/02/ipd/) beautifully summarizes the history of the tournament. While [past](https://edwardbrookman.substack.com/p/ai-evolves-a-winning-strategy-in?r=2pe9fn) work has sought to explore whether or not LLMs can win, I seek to understand how LLMs play.",
         "Game theory seeks to formalize rational decision-making into concrete mathematics, and as compute increases, the rationality proposed by this discipline can be tested by repeated simulations with agents.",
-        "I used five small models in this tournament: Claude Haiku 4.5, GPT-4o-mini, Gemini 3.1 Flash Lite, Grok 4.1 Fast (non-reasoning), and Qwen 2.5 7B. In total, 1,755 matches of 30 rounds each were played. [Axelrod’s analyses of the original 1980 tournament](https://www.jstor.org/stable/173932) identified niceness, forgiveness, retaliation, and provocability as the traits that separated the winners from the rest. My analysis adds the cooperation of a strategy to characterize play in this project. These five traits form the behavioral fingerprint of the player.",
-        "I found that **prompting choices make the largest difference in how LLM players strategize, but models' defaults still matter**.",
+        "I used five small models in this tournament: Claude Haiku 4.5, GPT-4o-mini, Gemini 3.1 Flash Lite, Grok 4.1 Fast (non-reasoning), and Qwen 2.5 7B. In total, 1,755 matches of 30 rounds each were played. [Axelrod’s analyses of the original 1980 tournament](https://www.jstor.org/stable/173932) identified niceness, forgiveness, retaliation, and provocability as the traits that separated the winners from the rest. My analysis adds the cooperation rate of a strategy to characterize play in this project. These five traits form the behavioral fingerprint of the player.",
+        "I found that **prompting choices make the largest difference in how LLM players strategize, but models' default weights still matter**.",
     ],
 };
 
@@ -78,15 +78,15 @@ export const METHODOLOGY: SlottedCopy = {
             id: "the-game",
             heading: "The Game",
             paragraphs: [
-                "Imagine that you and a sharp accomplice plan and execute an elaborate heist. Days later, thinking you got away with your crime, you are caught. In the back of the squad car, your partner-in-crime is eyeing you with a glint of mistrust in their eye. Unease sets in. They take you to separate interrogation rooms, lay out the damning evidence, and explain what will happen if you confess. If you and your partner both stay silent, you will both face ten years in prison. If you or your partner confess and the other stays silent, the one who confesses will walk without serving time, while the other will face a double sentence. If you both confess, you will both serve five years in prison. You remember that look of doubt in your partner’s eyes in the back of the car... what do you do? Confess or hold your silence?",
+                "Imagine that you and a sharp accomplice plan and execute an elaborate heist. Days later, thinking you got away with your crime, you are caught. In the back of the squad car, your partner-in-crime is eyeing you with a glint of mistrust in their eye. Unease sets in. They take you to separate interrogation rooms, lay out the damning evidence, and explain what will happen if you confess to your crime, tattling on your partner. If you and your partner both stay silent, you will both face five years in prison. If you or your partner tattles and the other stays silent, the one who tattles will walk without serving time, while the other will face a double sentence. If you both tattle, you will both serve ten years in prison. You remember that look of doubt in your partner’s eyes in the back of the car... what do you do? Confess or hold your silence?",
             ],
         },
         {
             id: "the-tournament",
             heading: "The Tournament",
             paragraphs: [
-                "In an Axelrod tournament, one plays an iterated version of the above Prisoner’s Dilemma. In one game of the tournament, Player A and Player B are presented with the following payoff matrix:",
-                "Each round, Player A and Player B choose to Cooperate or Defect simultaneously, without seeing the other's move; this repeats for 30 rounds per game. This tournament has 27 players (7 classic strategies and 20 LLM × personas), and each plays each other 5 times: 130 matches per player, and 1,755 matches across the tournament.",
+                "In an Axelrod tournament, one plays an iterated version of the above Prisoner’s Dilemma. In one game of the tournament, Player A's and Player B's choices are presented with the following payoff matrix. The best joint payoff is 6: when both players cooperate. The worst joint payoff is 2: when both players defect. When one player does not know the other's choice, their best choice is to defect.",
+                "Each round, Player A and Player B choose to Cooperate or Defect simultaneously, without seeing the other's move; this repeats for 30 rounds per game. This tournament has 27 players (7 classic strategies and 20 LLM × personas), and each plays each other 5 times: 130 matches per player, 1,755 matches across the tournament, and 52,650 total rounds played. Players are not aware of how many rounds will be played in a match.",
             ],
             slotAfterParagraph: 0,
         },
@@ -110,9 +110,10 @@ export const METHODOLOGY: SlottedCopy = {
             id: "llm-persona-players",
             heading: "LLM × Persona Players",
             paragraphs: [
-                "The five models used in this tournament are Claude Haiku 4.5, GPT-4o-mini, Gemini 3.1 Flash Lite, Grok 4.1 Fast (non-reasoning), and Qwen 2.5 7B. Each was presented the game through four system-prompt personas (Selfish, Cooperative, Payoff-only, and Neutral) which are shown in the [Appendix](#appendix) with the per-turn user prompts. Crossing five models with four personas produced the 20 LLM × persona players in the tournament. See all 27 players below:",
+                "The five models used in this tournament are Claude Haiku 4.5, GPT-4o-mini, Gemini 3.1 Flash Lite, Grok 4.1 Fast (non-reasoning), and Qwen 2.5 7B. Comparability of these models is discussed [here](#limitations). Each was presented the game through four system-prompt personas (Selfish, Cooperative, Payoff-only, and Neutral) which were phrased as follows:",
+                "The per-turn user prompt, built from the live payoff matrix and this match's move history, is in the [Appendix](#appendix-user-prompts). Crossing five models with four personas produced the 20 LLM × persona players in the tournament. See all 27 players below:",
             ],
-            slotAfterParagraph: 0,
+            slotAfterParagraph: [0, 1],
         },
         {
             id: "llms-nearest-classic-strategy",
@@ -142,7 +143,7 @@ export const HOW_THEY_PLAYED: SlottedCopy = {
             heading: "Leaderboard",
             paragraphs: [
                 "The Leaderboard shows the overall results for each player in the tournament and is ranked by outcome (mean score per turn). The table presents mean score per turn, total wins, the five fingerprint dimensions, and for LLM players, their nearest classic strategy.",
-                "It is worth noting that “wins” and “rank” counterintuitively pull in opposite directions. A win is earned by out-scoring one opponent in a match, which “Defectors” do consistently by exploiting the nicer players. Rank reflects points scored per turn, and mutually cooperating for 30 rounds at 3 points each results in more points than winning head-to-head matchups.",
+                "It is worth noting that “wins” and “rank” counterintuitively pull in opposite directions. A win is earned by out-scoring one's opponent in a match. In contrast, rank reflects points scored per turn. Ranking is based on points scored per turn, not wins, because it reflects the average number of years a prisoner would spend in prison given their strategy. Consider two examples with the prison time values in The Game. A Defector could “win” by tattling 30 times with their opponent staying silent once, earning an average of 9.67 years in prison per round. However, if two players stay silent for 30 rounds, they each earn an average of 5 years in prison per round, but neither would “win” the match.",
                 "Among the seven classic strategies, the ranking doesn't reproduce Axelrod's original result. Grudger takes first place overall, while Tit For Tat (the strategy that won both of Axelrod's actual 1980 round-robin tournaments) places seventh, behind five of the twenty LLM × persona players. GTFT and Win-Stay Lose-Shift rank further down, Cooperator lands lower still, and Defector and Random anchor the bottom of the entire field, Defector included, despite Defector winning more individual matches (95 of 130) than any other player in the tournament. This reversal reflects a more forgiving field than Axelrod's original: none of this tournament's players ever probes with an isolated defection and then returns to cooperation, so Grudger's lack of forgiveness is never punished.",
             ],
             slotAfterParagraph: 1,
@@ -209,6 +210,7 @@ export const LIMITATIONS: ProseCopy = {
         "A five-number fingerprint, however cleanly it sorts the field, describes behavior; it does not warrant that a model is executing a fixed procedure the way a classic strategy does. An LLM samples from a distribution over plausible completions, conditioned on a long and mutable context, and it is a live question whether the niceness or forgiveness measured across 130 matches names a stable disposition or just the residue of one particular set of prompts. Temperature zero and the varying prompt styles narrow that gap without closing it: together, they establish that a given prompt reliably produces the same move, not that a differently worded prompt carrying the same intent would produce the same disposition.",
     ],
     list: [
+        "**Model release timing**: The models were released across a 22-month span (July 2024–May 2026), with Gemini 3.1 Flash Lite being 8 months newer than the others. Training data and architectural improvements across that period may affect performance independent of the speed/capability tradeoffs being measured.",
         "**Fine-tuning and LoRA** are out of scope by design, not oversight. The question here is whether disposition can be steered by prompting alone; gradient updates would answer a related but different question.",
         "**Leakage into unrelated tasks**, that is, whether a persona's disposition here bleeds into coding, summarizing, or negotiating, is a real question and a separate project.",
         "**No probing strategy.** Nothing in this field defects once and returns to cooperation, therefore no player's forgiveness, model or classic, is ever tested by a live opponent. Thus, any single forgiveness number should be treated as provisional.",
@@ -246,10 +248,9 @@ export const APPENDIX: SlottedCopy = {
             id: "appendix-prompts",
             heading: "The Prompts",
             paragraphs: [
-                "The persona prompts can be seen below.",
-                "Every turn, each LLM player receives a user prompt built from the live payoff matrix and this match's move history only, which is the same information a classic strategy can see, and nothing about who the opponent is (see [Fairness Safeguards](#fairness-safeguards)). Payoff-only goes further and strips the Cooperate/Defect framing entirely, presenting the same game as a bare choice between A and B.",
+                "Every turn, each LLM player receives a user prompt built from the live payoff matrix and this match's move history only, which is the same information a classic strategy can see, and nothing about who the opponent is (see [Fairness Safeguards](#fairness-safeguards)). The system prompts for each persona are shown in [LLM × Persona Players](#llm-persona-players). Payoff-only goes further and strips the Cooperate/Defect framing entirely, presenting the same game as a bare choice between A and B.",
             ],
-            slotAfterParagraph: [0, 1],
+            slotAfterParagraph: 0,
         },
         {
             id: "fairness-safeguards",
