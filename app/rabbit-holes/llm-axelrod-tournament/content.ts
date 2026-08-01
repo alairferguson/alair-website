@@ -65,7 +65,7 @@ export const INTRODUCTION: ProseCopy = {
     title: "The Question",
     paragraphs: [
         "This project simulates an Axelrod tournament: a competition in which a set of strategies competes with one another in many rounds of Prisoner’s Dilemma games. The Prisoner's Dilemma is a game theory problem in which two players simultaneously choose to cooperate with or defect from one another with varied payoffs based on the both players' choices. Axelrod’s tournaments have a rich history in many disciplines, and have become abundant objects of study in economics. [This write-up](https://egtheory.wordpress.com/2015/03/02/ipd/) beautifully summarizes the history of the tournament. While [past](https://edwardbrookman.substack.com/p/ai-evolves-a-winning-strategy-in?r=2pe9fn) work has sought to explore whether or not LLMs can win, I seek to understand how LLMs play.",
-        "Game theory seeks to formalize rational decision-making into concrete mathematics, and as compute increases at a seemingly exponential rate, the rationality proposed by this discipline can be tested by repeated simulations with agents.",
+        "Game theory seeks to formalize rational decision-making into concrete mathematics, and as compute increases, the rationality proposed by this discipline can be tested by repeated simulations with agents.",
         "I used five small models in this tournament: Claude Haiku 4.5, GPT-4o-mini, Gemini 3.1 Flash Lite, Grok 4.1 Fast (non-reasoning), and Qwen 2.5 7B. In total, 1,755 matches of 30 rounds each were played. [Axelrod’s analyses of the original 1980 tournament](https://www.jstor.org/stable/173932) identified niceness, forgiveness, retaliation, and provocability as the traits that separated the winners from the rest. My analysis adds the cooperation of a strategy to characterize play in this project. These five traits form the behavioral fingerprint of the player.",
         "I found that **prompting choices make the largest difference in how LLM players strategize, but models' defaults still matter**.",
     ],
@@ -133,7 +133,8 @@ export const HOW_THEY_PLAYED: SlottedCopy = {
             id: "big-picture-takeaways",
             heading: "Big Picture Takeaways and Implications",
             paragraphs: [
-                "Before digging into the data, allow me to prime your eyes for the patterns that will emerge and their real-world implications.",
+                "Unsurprisingly, prompting shapes behavior. The unexpected result was that two of the five models, when told explicitly to play cooperatively, ignored this instruction and continued playing the same strategy as their neutral, selfish, and payoff-only counterparts.",
+                "It's a small-scale reminder of a larger alignment worry: instruction-following that looks reliable in aggregate can still fail in specific cases, and you often can't tell which ones without testing.",
             ],
         },
         {
