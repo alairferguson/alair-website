@@ -25,7 +25,7 @@ const dailySongsImages = [
 export const RABBIT_HOLES: RabbitHole[] = [
     {
         slug: "llm-IPD-tournament",
-        title: "An Iterated Prisoner's Dilemma Tournament",
+        title: "An Iterated Prisoner's\nDilemma Tournament",
         position: { top: "18%", left: "50%" },
         scale: 1.35,
         tilt: -3,

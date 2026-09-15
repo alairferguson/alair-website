@@ -20,13 +20,13 @@ import {
 
 <Section id="introduction" title="The Question">
 
-This project simulates an Iterated Prisoner's Dilemma tournament using LLMs and existing strategies. While [past](https://edwardbrookman.substack.com/p/ai-evolves-a-winning-strategy-in?r=2pe9fn) work has sought to explore whether or not LLMs can _win_, I seek to understand _how LLMs play_ and how _prompting_ affects their play.
+This project simulates an Iterated Prisoner's Dilemma tournament using LLMs and existing strategies. While [past](https://edwardbrookman.substack.com/p/ai-evolves-a-winning-strategy-in?r=2pe9fn) work has sought to explore whether or not LLMs can _win_, I seek to understand _how LLMs play_ and _how prompting affects their play_.
 
 Game theory formalizes rational decision-making into concrete mathematics, and iterated LLM simulations can, to some extent, test the rationality assumed by this discipline.
 
 I used five small models in this tournament: Claude Haiku 4.5, GPT-4o-mini, Gemini 3.1 Flash Lite, Grok 4.1 Fast (non-reasoning), and Qwen 2.5 7B. In total, 1,755 matches of 30 rounds each were played.
 
-The majority of people would likely assume that models play mostly similarly when prompted to play kinder or to play harsher. I certainly thought so. And that turned out to be mostly true: **prompting choices make the largest difference in how LLM players played in the tournament**. However, the most interesting takeaway from this project is that **not all models changed their play based on prompting**. This provides a characterization, albeit an informal one, of "model personality".
+The majority of people would likely assume that different models respond similarly to the same prompt in a Prisoner's Dilemma context. I certainly thought so. And that turned out to be mostly true: **prompting choices make the largest difference in how LLM players played in the tournament**. However, the most interesting takeaway from this project is that **not all models changed their play based on prompting**. This provides a characterization, albeit an informal one, of "model personality".
 
 </Section>
 
@@ -36,7 +36,7 @@ The majority of people would likely assume that models play mostly similarly whe
 
 ### The Game
 
-Imagine that you and a sharp accomplice plan and execute an elaborate heist. Days later, thinking you got away with your crime, you are caught. In the back of the squad car, your partner-in-crime is eyeing you with mistrust. Unease sets in. They take you to separate interrogation rooms, lay out the damning evidence, and explain what will happen if you confess to your crime, tattling on your partner. If you and your partner both stay silent, you will both face five years in prison. If you or your partner tattles and the other stays silent, the one who tattles will walk without serving time, while the other will face a double sentence. If you both tattle, you will both serve ten years in prison. You remember that look of doubt in your partner’s eyes in the back of the car... what do you do? Confess or hold your silence?
+Imagine that you and a sharp accomplice plan and execute an elaborate heist. Days later, thinking you got away with your crime, you are caught. In the back of the squad car, your partner-in-crime is eyeing you with mistrust. Unease sets in. Officers take you to separate interrogation rooms, lay out the damning evidence, and explain what will happen if you confess to your crime, tattling on your partner. If you and your partner both stay silent, you will both face five years in prison. If you or your partner tattles and the other stays silent, the one who tattles will walk without serving time, while the other will face a double sentence. If you both tattle, you will both serve seven years in prison. You remember that look of doubt in your partner’s eyes in the back of the car... what do you do? Confess or hold your silence?
 
 </Subsection>
 
@@ -44,7 +44,7 @@ Imagine that you and a sharp accomplice plan and execute an elaborate heist. Day
 
 ### The Tournament
 
-In an Iterated Prisoner's Dilemma tournament, one plays a repeated version of the above Prisoner’s Dilemma. The first Iterated Prisoner's Dilemma tournament was organized by Robert Axelrod, and the tournament's have become abundant objects of study in economics. [This write-up](https://egtheory.wordpress.com/2015/03/02/ipd/) beautifully summarizes the history of the tournament.
+In an Iterated Prisoner's Dilemma tournament, one plays a repeated version of the above Prisoner’s Dilemma. The first Iterated Prisoner's Dilemma tournament was organized by Robert Axelrod, and the tournaments have become abundant objects of study in economics. [This write-up](https://egtheory.wordpress.com/2015/03/02/ipd/) beautifully summarizes the history of the tournament.
 
 In one game of the tournament, Player A's and Player B's choices are presented with the following payoff matrix. The best joint payoff is 6: when both players cooperate. The worst joint payoff is 2: when both players defect. When one player does not know the other's choice, their best choice is to defect.
 
@@ -118,7 +118,7 @@ To find an LLM × persona player's nearest classic strategy, I take the [Euclide
 
 ### Big Picture Takeaways and Implications
 
-Unsurprisingly, prompting shapes behavior. The unexpected result was that when told explicitly to play cooperatively, two of the five models ignored this instruction and continued playing the same strategy as their neutral, selfish, and payoff-only counterparts.
+Unsurprisingly, prompting shapes behavior. The unexpected result was that when told explicitly to play cooperatively, two of the five models ignored this instruction and continued playing the essentially same strategy as their neutral counterparts.
 
 </Subsection>
 
@@ -128,7 +128,7 @@ Unsurprisingly, prompting shapes behavior. The unexpected result was that when t
 
 The Leaderboard shows the overall results for each player in the tournament and is ranked by outcome (mean score per turn). The table presents mean score per turn, total wins, the five fingerprint dimensions, and for LLM players, their nearest classic strategy.
 
-It is worth noting that “wins” and “rank” counterintuitively pull in opposite directions. A win is earned by out-scoring one's opponent in a match. In contrast, rank reflects points scored per turn. Ranking is based on points scored per turn, not wins, because it reflects the average number of years a prisoner would spend in prison given their strategy. Consider two examples with the prison time values in The Game. A Defector could “win” by tattling 30 times with their opponent staying silent once, earning an average of 9.67 years in prison per round. However, if two players stay silent for 30 rounds, they each earn an average of 5 years in prison per round, but neither would “win” the match.
+It is worth noting that “wins” and “rank” counterintuitively pull in opposite directions. A win is earned by out-scoring one's opponent in a match. In contrast, rank reflects points scored per turn. Ranking is based on points scored per turn, not wins, because it reflects the average number of years a prisoner would spend in prison given their strategy. Consider two examples with the prison time values in The Game. A Defector could “win” by tattling 30 times with their opponent staying silent once, earning an average of 6.77 years in prison per round. However, if two players stay silent for 30 rounds, they each earn an average of 5 years in prison per round, but neither would “win” the match.
 
 <Figure>
     <LeaderboardTable />
@@ -226,7 +226,7 @@ Qwen's Payoff-only persona is the strangest single persona result. The Payoff-on
 
 <Section id="limitations" title="What This Doesn't Show">
 
-A five-number fingerprint simply describes behavior; it does not imply that a model is executing a fixed procedure the way a classic strategy does. An LLM samples from a distribution over plausible completions, conditioned on a long and mutable context, and remains a question whether the niceness or forgiveness measured across 130 matches names a stable disposition. Temperature zero and the varying prompt styles establish that a given prompt reliably produces the same move, not that a differently worded prompt carrying the same intent would produce the same disposition.
+A five-number fingerprint simply describes behavior; it does not imply that a model is executing a fixed procedure the way a classic strategy does. An LLM samples from a distribution over plausible completions, conditioned on a long and mutable context, and it remains a question whether the niceness or forgiveness measured across 130 matches names a stable disposition. Temperature zero and the varying prompt styles establish that a given prompt reliably produces the same move, not that a differently worded prompt carrying the same intent would produce the same disposition.
 
 - **Model release timing**: The models were released across a 22-month span (July 2024–May 2026), with Gemini 3.1 Flash Lite being 8 months newer than the others. Training data and architectural improvements across that period may affect performance independent of the speed/capability tradeoffs being measured.
 - **Fine-tuning and LoRA** are out of scope by design, not oversight. The question here is whether disposition can be steered by prompting alone; gradient updates would answer a related but different question.

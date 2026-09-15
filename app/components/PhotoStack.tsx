@@ -89,7 +89,7 @@ export default function PhotoStack({ slug, title, images, scale, tilt: tiltOverr
                 <div
                     className={`relative z-[1] flex flex-col items-center gap-2 px-3.5 py-3 ${linkHoverClass}`}
                 >
-                    <span className="text-xl sm:text-base text-[rgba(0,0,0,0.85)] mix-blend-multiply select-none max-lg:text-center max-lg:max-w-[10rem]">
+                    <span className="text-xl sm:text-base text-[rgba(0,0,0,0.85)] mix-blend-multiply select-none text-center whitespace-pre-line">
                         {title}
                     </span>
 
