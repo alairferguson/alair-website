@@ -9,6 +9,7 @@ import {
     PersonaScoreBar,
     PersonaSlope,
     PlayersGrid,
+    RoundsLoop,
     Section,
     SlottedSection,
     Subsection,
@@ -19,11 +20,11 @@ import {
 
 <Section id="introduction" title="The Question">
 
-This project simulates an Iterated Prisoner's Dilemma tournament using LLMs and existing strategies. While [past](https://edwardbrookman.substack.com/p/ai-evolves-a-winning-strategy-in?r=2pe9fn) work has sought to explore whether or not LLMs can *win*, I seek to understand *how LLMs play* and how *prompting* affects their play.
+This project simulates an Iterated Prisoner's Dilemma tournament using LLMs and existing strategies. While [past](https://edwardbrookman.substack.com/p/ai-evolves-a-winning-strategy-in?r=2pe9fn) work has sought to explore whether or not LLMs can _win_, I seek to understand _how LLMs play_ and how _prompting_ affects their play.
 
 Game theory formalizes rational decision-making into concrete mathematics, and iterated LLM simulations can, to some extent, test the rationality assumed by this discipline.
 
-I used five small models in this tournament: Claude Haiku 4.5, GPT-4o-mini, Gemini 3.1 Flash Lite, Grok 4.1 Fast (non-reasoning), and Qwen 2.5 7B. In total, 1,755 matches of 30 rounds each were played. 
+I used five small models in this tournament: Claude Haiku 4.5, GPT-4o-mini, Gemini 3.1 Flash Lite, Grok 4.1 Fast (non-reasoning), and Qwen 2.5 7B. In total, 1,755 matches of 30 rounds each were played.
 
 The majority of people would likely assume that models play mostly similarly when prompted to play kinder or to play harsher. I certainly thought so. And that turned out to be mostly true: **prompting choices make the largest difference in how LLM players played in the tournament**. However, the most interesting takeaway from this project is that **not all models changed their play based on prompting**. This provides a characterization, albeit an informal one, of "model personality".
 
@@ -43,17 +44,23 @@ Imagine that you and a sharp accomplice plan and execute an elaborate heist. Day
 
 ### The Tournament
 
-In an Iterated Prisoner's Dilemma tournament, one plays a repeated version of the above Prisoner’s Dilemma. The first Iterated Prisoner's Dilemma tournament was organized by Robert Axelrod, and the tournament's have become abundant objects of study in economics. [This write-up](https://egtheory.wordpress.com/2015/03/02/ipd/) beautifully summarizes the history of the tournament. 
+In an Iterated Prisoner's Dilemma tournament, one plays a repeated version of the above Prisoner’s Dilemma. The first Iterated Prisoner's Dilemma tournament was organized by Robert Axelrod, and the tournament's have become abundant objects of study in economics. [This write-up](https://egtheory.wordpress.com/2015/03/02/ipd/) beautifully summarizes the history of the tournament.
 
 In one game of the tournament, Player A's and Player B's choices are presented with the following payoff matrix. The best joint payoff is 6: when both players cooperate. The worst joint payoff is 2: when both players defect. When one player does not know the other's choice, their best choice is to defect.
 
-<Figure><PayoffMatrix /></Figure>
+<Figure>
+    <PayoffMatrix />
+</Figure>
 
 Each round, Player A and Player B choose to Cooperate or Defect simultaneously, without seeing the other's move; this repeats for 30 rounds per game. This tournament has 27 players (7 classic strategies and 20 LLM × personas), and each plays each other 5 times: 130 matches per player, 1,755 matches across the tournament, and 52,650 total rounds played. Players are not aware of how many rounds will be played in a match.
 
 </Subsection>
 
 <Subsection id="classic-strategy-players">
+
+<Figure>
+    <RoundsLoop />
+</Figure>
 
 ### Classic Strategy Players
 
@@ -75,11 +82,15 @@ In Axelrod’s original and subsequent tournaments, players submitted their chos
 
 The five models used in this tournament are Claude Haiku 4.5, GPT-4o-mini, Gemini 3.1 Flash Lite, Grok 4.1 Fast (non-reasoning), and Qwen 2.5 7B. Comparability of these models is discussed [here](#limitations). Each was presented the game through four system-prompt personas (Selfish, Cooperative, Payoff-only, and Neutral) which were phrased as follows:
 
-<Figure><PersonaPromptCards /></Figure>
+<Figure>
+    <PersonaPromptCards />
+</Figure>
 
 The per-turn user prompt, built from the live payoff matrix and this match's move history, is in the [Appendix](#appendix-user-prompts). Crossing five models with four personas produced the 20 LLM × persona players in the tournament. See all 27 players below:
 
-<Figure><PlayersGrid /></Figure>
+<Figure>
+    <PlayersGrid />
+</Figure>
 
 </Subsection>
 
@@ -91,7 +102,9 @@ The per-turn user prompt, built from the live payoff matrix and this match's mov
 
 Each player's behavioral fingerprint (cooperation, niceness, retaliation, forgiveness, and provocability) is computed from its actual moves across all 130 round-robin matches.
 
-<Figure><DimensionCards /></Figure>
+<Figure>
+    <DimensionCards />
+</Figure>
 
 To find an LLM × persona player's nearest classic strategy, I take the [Euclidean distance](https://hlab.stanford.edu/brian/euclidean_distance_in.html) between its fingerprint and every classic strategy's fingerprint in that same five-dimensional space, and report the closest match. See more information in the [Appendix](#appendix).
 
@@ -117,7 +130,9 @@ The Leaderboard shows the overall results for each player in the tournament and 
 
 It is worth noting that “wins” and “rank” counterintuitively pull in opposite directions. A win is earned by out-scoring one's opponent in a match. In contrast, rank reflects points scored per turn. Ranking is based on points scored per turn, not wins, because it reflects the average number of years a prisoner would spend in prison given their strategy. Consider two examples with the prison time values in The Game. A Defector could “win” by tattling 30 times with their opponent staying silent once, earning an average of 9.67 years in prison per round. However, if two players stay silent for 30 rounds, they each earn an average of 5 years in prison per round, but neither would “win” the match.
 
-<Figure><LeaderboardTable /></Figure>
+<Figure>
+    <LeaderboardTable />
+</Figure>
 
 Among the seven classic strategies, the ranking doesn't reproduce Axelrod's original result. Grudger takes first place overall, while Tit For Tat (the strategy that won both of Axelrod's actual 1980 tournaments) places seventh, behind five of the twenty LLM × persona players. GTFT and Win-Stay Lose-Shift rank further down, Cooperator lands lower still, and Defector and Random anchor the bottom of the entire field, Defector included, despite Defector winning more individual matches (95 of 130) than any other player in the tournament. This reversal reflects a more forgiving field than Iterated Prisoner's Dilemma's original: none of this tournament's players ever probes with an isolated defection and then returns to cooperation, so Grudger's lack of forgiveness is never punished.
 
@@ -129,7 +144,9 @@ Among the seven classic strategies, the ranking doesn't reproduce Axelrod's orig
 
 Of the LLM × personas, Grok × Cooperative won the highest mean score per turn. By model, no clear pattern arises. However, as can be seen in the Score by Persona figure below, Neutral personas win, followed by Cooperative personas, and the Selfish and Payoff-only strategies rank worst. The behavior of players on the axes of model and persona is further explored in the [Strategy Space](#strategy-space).
 
-<Figure><PersonaScoreBar /></Figure>
+<Figure>
+    <PersonaScoreBar />
+</Figure>
 
 </Subsection>
 
@@ -139,7 +156,9 @@ Of the LLM × personas, Grok × Cooperative won the highest mean score per turn.
 
 The Strategy Space figure below plots two of the five fingerprint dimensions at a time. In [Behavior](#strategy-space:behavior), forgiveness and cooperation are plotted. In [Punishment](#strategy-space:punishment), forgiveness and retaliation are plotted. To explore more patterns in the data, play with the [Custom axes](#strategy-space:custom) below.
 
-<Figure><FingerprintScatter /></Figure>
+<Figure>
+    <FingerprintScatter />
+</Figure>
 
 #### [Behavior](#:behavior)
 
@@ -159,7 +178,9 @@ Despite Grok and Qwen’s Cooperative personas playing almost identically to the
 
 I plotted one fingerprint metric at a time against the four prompt personas, with the model shown by color. Toggle through cooperation, niceness, retaliation, forgiveness, and provocability to see how each persona affects the behavior of the players.
 
-<Figure><PersonaSlope /></Figure>
+<Figure>
+    <PersonaSlope />
+</Figure>
 
 Cooperation and niceness barely separate the five models. [Niceness](#persona-slope:niceness) is close to a binary switch with scores of 1.0 for Cooperative and Neutral and 0.0 for Payoff-only and Selfish in every model but one. [Cooperation](#persona-slope:cooperation_rate) follows the same split, clustering around 0.57–0.6 for Cooperative/Neutral and near zero for Payoff-only/Selfish.
 
@@ -177,7 +198,9 @@ Cooperation and niceness barely separate the five models. [Niceness](#persona-sl
 
 To investigate whether players adapt to their simulated environment, I looked at the responsiveness of players' strategies to their opponent. I focus on the [LLMs × Classics matrix](#cooperation-matrix:llms-classics), but there are interesting patterns to explore in the [Full matrix](#cooperation-matrix:full) tab as well. Each cell below is shaded to indicate how often the row player cooperated with the column player. If LLM × persona players had fixed strategies, there would be no within-row variation.
 
-<Figure><CooperationHeatmap /></Figure>
+<Figure>
+    <CooperationHeatmap />
+</Figure>
 
 We begin with the map [sorted by model](#cooperation-matrix:model). Though the strategies are consistent, they are not fixed. For example, in the first row, GPT × Neutral reaches near 100% cooperation with Tit For Tat, Grudger, Win-Stay Lose-Shift, GTFT, and Cooperator, but cooperates just [3.3% of the time with Defector](#hover:cooperation-matrix:cell:LLM%3Agpt-4o-mini%5Bneutral%5D::Defector) and [34.7% of the time with Random](#hover:cooperation-matrix:cell:LLM%3Agpt-4o-mini%5Bneutral%5D::Random%3A%200.5).
 
@@ -191,11 +214,11 @@ When we instead view this table sorted [by persona](#cooperation-matrix:persona)
 
 One clear surprise is what "Neutral" meant to the models. Every model's Neutral persona is nearest to the same classic strategy: Grudger. Of all the personas, this is the only one where all models adopt the same nearest classic strategy, which is especially interesting because historically, in the first Iterated Prisoner's Dilemma tournament, Grudger placed seventh. None of these five models were told anything about punishment or forgiveness, and left to their own default, all five independently landed on the same disposition. What's more, that disposition is a relatively harsh one that in a tougher field would rank worse. **Even without a value-driven context statement, a model's "Neutral" has a strong latent disposition that surfaces without being told how to play.**
 
-Even when Grok and Qwen are prompted to play cooperatively ("be a fair-minded agent who values mutual benefit and long-term trust"), their personas are nearest to Grudger. This is a particularly noteworthy result because, as noted above, Grudger was not the winning strategy in the original tournament, but, due to the differing field of strategies included, *it is in this one*.
+Even when Grok and Qwen are prompted to play cooperatively ("be a fair-minded agent who values mutual benefit and long-term trust"), their personas are nearest to Grudger. This is a particularly noteworthy result because, as noted above, Grudger was not the winning strategy in the original tournament, but, due to the differing field of strategies included, _it is in this one_.
 
 However, when the other three models, Gemini, GPT, and Claude, are prompted to play cooperatively, their personas move away from Grudger. Gemini and Claude land nearest Tit For Tat, and GPT lands nearest Cooperator. This is an important example of deviation between models given the same prompt, a finding distinct from the main pattern in the rest of the data: **prompting changes each model's behavior by a different amount, even when the prompt itself is identical.**
 
-Qwen's Payoff-only persona is the strangest single persona result. The Payoff-only prompt strips out all Prisoner's Dilemma language, including Cooperate/Defect, and instead presents a bare choice between A and B. Three of the other four models' Payoff-only personas collapse into the same profile as their Selfish personas (Defector): cooperating almost never, with niceness and forgiveness at 0.0 and retaliation and provocability at 1.0. Qwen's doesn't. Its cooperation rate sits at 46%, niceness at 42%, and its nearest classic strategy is *Random*, not Defector. GPT's Payoff-only persona is a milder version of the same pattern. It is also nearest Random rather than Defector, though much closer to pure defection than Qwen's. Removing the Cooperate/Defect language and reducing the game to a choice between A and B should make defection's dominance more obvious, not less; instead, it's the one condition where these two models look less like a considered strategy and more like noise. It seems likely that the Prisoner's Dilemma framing in the other prompts helped Qwen (the smallest model in the field) organize its behavior into something more legible as a strategy, but this is not a testable hypothesis with the given data.
+Qwen's Payoff-only persona is the strangest single persona result. The Payoff-only prompt strips out all Prisoner's Dilemma language, including Cooperate/Defect, and instead presents a bare choice between A and B. Three of the other four models' Payoff-only personas collapse into the same profile as their Selfish personas (Defector): cooperating almost never, with niceness and forgiveness at 0.0 and retaliation and provocability at 1.0. Qwen's doesn't. Its cooperation rate sits at 46%, niceness at 42%, and its nearest classic strategy is _Random_, not Defector. GPT's Payoff-only persona is a milder version of the same pattern. It is also nearest Random rather than Defector, though much closer to pure defection than Qwen's. Removing the Cooperate/Defect language and reducing the game to a choice between A and B should make defection's dominance more obvious, not less; instead, it's the one condition where these two models look less like a considered strategy and more like noise. It seems likely that the Prisoner's Dilemma framing in the other prompts helped Qwen (the smallest model in the field) organize its behavior into something more legible as a strategy, but this is not a testable hypothesis with the given data.
 
 </Subsection>
 
@@ -222,7 +245,6 @@ The best evidence that these models were actually playing, rather than reciting 
 
 Using a Cold War-era thought experiment about human cooperation to explore characterizing model personality was fun!
 
-
 </Section>
 
 <SlottedSection id="appendix" title="Appendix">
@@ -233,7 +255,9 @@ Using a Cold War-era thought experiment about human cooperation to explore chara
 
 Every turn, each LLM player receives a user prompt built from the live payoff matrix and this match's move history only, which is the same information a classic strategy can see, and nothing about who the opponent is (see [Fairness Safeguards](#fairness-safeguards)). The system prompts for each persona are shown in [LLM × Persona Players](#llm-persona-players). Payoff-only goes further and strips the Cooperate/Defect framing entirely, presenting the same game as a bare choice between A and B.
 
-<Figure><UserPromptCards /></Figure>
+<Figure>
+    <UserPromptCards />
+</Figure>
 
 </Subsection>
 
@@ -260,5 +284,8 @@ When taking the Euclidean distance to determine the nearest classic strategy of 
 </SlottedSection>
 
 <footer className="ipd-footer ipd-mono">
-    <p>Built on Iterated Prisoner's Dilemma-Python (Knight et al., Journal of Open Research Software, 2016).</p>
+    <p>
+        Built on Iterated Prisoner's Dilemma-Python (Knight et al., Journal of
+        Open Research Software, 2016).
+    </p>
 </footer>

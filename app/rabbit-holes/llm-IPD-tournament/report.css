@@ -1419,6 +1419,18 @@ li.ipd-draft-note {
     }
 }
 
+.ipd-rounds-loop {
+    width: min(40rem, 100%);
+    margin-inline: auto;
+    background: var(--ipd-bg);
+}
+
+.ipd-rounds-loop video {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
 @media (prefers-reduced-motion: reduce) {
     .ipd-rail-link {
         transition: none;

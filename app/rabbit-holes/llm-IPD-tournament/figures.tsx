@@ -21,10 +21,11 @@ import PayoffMatrix from "./PayoffMatrix";
 import PersonaScoreBarBase from "./PersonaScoreBar";
 import PersonaSlopeBase from "./PersonaSlope";
 import PlayersGrid from "./PlayersGrid";
+import RoundsLoop from "./RoundsLoop";
 import { PERSONA_PROMPTS, USER_PROMPT_EXAMPLES } from "./prompts";
 import type { MetricId, Report } from "./types";
 
-export { PayoffMatrix, PlayersGrid };
+export { PayoffMatrix, PlayersGrid, RoundsLoop };
 
 type Filter = "all" | "llm" | "classic";
 
@@ -284,31 +285,31 @@ export function CustomLink(props: AnchorHTMLAttributes<HTMLAnchorElement>) {
             onClick={
                 isAnchor
                     ? (e) => {
-                          e.preventDefault();
-                          const raw = href.slice(1);
-                          const colon = raw.indexOf(":");
-                          const id = colon === -1 ? raw : raw.slice(0, colon);
-                          const action = colon === -1 ? null : raw.slice(colon + 1);
-                          if (action) {
-                              window.dispatchEvent(
-                                  new CustomEvent("ipd:figure-action", {
-                                      detail: {
-                                          target: id || "strategy-space",
-                                          action,
-                                      },
-                                  }),
-                              );
-                          }
-                          if (id) {
-                              const scrollTarget = document.getElementById(id);
-                              if (scrollTarget) {
-                                  scrollTarget.scrollIntoView({
-                                      behavior: "smooth",
-                                      block: "start",
-                                  });
-                              }
-                          }
-                      }
+                        e.preventDefault();
+                        const raw = href.slice(1);
+                        const colon = raw.indexOf(":");
+                        const id = colon === -1 ? raw : raw.slice(0, colon);
+                        const action = colon === -1 ? null : raw.slice(colon + 1);
+                        if (action) {
+                            window.dispatchEvent(
+                                new CustomEvent("ipd:figure-action", {
+                                    detail: {
+                                        target: id || "strategy-space",
+                                        action,
+                                    },
+                                }),
+                            );
+                        }
+                        if (id) {
+                            const scrollTarget = document.getElementById(id);
+                            if (scrollTarget) {
+                                scrollTarget.scrollIntoView({
+                                    behavior: "smooth",
+                                    block: "start",
+                                });
+                            }
+                        }
+                    }
                     : undefined
             }
         >
