@@ -1,8 +1,8 @@
 {
   "version": 1,
   "generatedAt": "2026-07-21T04:37:56.781499+00:00",
-  "title": "Is Strategy a System Prompt? An LLM Axelrod Tournament",
-  "subtitle": "What 52,650 Rounds of Prisoner's Dilemma Reveal About an LLM's (Mutable) Disposition",
+  "title": "Characterizing Model Personality and Coachability with an Iterated Prisoner's Dilemma Tournament",
+  "subtitle": "What 52,650 rounds reveal about which models can be coached and which cannot",
   "meta": {
     "players": 27,
     "classics": 7,

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, type ReactNode } from "react";
 import Paper from "./Paper";
 import Tape from "./Tape";
 import { Email } from "./Email";
@@ -12,11 +12,12 @@ import { formatDateDDMMYYYY, getWritingSections } from "@/lib/writing-display";
 
 type HomeClientProps = {
     writingPosts: WritingPost[];
+    about: ReactNode;
 };
 
 const linkHoverClass = "hover:text-primary hover:decoration-wavy hover:underline decoration-1";
 
-export default function HomeClient({ writingPosts }: HomeClientProps) {
+export default function HomeClient({ writingPosts, about }: HomeClientProps) {
     const scrollTo = (id: string) => () => {
         const el = document.getElementById(id);
         if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -92,12 +93,7 @@ export default function HomeClient({ writingPosts }: HomeClientProps) {
                                     </div>
 
                                     <div className="space-y-4 text-xl sm:text-base leading-relaxed text-[rgba(0,0,0,0.85)] mix-blend-multiply">
-                                        <p>
-                                            I&apos;m an economics, mathematics, and French graduate from Grinnell College currently working in labor and employment consulting. In the past, I focused on growth and retention during my time at Chipper Cash, Inc. where I was a product analytics intern, and honed my quantitative analytical skills through academic economics research at Grinnell.
-                                        </p>
-                                        <p>
-                                            My professional strengths blend technical skills and people-focused work; I like working on complex problems that involve both systems and humans. I&apos;m drawn to fast-paced, mission-driven, humanity-first environments. My paramount passion is sustainability (favorite eco-literature is <em>The Overstory</em> by Richard Powers, <em>The Ministry for the Future</em> by Kim Stanley Robinson, and <em>Braiding Sweetgrass</em> by Robin Wall Kimmerer). Outside of work, I spend my time distance running, backpacking, rock climbing, and creating projects that solve problems and look beautiful.
-                                        </p>
+                                        {about}
                                     </div>
                                 </div>
 

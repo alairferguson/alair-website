@@ -28,11 +28,11 @@ export const LINKED_PIECES: {
     credit?: string;
 }[] = [
     {
-        slug: "llm-axelrod-tournament",
-        title: "Is Strategy a System Prompt? An LLM Axelrod Tournament",
+        slug: "llm-IPD-tournament",
+        title: "Characterizing Model Personality and Coachability with an Iterated Prisoner's Dilemma Tournament",
         date: "7/20/2026",
         section: "projects",
-        href: "/rabbit-holes/llm-axelrod-tournament",
+        href: "/rabbit-holes/llm-IPD-tournament",
     },
     {
         slug: "mcgavock-novak-fgc-weather-shocks",

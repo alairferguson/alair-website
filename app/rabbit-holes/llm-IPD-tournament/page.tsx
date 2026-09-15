@@ -27,20 +27,20 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-    title: "Is Strategy a System Prompt? An LLM Axelrod Tournament | Alair",
+    title: "Characterizing Model Personality and Coachability with an Iterated Prisoner's Dilemma Tournament | Alair",
     description:
-        "What 52,650 rounds of Prisoner's Dilemma reveal about an LLM's (mutable) disposition.",
+        "What 52,650 rounds reveal about which models can be coached and which cannot.",
     openGraph: {
-        title: "Is Strategy a System Prompt? An LLM Axelrod Tournament",
+        title: "Characterizing Model Personality and Coachability with an Iterated Prisoner's Dilemma Tournament",
         description:
-            "What 52,650 rounds of Prisoner's Dilemma reveal about an LLM's (mutable) disposition.",
+            "What 52,650 rounds reveal about which models can be coached and which cannot.",
         type: "article",
     },
     twitter: {
         card: "summary_large_image",
-        title: "Is Strategy a System Prompt? An LLM Axelrod Tournament",
+        title: "Characterizing Model Personality and Coachability with an Iterated Prisoner's Dilemma Tournament",
         description:
-            "What 52,650 rounds of Prisoner's Dilemma reveal about an LLM's (mutable) disposition.",
+            "What 52,650 rounds reveal about which models can be coached and which cannot.",
     },
 };
 

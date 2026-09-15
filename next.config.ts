@@ -3,6 +3,15 @@ import createMDX from "@next/mdx";
 
 const nextConfig: NextConfig = {
     pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
+    async redirects() {
+        return [
+            {
+                source: "/rabbit-holes/llm-axelrod-tournament",
+                destination: "/rabbit-holes/llm-IPD-tournament",
+                permanent: true,
+            },
+        ];
+    },
     images: {
         remotePatterns: [{ protocol: "https", hostname: "i.scdn.co" }],
         // Only serves our own trusted, hand-authored local SVGs (rabbit-holes cover art) — no user/remote SVG input.

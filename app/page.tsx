@@ -1,4 +1,5 @@
 import HomeClient from "./components/HomeClient";
+import About from "@/content/about.mdx";
 import { getWritingPosts } from "@/lib/writing";
 import { LINKED_PIECES } from "@/lib/writing-display";
 
@@ -15,5 +16,5 @@ export default async function Home() {
     const writingPosts = [...mdxPosts, ...linkedPosts].sort((a, b) =>
         b.date.localeCompare(a.date)
     );
-    return <HomeClient writingPosts={writingPosts} />;
+    return <HomeClient writingPosts={writingPosts} about={<About />} />;
 }
